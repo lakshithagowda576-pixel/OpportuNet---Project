@@ -5,16 +5,19 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Briefcase, Users, Mail, CheckCircle, XCircle, Clock, Shield,
   Send, Plus, Trash2, Eye, BarChart3, FileText, AlertCircle, Loader2,
-  Building2, ChevronDown, RefreshCw, LogOut
+  Building2, ChevronDown, RefreshCw, LogOut, BookOpen, GraduationCap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { JobManagement } from "@/components/JobManagement";
+import { CollegeManagement } from "@/components/CollegeManagement";
+import { ExamManagement } from "@/components/ExamManagement";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const apiFetch = (path: string, opts?: RequestInit) =>
   fetch(`${BASE}/api/admin${path}`, { credentials: "include", ...opts }).then(r => r.json());
 
-type AdminTab = "dashboard" | "applications" | "hr-emails" | "users";
+type AdminTab = "dashboard" | "applications" | "hr-emails" | "users" | "jobs" | "colleges" | "exams";
 
 const STATUS_COLORS: Record<string, string> = {
   "Pre-Registered": "bg-slate-100 text-slate-800 border-slate-200",
@@ -115,6 +118,9 @@ export default function AdminPanel() {
   const tabs: { id: AdminTab; label: string; icon: typeof BarChart3 }[] = [
     { id: "dashboard", label: "Dashboard", icon: BarChart3 },
     { id: "applications", label: "Applications", icon: FileText },
+    ...(user.role === "admin" ? [{ id: "jobs" as AdminTab, label: "Jobs", icon: Briefcase }] : []),
+    ...(user.role === "admin" ? [{ id: "colleges" as AdminTab, label: "Colleges", icon: Building2 }] : []),
+    ...(user.role === "admin" ? [{ id: "exams" as AdminTab, label: "Exams", icon: GraduationCap }] : []),
     ...(user.role === "admin" ? [{ id: "hr-emails" as AdminTab, label: "HR Emails", icon: Mail }] : []),
     ...(user.role === "admin" ? [{ id: "users" as AdminTab, label: "Users", icon: Users }] : []),
   ];
@@ -479,6 +485,27 @@ export default function AdminPanel() {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {/* Jobs Management Tab */}
+      {activeTab === "jobs" && (
+        <div className="bg-card rounded-2xl border border-border shadow-sm p-6">
+          <JobManagement />
+        </div>
+      )}
+
+      {/* Colleges Management Tab */}
+      {activeTab === "colleges" && (
+        <div className="bg-card rounded-2xl border border-border shadow-sm p-6">
+          <CollegeManagement />
+        </div>
+      )}
+
+      {/* Exams Management Tab */}
+      {activeTab === "exams" && (
+        <div className="bg-card rounded-2xl border border-border shadow-sm p-6">
+          <ExamManagement />
         </div>
       )}
 

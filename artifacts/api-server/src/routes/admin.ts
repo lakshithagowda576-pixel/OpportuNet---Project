@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { applicationsTable, jobsTable, hrEmailsTable, usersTable } from "@workspace/db/schema";
+import { applicationsTable, jobsTable, hrEmailsTable, usersTable, collegesTable, collegeCutoffsTable, collegeFeesTable, examsTable, studyMaterialsTable } from "@workspace/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { requireAdmin, requireAdminOrHR } from "../middleware/requireAuth";
 import { z } from "zod";
 import { sendEmail } from "../lib/mailer";
 import { normalizeJobRecord } from "../lib/normalize-job";
+import { createJobSchema, updateJobSchema, createCollegeSchema, updateCollegeSchema, createCollegeCutoffSchema, updateCollegeCutoffSchema, createCollegeFeeSchema, updateCollegeFeeSchema, createExamSchema, updateExamSchema, createStudyMaterialSchema, updateStudyMaterialSchema } from "@workspace/api-zod";
 
 const router = Router();
 // General admin/hr routes
@@ -209,6 +210,284 @@ router.get("/stats", async (req, res) => {
     byStatus,
     byCategory,
   });
+});
+
+// ============================================================================
+// JOBS CRUD ENDPOINTS
+// ============================================================================
+
+// Create job
+router.post("/jobs/create", async (req, res) => {
+  try {
+    const data = createJobSchema.parse(req.body);
+    const [job] = await db.insert(jobsTable).values(data).returning();
+    res.status(201).json(normalizeJobRecord(job));
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to create job" });
+  }
+});
+
+// Update job
+router.put("/jobs/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const data = updateJobSchema.parse(req.body);
+    const [job] = await db.update(jobsTable).set({ ...data, updatedAt: new Date() }).where(eq(jobsTable.id, id)).returning();
+    if (!job) {
+      res.status(404).json({ error: "Job not found" });
+      return;
+    }
+    res.json(normalizeJobRecord(job));
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to update job" });
+  }
+});
+
+// Delete job
+router.delete("/jobs/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    await db.delete(jobsTable).where(eq(jobsTable.id, id));
+    res.json({ success: true, message: "Job deleted successfully" });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to delete job" });
+  }
+});
+
+// ============================================================================
+// COLLEGES CRUD ENDPOINTS
+// ============================================================================
+
+// Create college
+router.post("/colleges/create", async (req, res) => {
+  try {
+    const data = createCollegeSchema.parse(req.body);
+    const [college] = await db.insert(collegesTable).values(data).returning();
+    res.status(201).json(college);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to create college" });
+  }
+});
+
+// Update college
+router.put("/colleges/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const data = updateCollegeSchema.parse(req.body);
+    const [college] = await db.update(collegesTable).set({ ...data, updatedAt: new Date() }).where(eq(collegesTable.id, id)).returning();
+    if (!college) {
+      res.status(404).json({ error: "College not found" });
+      return;
+    }
+    res.json(college);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to update college" });
+  }
+});
+
+// Delete college
+router.delete("/colleges/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    // Delete related cutoffs and fees first
+    await db.delete(collegeCutoffsTable).where(eq(collegeCutoffsTable.collegeId, id));
+    await db.delete(collegeFeesTable).where(eq(collegeFeesTable.collegeId, id));
+    await db.delete(collegesTable).where(eq(collegesTable.id, id));
+    res.json({ success: true, message: "College and related data deleted successfully" });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to delete college" });
+  }
+});
+
+// Get colleges with cutoffs and fees
+router.get("/colleges", async (req, res) => {
+  try {
+    const colleges = await db.select().from(collegesTable).orderBy(desc(collegesTable.id));
+    const collegesWithDetails = await Promise.all(colleges.map(async (college) => {
+      const cutoffs = await db.select().from(collegeCutoffsTable).where(eq(collegeCutoffsTable.collegeId, college.id));
+      const fees = await db.select().from(collegeFeesTable).where(eq(collegeFeesTable.collegeId, college.id));
+      return { ...college, cutoffs, fees };
+    }));
+    res.json(collegesWithDetails);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to fetch colleges" });
+  }
+});
+
+// Create college cutoff
+router.post("/college-cutoffs/create", async (req, res) => {
+  try {
+    const data = createCollegeCutoffSchema.parse(req.body);
+    const [cutoff] = await db.insert(collegeCutoffsTable).values(data).returning();
+    res.status(201).json(cutoff);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to create college cutoff" });
+  }
+});
+
+// Update college cutoff
+router.put("/college-cutoffs/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const data = updateCollegeCutoffSchema.parse(req.body);
+    const [cutoff] = await db.update(collegeCutoffsTable).set(data).where(eq(collegeCutoffsTable.id, id)).returning();
+    if (!cutoff) {
+      res.status(404).json({ error: "College cutoff not found" });
+      return;
+    }
+    res.json(cutoff);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to update college cutoff" });
+  }
+});
+
+// Delete college cutoff
+router.delete("/college-cutoffs/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    await db.delete(collegeCutoffsTable).where(eq(collegeCutoffsTable.id, id));
+    res.json({ success: true, message: "College cutoff deleted successfully" });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to delete college cutoff" });
+  }
+});
+
+// Create college fee
+router.post("/college-fees/create", async (req, res) => {
+  try {
+    const data = createCollegeFeeSchema.parse(req.body);
+    const [fee] = await db.insert(collegeFeesTable).values(data).returning();
+    res.status(201).json(fee);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to create college fee" });
+  }
+});
+
+// Update college fee
+router.put("/college-fees/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const data = updateCollegeFeeSchema.parse(req.body);
+    const [fee] = await db.update(collegeFeesTable).set(data).where(eq(collegeFeesTable.id, id)).returning();
+    if (!fee) {
+      res.status(404).json({ error: "College fee not found" });
+      return;
+    }
+    res.json(fee);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to update college fee" });
+  }
+});
+
+// Delete college fee
+router.delete("/college-fees/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    await db.delete(collegeFeesTable).where(eq(collegeFeesTable.id, id));
+    res.json({ success: true, message: "College fee deleted successfully" });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to delete college fee" });
+  }
+});
+
+// ============================================================================
+// EXAMS CRUD ENDPOINTS
+// ============================================================================
+
+// Create exam
+router.post("/exams/create", async (req, res) => {
+  try {
+    const data = createExamSchema.parse(req.body);
+    const [exam] = await db.insert(examsTable).values(data).returning();
+    res.status(201).json(exam);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to create exam" });
+  }
+});
+
+// Update exam
+router.put("/exams/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const data = updateExamSchema.parse(req.body);
+    const [exam] = await db.update(examsTable).set(data).where(eq(examsTable.id, id)).returning();
+    if (!exam) {
+      res.status(404).json({ error: "Exam not found" });
+      return;
+    }
+    res.json(exam);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to update exam" });
+  }
+});
+
+// Delete exam
+router.delete("/exams/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    // Delete related study materials first
+    await db.delete(studyMaterialsTable).where(eq(studyMaterialsTable.examId, id));
+    await db.delete(examsTable).where(eq(examsTable.id, id));
+    res.json({ success: true, message: "Exam and related study materials deleted successfully" });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to delete exam" });
+  }
+});
+
+// Get exams
+router.get("/exams", async (req, res) => {
+  try {
+    const exams = await db.select().from(examsTable).orderBy(desc(examsTable.id));
+    const examsWithMaterials = await Promise.all(exams.map(async (exam) => {
+      const materials = await db.select().from(studyMaterialsTable).where(eq(studyMaterialsTable.examId, exam.id));
+      return { ...exam, materials };
+    }));
+    res.json(examsWithMaterials);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to fetch exams" });
+  }
+});
+
+// ============================================================================
+// STUDY MATERIALS CRUD ENDPOINTS
+// ============================================================================
+
+// Create study material
+router.post("/study-materials/create", async (req, res) => {
+  try {
+    const data = createStudyMaterialSchema.parse(req.body);
+    const [material] = await db.insert(studyMaterialsTable).values(data).returning();
+    res.status(201).json(material);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to create study material" });
+  }
+});
+
+// Update study material
+router.put("/study-materials/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const data = updateStudyMaterialSchema.parse(req.body);
+    const [material] = await db.update(studyMaterialsTable).set(data).where(eq(studyMaterialsTable.id, id)).returning();
+    if (!material) {
+      res.status(404).json({ error: "Study material not found" });
+      return;
+    }
+    res.json(material);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to update study material" });
+  }
+});
+
+// Delete study material
+router.delete("/study-materials/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    await db.delete(studyMaterialsTable).where(eq(studyMaterialsTable.id, id));
+    res.json({ success: true, message: "Study material deleted successfully" });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to delete study material" });
+  }
 });
 
 export default router;
