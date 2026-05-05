@@ -1,5 +1,7 @@
 import { Switch, Route, Router as WouterRouter } from "wouter";
+import "./lib/i18n";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -16,6 +18,7 @@ import ApplyPage from "@/pages/ApplyPage";
 import PgCetApplyPage from "@/pages/PgCetApplyPage";
 import AdminPanel from "@/pages/AdminPanel";
 import Profile from "@/pages/Profile";
+import JobAlerts from "@/pages/JobAlerts";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -37,6 +40,7 @@ function Router() {
             <Route path="/jobs/:id" component={JobDetails} />
             <Route path="/jobs/:id/apply" component={ApplyPage} />
             <Route path="/applications" component={ApplicationTracker} />
+            <Route path="/job-alerts" component={JobAlerts} />
             <Route path="/exams" component={PgCetHub} />
             <Route path="/exams/:id/apply" component={PgCetApplyPage} />
             <Route path="/exams/result-finder" component={PgCetResultFinder} />
@@ -57,16 +61,18 @@ function App() {
     SUPABASE_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY ? "EXISTS" : "MISSING"
   });
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <AuthProvider>
-          <WouterRouter base={import.meta.env.BASE_URL?.replace(/\/$/, "") || ""}>
-            <Router />
-          </WouterRouter>
-          <Toaster />
-        </AuthProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <AuthProvider>
+            <WouterRouter base={import.meta.env.BASE_URL?.replace(/\/$/, "") || ""}>
+              <Router />
+            </WouterRouter>
+            <Toaster />
+          </AuthProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 

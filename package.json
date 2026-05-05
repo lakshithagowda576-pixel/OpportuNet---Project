@@ -7,7 +7,8 @@
     "install:all": "pnpm install",
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
     "typecheck": "tsc --build && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
-    "seed": "pnpm -C scripts run seed --env-file=.env"
+    "seed": "pnpm -C scripts run seed --env-file=.env",
+    "seed_pre_register_jobs": "pnpm -C scripts run seed_pre_register_jobs --env-file=.env"
   },
   "devDependencies": {
     "prettier": "^3.8.1",

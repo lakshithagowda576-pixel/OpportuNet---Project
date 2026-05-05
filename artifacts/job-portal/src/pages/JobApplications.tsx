@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { trackEvent } from "@/lib/analytics";
 import { format } from "date-fns";
 import {
   Loader2, ArrowLeft, Users, CheckCircle2, Clock, 
@@ -25,6 +27,16 @@ const STATUS_COLORS: Record<string, string> = {
 export default function JobApplications() {
   const [, params] = useRoute("/jobs/:id/applications");
   const jobId = Number(params?.id);
+
+  useEffect(() => {
+    trackEvent({
+      eventType: "page_view",
+      eventCategory: "Applications",
+      eventAction: "view",
+      page: `/jobs/${jobId}/applications`,
+      metadata: { jobId },
+    });
+  }, [jobId]);
 
   const { data: job } = useQuery({
     queryKey: ["job", jobId],

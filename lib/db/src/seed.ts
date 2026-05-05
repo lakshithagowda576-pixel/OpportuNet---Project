@@ -148,29 +148,7 @@ async function seed() {
     }
   ];
 
-  // Add more varieties (Future Jobs for Pre-Registration)
-  for (let i = 1; i <= 15; i++) {
-    const isFuture = i <= 10; // First 10 are future
-    curatedJobs.push({
-      title: isFuture ? `Upcoming ${["Developer", "Analyst", "Manager"][i % 3]} Role` : `Active Role ${i}`,
-      company: ["Infosys", "Wipro", "Reliance", "L&T", "SSC", "KPSC"][i % 6],
-      category: i % 2 === 0 ? "IT" : "NON_IT",
-      location: ["Bangalore", "Hyderabad", "Delhi", "Remote"][i % 4],
-      shift: "Full_time",
-      description: isFuture ? "This is a future job opportunity that will be opening soon. Register your interest to get notified." : "This is an active role looking for immediate joiners.",
-      eligibility: "Bachelors degree in relevant field.",
-      applicationGuide: isFuture 
-        ? "Step 1: Monitor this page for the activation of the application link.\nStep 2: Ensure your OpportuNet profile is complete.\nStep 3: Click 'Pre-Register' to be notified when the portal opens."
-        : "Step 1: Visit the company portal.\nStep 2: Apply with your profile.",
-      startDate: isFuture ? "2026-08-01" : "2026-04-01",
-      endDate: isFuture ? "2026-12-31" : "2026-06-30",
-      hrEmail: "not-yet-active@company.com",
-      salary: "Competitive Package",
-      openings: 10 + i,
-      applicationLink: "https://example.com/future-hiring",
-      official_url: "https://example.com"
-    });
-  }
+  // Placeholder loop removed to prevent broken links
 
   await db.insert(jobsTable).values(curatedJobs);
   console.log(`Successfully seeded ${curatedJobs.length} curated jobs.`);

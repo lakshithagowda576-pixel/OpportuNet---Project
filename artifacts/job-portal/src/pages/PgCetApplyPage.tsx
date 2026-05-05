@@ -38,8 +38,12 @@ export default function PgCetApplyPage() {
     if (user && !isAuthLoading) {
       setFormData(prev => ({
         ...prev,
-        applicantName: user.name,
-        applicantEmail: user.email,
+        applicantName: user.name || "",
+        applicantEmail: user.email || "",
+        applicantPhone: user.phone || "",
+        applicantAddress: user.address || "",
+        education: user.education || "",
+        qualification: user.qualification || "",
       }));
     }
   }, [user, isAuthLoading]);

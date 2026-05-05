@@ -23,6 +23,8 @@ interface AuthContextType {
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   refetch: () => Promise<void>;
+  loginWithGoogle: () => void;
+  loginWithGitHub: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -84,8 +86,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  const loginWithGoogle = () => {
+    window.location.href = `${BASE}/api/auth/google`;
+  };
+
+  const loginWithGitHub = () => {
+    window.location.href = `${BASE}/api/auth/github`;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout, refetch: fetchMe }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, logout, refetch: fetchMe, loginWithGoogle, loginWithGitHub }}>
       {children}
     </AuthContext.Provider>
   );

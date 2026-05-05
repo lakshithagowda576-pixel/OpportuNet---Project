@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { trackEvent } from "@/lib/analytics";
 import {
   Briefcase, Users, Mail, CheckCircle, XCircle, Clock, Shield,
   Send, Plus, Trash2, Eye, BarChart3, FileText, AlertCircle, Loader2,
@@ -35,6 +36,25 @@ export default function AdminPanel() {
   const { toast } = useToast();
   const qc = useQueryClient();
   const [activeTab, setActiveTab] = useState<AdminTab>("dashboard");
+
+  useEffect(() => {
+    trackEvent({
+      eventType: "page_view",
+      eventCategory: "AdminPanel",
+      eventAction: "view",
+      page: "/admin",
+      metadata: { userRole: user?.role },
+    });
+  }, [user?.role]);
+
+  useEffect(() => {
+    trackEvent({
+      eventType: "admin_tab_changed",
+      eventCategory: "Admin",
+      eventAction: "tab_change",
+      metadata: { activeTab },
+    });
+  }, [activeTab]);
   const [jobFilter, setJobFilter] = useState<number | null>(null);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
 
@@ -84,6 +104,12 @@ export default function AdminPanel() {
     onSuccess: (data: any, variables) => { 
       qc.invalidateQueries({ queryKey: ["admin-applications"] }); 
       qc.invalidateQueries({ queryKey: ["admin-stats"] });
+      trackEvent({
+        eventType: "application_status_changed",
+        eventCategory: "Admin",
+        eventAction: "change_status",
+        metadata: { applicationId: variables.id, newStatus: variables.status },
+      });
       if (variables.status === "Interview" || variables.status === "Pending" || variables.status === "Rejected") {
         toast({ title: "Status Updated", description: `Application status changed to ${variables.status}. An automated email has been sent to the applicant.` });
       } else {
@@ -98,6 +124,12 @@ export default function AdminPanel() {
     mutationFn: (data: { to: string; subject: string; body: string; applicantName: string }) =>
       apiFetch("/send-email", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }),
     onSuccess: (data) => {
+      trackEvent({
+        eventType: "email_sent",
+        eventCategory: "Admin",
+        eventAction: "send_email",
+        metadata: { recipientEmail: emailModal?.to },
+      });
       toast({ title: data.simulated ? "Email Simulated" : "Email Sent!", description: data.message || "Email sent to applicant." });
       setEmailModal(null);
     },
@@ -108,11 +140,28 @@ export default function AdminPanel() {
   const [hrForm, setHrForm] = useState({ email: "", label: "Primary", jobId: "" });
   const addHrEmailMutation = useMutation({
     mutationFn: (data: any) => apiFetch("/hr-emails", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-hr-emails"] }); setHrForm({ email: "", label: "Primary", jobId: "" }); toast({ title: "HR Email Added!" }); },
+    onSuccess: () => { 
+      qc.invalidateQueries({ queryKey: ["admin-hr-emails"] }); 
+      trackEvent({
+        eventType: "hr_email_added",
+        eventCategory: "Admin",
+        eventAction: "add_hr_email",
+        metadata: { email: hrForm.email, label: hrForm.label },
+      });
+      setHrForm({ email: "", label: "Primary", jobId: "" }); 
+      toast({ title: "HR Email Added!" }); 
+    },
   });
   const deleteHrEmailMutation = useMutation({
     mutationFn: (id: number) => apiFetch(`/hr-emails/${id}`, { method: "DELETE" }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-hr-emails"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-hr-emails"] });
+      trackEvent({
+        eventType: "hr_email_deleted",
+        eventCategory: "Admin",
+        eventAction: "delete_hr_email",
+      });
+    },
   });
 
   const tabs: { id: AdminTab; label: string; icon: typeof BarChart3 }[] = [

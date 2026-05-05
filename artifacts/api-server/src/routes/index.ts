@@ -6,6 +6,7 @@ import examsRouter from "./exams";
 import authRouter from "./auth";
 import adminRouter from "./admin";
 import collegesRouter from "./colleges";
+import companiesRouter from "./companies";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use(jobsRouter);
 router.use(applicationsRouter);
 router.use(examsRouter);
 router.use("/colleges", collegesRouter);
+router.use("/companies", companiesRouter);
 
 export default router;

@@ -52,6 +52,7 @@ app.use(session({
 }));
 
 app.get("/", (req, res) => res.redirect("/api/health"));
+app.use("/uploads", express.static("uploads"));
 app.use("/api", router);
 
 export default app;

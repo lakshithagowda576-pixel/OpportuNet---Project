@@ -27,12 +27,24 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@workspace/api-zod": [
+        "../../lib/api-zod/src"
+      ],
+      "@workspace/db/schema": [
+        "../../lib/db/src/schema"
       ]
     }
   },
   "references": [
     {
       "path": "../../lib/api-client-react"
+    },
+    {
+      "path": "../../lib/api-zod"
+    },
+    {
+      "path": "../../lib/db"
     }
   ]
 }

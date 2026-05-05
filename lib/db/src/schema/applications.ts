@@ -28,7 +28,13 @@ export const applicationsTable = pgTable("applications", {
   applicantAddress: text("applicant_address"),
   education: text("education"),
   qualification: text("qualification"),
+  currentLocation: text("current_location"),
+  yearsOfExperience: text("years_of_experience"),
+  currentCompany: text("current_company"),
   resumeUrl: text("resume_url"),
+  portfolioLink: text("portfolio_link"),
+  linkedinProfile: text("linkedin_profile"),
+  skills: text("skills"),
   acceptedTerms: boolean("accepted_terms").notNull().default(false),
   coverLetter: text("cover_letter"),
   course: text("course"), // For PGCET (MBA, MCA, M.Tech)

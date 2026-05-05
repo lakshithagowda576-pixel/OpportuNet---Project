@@ -51,4 +51,8 @@ router.get("/jobs/:id", async (req, res) => {
   res.json(normalizeJobRecord(job));
 });
 
+router.post("/favorites", (req, res) => {
+  res.json({ success: true });
+});
+
 export default router;

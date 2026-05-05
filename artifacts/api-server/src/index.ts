@@ -7,6 +7,7 @@ import { count, eq } from "drizzle-orm";
 import bcrypt from "bcrypt";
 import { IT_JOBS, NONIT_JOBS, STATE_GOVT_JOBS, CENTRAL_GOVT_JOBS, buildJobRows } from "./lib/seed-data";
 import { seedColleges } from "./lib/seed-colleges";
+import { seedCompanies } from "./lib/seed-companies";
 
 const port = Number(process.env["PORT"]) || 3001;
 
@@ -103,7 +104,7 @@ async function autoSeed() {
     { examId: exams[0].id, title: "Verbal Ability – MBA PGCET YouTube Course", subject: "Verbal Ability", type: "Video", description: "English grammar, RC strategies, verbal reasoning, and para-jumbles for MBA PGCET on YouTube.", url: "https://www.youtube.com/results?search_query=MBA+PGCET+verbal+ability+preparation" },
     { examId: exams[0].id, title: "MCA PG-CET Mathematics – NPTEL Discrete Maths", subject: "Mathematics", type: "Video", description: "Algebra, Calculus, Probability & Statistics, Set Theory, Mathematical Logic for MCA PG-CET.", url: "https://nptel.ac.in/courses/106106094" },
     { examId: exams[0].id, title: "C Programming & Data Structures – NPTEL", subject: "Computer Science", type: "Video", description: "C Programming, Data Structures, DBMS, OS, Computer Networks for MCA PG-CET by IIT faculty.", url: "https://nptel.ac.in/courses/106105085" },
-    { examId: exams[0].id, title: "Previous Year Papers – KEA Archive", subject: "All Subjects", type: "PDF", description: "Consolidated archive of previous year question papers for MBA, MCA, and M.Tech PGCET.", url: "https://kea.kar.nic.in/pgcet2026" },
+    { examId: exams[0].id, title: "Previous Year Papers – KEA Archive", subject: "All Subjects", type: "PDF", description: "Consolidated archive of previous year question papers for MBA, MCA, and M.Tech PGCET.", url: "https://prepp.in/karnataka-pgcet-exam/question-paper" },
     { examId: exams[0].id, title: "General Awareness – GK Today", subject: "General Awareness", type: "Notes", description: "Monthly current affairs and static GK for PGCET preparation.", url: "https://www.gktoday.in/current-affairs/" },
   ]);
     logger.info("Auto-seed completed: 3exams, 24 study materials");
@@ -117,6 +118,7 @@ async function main() {
   try {
     await autoSeed();
     await seedColleges();
+    await seedCompanies();
     await ensureAdminUser();
     setupCronJobs();
   } catch (err) {

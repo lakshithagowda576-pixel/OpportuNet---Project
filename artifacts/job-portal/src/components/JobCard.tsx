@@ -6,6 +6,7 @@ import { formatDate, cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { PreRegisterForm } from "./PreRegisterForm";
+import { trackEvent } from "@/lib/analytics";
 
 interface JobCardProps {
   job: Job;
@@ -17,8 +18,17 @@ import { motion } from "framer-motion";
 export function JobCard({ job, applicantCount }: JobCardProps) {
   const [showDetails, setShowDetails] = useState(false);
   const [showPreRegister, setShowPreRegister] = useState(false);
+  const [saved, setSaved] = useState(false);
   const externalApplyUrl = job.official_url || job.applicationLink;
   const hasExternalApply = !!externalApplyUrl && externalApplyUrl.startsWith("http");
+  
+  // Generate fallback URL if no official URL exists
+  const getFallbackUrl = (company: string) => {
+    const cleanCompany = company.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
+    return `https://www.google.com/search?q=${encodeURIComponent(cleanCompany + ' careers jobs official website')}`;
+  };
+  
+  const applyUrl = hasExternalApply ? externalApplyUrl : getFallbackUrl(job.company);
   
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -57,6 +67,8 @@ export function JobCard({ job, applicantCount }: JobCardProps) {
   const isFuture = today < start;
   const isOpen = !isClosed && !isFuture;
 
+  const daysLeft = Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
   const getStatusBadge = () => {
     if (isClosed) {
       return (
@@ -94,6 +106,9 @@ export function JobCard({ job, applicantCount }: JobCardProps) {
                 {getCategoryLabel(job.category)}
               </span>
               {getStatusBadge()}
+              <span className={cn("text-[10px] font-bold px-2 py-1 rounded-lg", daysLeft < 7 ? 'text-red-500 bg-red-50' : 'text-green-500 bg-green-50')}>
+                {daysLeft > 0 ? `${daysLeft} days left` : 'Expired'}
+              </span>
             </div>
             <h3 className="font-display font-black text-lg text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-[1.2]">
               {job.title}
@@ -127,14 +142,56 @@ export function JobCard({ job, applicantCount }: JobCardProps) {
 
         <div className="mt-auto pt-4 border-t border-border/50 flex items-center gap-2">
           <button
-            onClick={() => setShowDetails(true)}
+            onClick={() => {
+              setShowDetails(true);
+              trackEvent({
+                eventType: "job_details_viewed",
+                eventCategory: "Job",
+                eventAction: "view_details",
+                metadata: { jobId: job.id, company: job.company, category: job.category },
+              });
+            }}
             className="p-2.5 rounded-xl bg-secondary text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all"
+            title="View Details"
           >
             <Eye className="w-4 h-4" />
           </button>
+
+          <button 
+            onClick={() => {
+              fetch('/api/favorites', { method: 'POST', body: JSON.stringify({ jobId: job.id }) });
+              setSaved(true);
+              trackEvent({
+                eventType: "job_saved",
+                eventCategory: "Job",
+                eventAction: "save",
+                metadata: { jobId: job.id, company: job.company },
+              });
+            }}
+            className={cn(
+              "p-2.5 rounded-xl transition-all flex items-center gap-2 text-xs font-bold",
+              saved ? "bg-amber-100 text-amber-600" : "bg-secondary text-muted-foreground hover:bg-amber-50 hover:text-amber-600"
+            )}
+            title={saved ? "Saved" : "Save Job"}
+          >
+            {saved ? '⭐ Saved' : '☆ Save'}
+          </button>
  
             <button
-              onClick={() => isFuture ? setShowPreRegister(true) : window.open(externalApplyUrl, "_blank")}
+              onClick={() => {
+                const eventType = isFuture ? "job_pre_registered" : "job_apply_clicked";
+                trackEvent({
+                  eventType,
+                  eventCategory: "Application",
+                  eventAction: "apply_click",
+                  metadata: { jobId: job.id, company: job.company, category: job.category, status: isClosed ? "closed" : isFuture ? "future" : "open" },
+                });
+                if (isFuture) {
+                  setShowPreRegister(true);
+                } else {
+                  window.open(applyUrl, "_blank");
+                }
+              }}
               className={cn(
                 "flex-1 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition-all group/btn",
                 isClosed

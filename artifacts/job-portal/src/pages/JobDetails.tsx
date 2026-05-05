@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRoute } from "wouter";
 import { motion } from "framer-motion";
+import { trackEvent } from "@/lib/analytics";
 import { 
   useGetJob, 
   useGetJobApplicantCount, 
@@ -31,6 +32,18 @@ export default function JobDetails() {
   const [showRedirectModal, setShowRedirectModal] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
 
+  useEffect(() => {
+    if (job) {
+      trackEvent({
+        eventType: "job_viewed",
+        eventCategory: "Job",
+        eventAction: "view",
+        page: `/jobs/${jobId}`,
+        metadata: { jobId, company: job.company, category: job.category },
+      });
+    }
+  }, [job, jobId]);
+
   const canApply = user && new Date() <= new Date(job?.endDate || new Date());
 
   const getShiftLabel = (shift: string) => {
@@ -53,6 +66,14 @@ export default function JobDetails() {
 
   const steps = job?.applicationGuide?.split("\n").filter(s => s.trim()) ?? [];
   const externalApplyUrl = job?.official_url || job?.applicationLink || "";
+  
+  // Generate fallback URL if no official URL exists
+  const getFallbackUrl = (company: string) => {
+    const cleanCompany = company.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
+    return `https://www.google.com/search?q=${encodeURIComponent(cleanCompany + ' careers jobs official website')}`;
+  };
+  
+  const applyUrl = externalApplyUrl && externalApplyUrl.startsWith("http") ? externalApplyUrl : getFallbackUrl(job?.company || "");
 
   const handleOneClickApply = async () => {
     if (!user || !user.resumeUrl) return;
@@ -77,6 +98,13 @@ export default function JobDetails() {
       if (response.ok) {
         setHasApplied(true);
         toast({ title: "Success!", description: "Fast Apply complete! Your profile was sent." });
+        trackEvent({
+          eventType: "application_submitted",
+          eventCategory: "Application",
+          eventAction: "submit",
+          page: `/jobs/${jobId}`,
+          metadata: { jobId, company: job?.company, applicantEmail: user.email },
+        });
       } else {
         const err = await response.json();
         throw new Error(err.error || "Fast Apply failed");
@@ -156,30 +184,16 @@ export default function JobDetails() {
             )}
             {!hasApplied && (
                user ? (
-                 hasResume ? (
-                   <button 
-                     onClick={handleOneClickApply}
-                     disabled={isRedirecting || !canApply}
-                     className={`w-full md:w-64 px-6 py-4 rounded-xl font-black text-lg text-center transition-all duration-300 flex items-center justify-center gap-2 border-2 border-primary ${
-                       canApply
-                         ? 'bg-primary text-white shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95'
-                         : 'bg-muted text-muted-foreground cursor-not-allowed border-transparent'
-                     }`}
-                   >
-                     {isRedirecting ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Sparkles className="w-5 h-5" /> Fast Apply Now</>}
-                   </button>
-                 ) : (
-                   <Link 
-                     href={`/jobs/${jobId}/apply`}
-                     className={`w-full md:w-64 px-6 py-4 rounded-xl font-bold text-lg text-center transition-all duration-300 flex items-center justify-center gap-2 ${
-                       canApply
-                         ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-1'
-                         : 'bg-muted text-muted-foreground cursor-not-allowed'
-                     }`}
-                   >
-                     <Send className="w-4 h-4" /> {canApply ? 'Complete Profile & Apply' : 'Application Closed'}
-                   </Link>
-                 )
+                    <Link 
+                      href={`/jobs/${jobId}/apply`}
+                      className={`w-full md:w-64 px-6 py-4 rounded-xl font-bold text-lg text-center transition-all duration-300 flex items-center justify-center gap-2 ${
+                        canApply
+                          ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-1'
+                          : 'bg-muted text-muted-foreground cursor-not-allowed'
+                      }`}
+                    >
+                      <Sparkles className="w-5 h-5" /> {canApply ? 'Apply Now' : 'Application Closed'}
+                    </Link>
                ) : (
                  <Link 
                    href="/login"
@@ -190,46 +204,10 @@ export default function JobDetails() {
                )
             )}
             
-            {!hasApplied && externalApplyUrl && (
-               <div className="space-y-2">
-                 <button
-                   onClick={async () => {
-                     if (!user) {
-                       toast({ 
-                         title: "Login Required", 
-                         description: "Please sign in to track this application in your dashboard.",
-                         variant: "destructive"
-                       });
-                       window.open(externalApplyUrl, "_blank");
-                       return;
-                     }
-                     setIsRedirecting(true);
-                     try {
-                       await fetch("/api/applications/track", {
-                         method: "POST",
-                         headers: { "Content-Type": "application/json" },
-                         body: JSON.stringify({ jobId, applicantName: user.name, applicantEmail: user.email }),
-                       });
-                       setHasApplied(true);
-                       toast({ title: "Tracked!", description: "This visit has been recorded in your applications." });
-                     } catch (error) {
-                       console.error("Tracking failed", error);
-                     } finally {
-                       setIsRedirecting(false);
-                       window.open(externalApplyUrl, "_blank");
-                     }
-                   }}
-                   disabled={isRedirecting}
-                   className="w-full md:w-64 px-6 py-4 rounded-xl font-black text-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all border-2 border-border/50 flex items-center justify-center gap-2 shadow-lg"
-                 >
-                   {isRedirecting ? <Loader2 className="w-5 h-5 animate-spin" /> : <><ExternalLink className="w-5 h-5" /> Official Portal</>}
-                 </button>
-                 {!user && (
-                   <p className="text-[10px] text-center text-muted-foreground font-bold uppercase tracking-wider">
-                     Sign in to record this application
-                   </p>
-                 )}
-               </div>
+            {!hasApplied && job.official_url && (
+              <p className="text-xs text-center text-muted-foreground italic">
+                Official website: {job.official_url}
+              </p>
             )}
             {!hasApplied && (
                <>

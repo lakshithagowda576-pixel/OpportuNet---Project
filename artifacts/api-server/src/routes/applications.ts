@@ -12,6 +12,38 @@ import { buildDefaultHrEmail, normalizeJobRecord } from "../lib/normalize-job";
 import { requireAuth } from "../middleware/requireAuth";
 import { sendApplicationConfirmationEmail, sendPreRegistrationConfirmationEmail } from "../lib/email-service";
 import bcrypt from "bcrypt";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+
+// Multer storage configuration
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = "uploads/";
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = [".pdf", ".doc", ".docx"];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowedTypes.includes(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only .pdf, .doc and .docx files are allowed"));
+    }
+  },
+});
 
 const router: IRouter = Router();
 
@@ -189,6 +221,65 @@ router.post("/applications", async (req, res) => {
 
   // Send the specific email based on type
   sendApplicationConfirmationEmail(app.id);
+});
+
+router.post("/applications/direct", upload.single("resume"), async (req, res) => {
+  try {
+    const user = await getSessionUser(req);
+    const body = req.body;
+    const file = req.file;
+
+    // Check if already applied
+    if (user || body.applicantEmail) {
+      const [existing] = await db
+        .select()
+        .from(applicationsTable)
+        .where(
+          and(
+            eq(applicationsTable.jobId, parseInt(body.jobId)),
+            eq(applicationsTable.applicantEmail, user?.email || body.applicantEmail)
+          )
+        );
+
+      if (existing) {
+        return res.status(400).json({ error: "You have already applied for this job." });
+      }
+    }
+
+    const [app] = await db
+      .insert(applicationsTable)
+      .values({
+        jobId: parseInt(body.jobId),
+        userId: user?.id || null,
+        applicantName: body.applicantName,
+        applicantEmail: body.applicantEmail,
+        applicantPhone: body.applicantPhone,
+        currentLocation: body.currentLocation,
+        yearsOfExperience: body.yearsOfExperience,
+        currentCompany: body.currentCompany,
+        resumeUrl: file ? `/uploads/${file.filename}` : (body.resumeUrl || null),
+        portfolioLink: body.portfolioLink,
+        linkedinProfile: body.linkedinProfile,
+        education: body.education,
+        skills: body.skills,
+        coverLetter: body.coverLetter,
+        status: "Pending" as any,
+        acceptedTerms: true,
+      })
+      .returning();
+
+    // Send confirmation email
+    sendApplicationConfirmationEmail(app.id);
+
+    return res.status(201).json({
+      success: true,
+      applicationId: app.id,
+      message: "Application submitted successfully",
+    });
+  } catch (error: any) {
+    console.error("Direct application error:", error);
+    return res.status(500).json({ error: error.message || "Failed to submit application" });
+  }
 });
 
 router.patch("/applications/:id/status", async (req, res) => {

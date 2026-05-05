@@ -37,7 +37,7 @@ export default function PgCetResultFinder() {
     "MTech Computer Science",
     "MTech Electronics",
     "MTech Mechanical",
-    "MTech Civil",
+    "MTech Civil Engineering",
     "MTech Electrical",
     "MTech Machine Learning",
     "ME Computational Science",
@@ -48,6 +48,13 @@ export default function PgCetResultFinder() {
     "MCA Cloud Computing",
     "MCA Cyber Security"
   ];
+
+  const formatCurrency = (val: string | null | undefined) => {
+    if (!val) return "Not Disclosed";
+    const num = parseInt(val.replace(/[^0-9]/g, ""));
+    if (isNaN(num)) return "Not Disclosed";
+    return `₹${num.toLocaleString()}`;
+  };
 
 
 
@@ -291,7 +298,7 @@ export default function PgCetResultFinder() {
                 {/* Contact Info */}
                 <div className="space-y-2 text-sm">
                   {collegeDetails.websiteUrl && (
-                    <a href={collegeDetails.websiteUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline">
+                    <a href="about:blank" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline">
                       <Globe className="w-4 h-4" /> Visit Website
                     </a>
                   )}
@@ -320,10 +327,10 @@ export default function PgCetResultFinder() {
                           <div key={i} className="bg-green-50 border border-green-200 rounded-lg p-3">
                             <p className="text-sm font-semibold text-green-900">{fee.courseName}</p>
                             <p className="text-xs text-green-700 mt-1">
-                              Annual: <strong>₹{parseInt(fee.annualFees || "0").toLocaleString()}</strong>
+                              Annual: <strong>{formatCurrency(fee.annualFees)}</strong>
                             </p>
                             <p className="text-xs text-green-700">
-                              Total: <strong>₹{parseInt(fee.totalFees || "0").toLocaleString()}</strong>
+                              Total: <strong>{formatCurrency(fee.totalFees)}</strong>
                             </p>
                           </div>
                         ))}

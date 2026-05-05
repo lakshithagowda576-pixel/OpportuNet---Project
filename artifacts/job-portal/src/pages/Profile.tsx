@@ -10,6 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Link } from "wouter";
 import { format } from "date-fns";
+import { trackEvent } from "@/lib/analytics";
 
 export default function Profile() {
   const { user, logout } = useAuth();
@@ -63,6 +64,15 @@ export default function Profile() {
     }
   }, [user]);
 
+  useEffect(() => {
+    trackEvent({
+      eventType: "page_view",
+      eventCategory: "Profile",
+      eventAction: "view",
+      page: "/profile",
+    });
+  }, []);
+
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -92,6 +102,12 @@ export default function Profile() {
       if (res.ok) {
         await refetch();
         setIsEditing(false);
+        trackEvent({
+          eventType: "profile_update",
+          eventCategory: "Profile",
+          eventAction: "update",
+          metadata: { name: editForm.name, email: user?.email },
+        });
       }
     } catch (err) {
       console.error("Update failed", err);

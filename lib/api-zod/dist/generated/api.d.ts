@@ -23,11 +23,11 @@ export declare const ListJobsQueryParams: zod.ZodObject<{
     category: zod.ZodOptional<zod.ZodEnum<["IT", "NON_IT", "STATE_GOVT", "CENTRAL_GOVT"]>>;
     search: zod.ZodOptional<zod.ZodString>;
 }, "strip", zod.ZodTypeAny, {
-    category?: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT" | undefined;
     search?: string | undefined;
+    category?: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT" | undefined;
 }, {
-    category?: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT" | undefined;
     search?: string | undefined;
+    category?: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT" | undefined;
 }>;
 export declare const ListJobsResponseItem: zod.ZodObject<{
     id: zod.ZodNumber;
@@ -49,12 +49,12 @@ export declare const ListJobsResponseItem: zod.ZodObject<{
     createdAt: zod.ZodString;
     updatedAt: zod.ZodString;
 }, "strip", zod.ZodTypeAny, {
-    shift: "Day" | "Night" | "Full_time" | "Part_time";
-    category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
     id: number;
     title: string;
     company: string;
+    category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
     location: string;
+    shift: "Day" | "Night" | "Full_time" | "Part_time";
     description: string;
     eligibility: string;
     applicationGuide: string;
@@ -68,12 +68,12 @@ export declare const ListJobsResponseItem: zod.ZodObject<{
     createdAt: string;
     updatedAt: string;
 }, {
-    shift: "Day" | "Night" | "Full_time" | "Part_time";
-    category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
     id: number;
     title: string;
     company: string;
+    category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
     location: string;
+    shift: "Day" | "Night" | "Full_time" | "Part_time";
     description: string;
     eligibility: string;
     applicationGuide: string;
@@ -107,12 +107,12 @@ export declare const ListJobsResponse: zod.ZodArray<zod.ZodObject<{
     createdAt: zod.ZodString;
     updatedAt: zod.ZodString;
 }, "strip", zod.ZodTypeAny, {
-    shift: "Day" | "Night" | "Full_time" | "Part_time";
-    category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
     id: number;
     title: string;
     company: string;
+    category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
     location: string;
+    shift: "Day" | "Night" | "Full_time" | "Part_time";
     description: string;
     eligibility: string;
     applicationGuide: string;
@@ -126,12 +126,12 @@ export declare const ListJobsResponse: zod.ZodArray<zod.ZodObject<{
     createdAt: string;
     updatedAt: string;
 }, {
-    shift: "Day" | "Night" | "Full_time" | "Part_time";
-    category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
     id: number;
     title: string;
     company: string;
+    category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
     location: string;
+    shift: "Day" | "Night" | "Full_time" | "Part_time";
     description: string;
     eligibility: string;
     applicationGuide: string;
@@ -174,12 +174,12 @@ export declare const GetJobResponse: zod.ZodObject<{
     official_url: zod.ZodString;
     createdAt: zod.ZodString;
 }, "strip", zod.ZodTypeAny, {
-    shift: "Day" | "Night" | "Full_time" | "Part_time";
-    category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
     id: number;
     title: string;
     company: string;
+    category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
     location: string;
+    shift: "Day" | "Night" | "Full_time" | "Part_time";
     description: string;
     eligibility: string;
     applicationGuide: string;
@@ -192,12 +192,12 @@ export declare const GetJobResponse: zod.ZodObject<{
     official_url: string;
     createdAt: string;
 }, {
-    shift: "Day" | "Night" | "Full_time" | "Part_time";
-    category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
     id: number;
     title: string;
     company: string;
+    category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
     location: string;
+    shift: "Day" | "Night" | "Full_time" | "Part_time";
     description: string;
     eligibility: string;
     applicationGuide: string;
@@ -239,12 +239,12 @@ export declare const ListApplicationsResponseItem: zod.ZodObject<{
         official_url: zod.ZodString;
         createdAt: zod.ZodString;
     }, "strip", zod.ZodTypeAny, {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -257,12 +257,12 @@ export declare const ListApplicationsResponseItem: zod.ZodObject<{
         official_url: string;
         createdAt: string;
     }, {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -276,19 +276,19 @@ export declare const ListApplicationsResponseItem: zod.ZodObject<{
         createdAt: string;
     }>>;
 }, "strip", zod.ZodTypeAny, {
-    status: "Pending" | "Reviewed" | "Interview" | "Offered" | "Rejected" | "REDIRECTED";
     id: number;
     jobId: number;
     applicantName: string;
     applicantEmail: string;
+    status: "Pending" | "Reviewed" | "Interview" | "Offered" | "Rejected" | "REDIRECTED";
     appliedAt: string;
     job?: {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -302,19 +302,19 @@ export declare const ListApplicationsResponseItem: zod.ZodObject<{
         createdAt: string;
     } | undefined;
 }, {
-    status: "Pending" | "Reviewed" | "Interview" | "Offered" | "Rejected" | "REDIRECTED";
     id: number;
     jobId: number;
     applicantName: string;
     applicantEmail: string;
+    status: "Pending" | "Reviewed" | "Interview" | "Offered" | "Rejected" | "REDIRECTED";
     appliedAt: string;
     job?: {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -354,12 +354,12 @@ export declare const ListApplicationsResponse: zod.ZodArray<zod.ZodObject<{
         official_url: zod.ZodString;
         createdAt: zod.ZodString;
     }, "strip", zod.ZodTypeAny, {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -372,12 +372,12 @@ export declare const ListApplicationsResponse: zod.ZodArray<zod.ZodObject<{
         official_url: string;
         createdAt: string;
     }, {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -391,19 +391,19 @@ export declare const ListApplicationsResponse: zod.ZodArray<zod.ZodObject<{
         createdAt: string;
     }>>;
 }, "strip", zod.ZodTypeAny, {
-    status: "Pending" | "Reviewed" | "Interview" | "Offered" | "Rejected" | "REDIRECTED";
     id: number;
     jobId: number;
     applicantName: string;
     applicantEmail: string;
+    status: "Pending" | "Reviewed" | "Interview" | "Offered" | "Rejected" | "REDIRECTED";
     appliedAt: string;
     job?: {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -417,19 +417,19 @@ export declare const ListApplicationsResponse: zod.ZodArray<zod.ZodObject<{
         createdAt: string;
     } | undefined;
 }, {
-    status: "Pending" | "Reviewed" | "Interview" | "Offered" | "Rejected" | "REDIRECTED";
     id: number;
     jobId: number;
     applicantName: string;
     applicantEmail: string;
+    status: "Pending" | "Reviewed" | "Interview" | "Offered" | "Rejected" | "REDIRECTED";
     appliedAt: string;
     job?: {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -461,22 +461,22 @@ export declare const CreateApplicationBody: zod.ZodObject<{
     jobId: number;
     applicantName: string;
     applicantEmail: string;
-    applicantPhone?: string | undefined;
-    applicantAddress?: string | undefined;
+    resumeUrl?: string | undefined;
     education?: string | undefined;
     qualification?: string | undefined;
-    resumeUrl?: string | undefined;
+    applicantPhone?: string | undefined;
+    applicantAddress?: string | undefined;
     acceptedTerms?: boolean | undefined;
     coverLetter?: string | undefined;
 }, {
     jobId: number;
     applicantName: string;
     applicantEmail: string;
-    applicantPhone?: string | undefined;
-    applicantAddress?: string | undefined;
+    resumeUrl?: string | undefined;
     education?: string | undefined;
     qualification?: string | undefined;
-    resumeUrl?: string | undefined;
+    applicantPhone?: string | undefined;
+    applicantAddress?: string | undefined;
     acceptedTerms?: boolean | undefined;
     coverLetter?: string | undefined;
 }>;
@@ -523,12 +523,12 @@ export declare const UpdateApplicationStatusResponse: zod.ZodObject<{
         official_url: zod.ZodString;
         createdAt: zod.ZodString;
     }, "strip", zod.ZodTypeAny, {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -541,12 +541,12 @@ export declare const UpdateApplicationStatusResponse: zod.ZodObject<{
         official_url: string;
         createdAt: string;
     }, {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -560,19 +560,19 @@ export declare const UpdateApplicationStatusResponse: zod.ZodObject<{
         createdAt: string;
     }>>;
 }, "strip", zod.ZodTypeAny, {
-    status: "Pending" | "Reviewed" | "Interview" | "Offered" | "Rejected";
     id: number;
     jobId: number;
     applicantName: string;
     applicantEmail: string;
+    status: "Pending" | "Reviewed" | "Interview" | "Offered" | "Rejected";
     appliedAt: string;
     job?: {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -586,19 +586,19 @@ export declare const UpdateApplicationStatusResponse: zod.ZodObject<{
         createdAt: string;
     } | undefined;
 }, {
-    status: "Pending" | "Reviewed" | "Interview" | "Offered" | "Rejected";
     id: number;
     jobId: number;
     applicantName: string;
     applicantEmail: string;
+    status: "Pending" | "Reviewed" | "Interview" | "Offered" | "Rejected";
     appliedAt: string;
     job?: {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -702,12 +702,12 @@ export declare const ListMessagesResponseItem: zod.ZodObject<{
         official_url: zod.ZodString;
         createdAt: zod.ZodString;
     }, "strip", zod.ZodTypeAny, {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -720,12 +720,12 @@ export declare const ListMessagesResponseItem: zod.ZodObject<{
         official_url: string;
         createdAt: string;
     }, {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -741,20 +741,20 @@ export declare const ListMessagesResponseItem: zod.ZodObject<{
 }, "strip", zod.ZodTypeAny, {
     id: number;
     hrEmail: string;
+    subject: string;
     jobId: number;
     senderName: string;
     senderEmail: string;
-    subject: string;
     body: string;
     isReply: boolean;
     sentAt: string;
     job?: {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -770,20 +770,20 @@ export declare const ListMessagesResponseItem: zod.ZodObject<{
 }, {
     id: number;
     hrEmail: string;
+    subject: string;
     jobId: number;
     senderName: string;
     senderEmail: string;
-    subject: string;
     body: string;
     isReply: boolean;
     sentAt: string;
     job?: {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -826,12 +826,12 @@ export declare const ListMessagesResponse: zod.ZodArray<zod.ZodObject<{
         official_url: zod.ZodString;
         createdAt: zod.ZodString;
     }, "strip", zod.ZodTypeAny, {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -844,12 +844,12 @@ export declare const ListMessagesResponse: zod.ZodArray<zod.ZodObject<{
         official_url: string;
         createdAt: string;
     }, {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -865,20 +865,20 @@ export declare const ListMessagesResponse: zod.ZodArray<zod.ZodObject<{
 }, "strip", zod.ZodTypeAny, {
     id: number;
     hrEmail: string;
+    subject: string;
     jobId: number;
     senderName: string;
     senderEmail: string;
-    subject: string;
     body: string;
     isReply: boolean;
     sentAt: string;
     job?: {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -894,20 +894,20 @@ export declare const ListMessagesResponse: zod.ZodArray<zod.ZodObject<{
 }, {
     id: number;
     hrEmail: string;
+    subject: string;
     jobId: number;
     senderName: string;
     senderEmail: string;
-    subject: string;
     body: string;
     isReply: boolean;
     sentAt: string;
     job?: {
-        shift: "Day" | "Night" | "Full_time" | "Part_time";
-        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         id: number;
         title: string;
         company: string;
+        category: "IT" | "NON_IT" | "STATE_GOVT" | "CENTRAL_GOVT";
         location: string;
+        shift: "Day" | "Night" | "Full_time" | "Part_time";
         description: string;
         eligibility: string;
         applicationGuide: string;
@@ -931,16 +931,16 @@ export declare const SendMessageBody: zod.ZodObject<{
     subject: zod.ZodString;
     body: zod.ZodString;
 }, "strip", zod.ZodTypeAny, {
+    subject: string;
     jobId: number;
     senderName: string;
     senderEmail: string;
-    subject: string;
     body: string;
 }, {
+    subject: string;
     jobId: number;
     senderName: string;
     senderEmail: string;
-    subject: string;
     body: string;
 }>;
 /**
@@ -965,8 +965,8 @@ export declare const ListExamsResponseItem: zod.ZodObject<{
     description: string;
     eligibility: string;
     applicationGuide: string;
-    createdAt: string;
     name: string;
+    createdAt: string;
     fullName: string;
     examDate: string;
     applicationStartDate: string;
@@ -979,8 +979,8 @@ export declare const ListExamsResponseItem: zod.ZodObject<{
     description: string;
     eligibility: string;
     applicationGuide: string;
-    createdAt: string;
     name: string;
+    createdAt: string;
     fullName: string;
     examDate: string;
     applicationStartDate: string;
@@ -1008,8 +1008,8 @@ export declare const ListExamsResponse: zod.ZodArray<zod.ZodObject<{
     description: string;
     eligibility: string;
     applicationGuide: string;
-    createdAt: string;
     name: string;
+    createdAt: string;
     fullName: string;
     examDate: string;
     applicationStartDate: string;
@@ -1022,8 +1022,8 @@ export declare const ListExamsResponse: zod.ZodArray<zod.ZodObject<{
     description: string;
     eligibility: string;
     applicationGuide: string;
-    createdAt: string;
     name: string;
+    createdAt: string;
     fullName: string;
     examDate: string;
     applicationStartDate: string;
@@ -1061,8 +1061,8 @@ export declare const GetExamResponse: zod.ZodObject<{
     description: string;
     eligibility: string;
     applicationGuide: string;
-    createdAt: string;
     name: string;
+    createdAt: string;
     fullName: string;
     examDate: string;
     applicationStartDate: string;
@@ -1075,8 +1075,8 @@ export declare const GetExamResponse: zod.ZodObject<{
     description: string;
     eligibility: string;
     applicationGuide: string;
-    createdAt: string;
     name: string;
+    createdAt: string;
     fullName: string;
     examDate: string;
     applicationStartDate: string;
@@ -1098,22 +1098,22 @@ export declare const ListStudyMaterialsResponseItem: zod.ZodObject<{
     url: zod.ZodString;
     createdAt: zod.ZodString;
 }, "strip", zod.ZodTypeAny, {
-    type: "PDF" | "Video" | "Notes" | "Practice_Test";
     id: number;
     title: string;
     description: string;
     createdAt: string;
-    subject: string;
     examId: number;
+    subject: string;
+    type: "PDF" | "Video" | "Notes" | "Practice_Test";
     url: string;
 }, {
-    type: "PDF" | "Video" | "Notes" | "Practice_Test";
     id: number;
     title: string;
     description: string;
     createdAt: string;
-    subject: string;
     examId: number;
+    subject: string;
+    type: "PDF" | "Video" | "Notes" | "Practice_Test";
     url: string;
 }>;
 export declare const ListStudyMaterialsResponse: zod.ZodArray<zod.ZodObject<{
@@ -1126,22 +1126,22 @@ export declare const ListStudyMaterialsResponse: zod.ZodArray<zod.ZodObject<{
     url: zod.ZodString;
     createdAt: zod.ZodString;
 }, "strip", zod.ZodTypeAny, {
-    type: "PDF" | "Video" | "Notes" | "Practice_Test";
     id: number;
     title: string;
     description: string;
     createdAt: string;
-    subject: string;
     examId: number;
+    subject: string;
+    type: "PDF" | "Video" | "Notes" | "Practice_Test";
     url: string;
 }, {
-    type: "PDF" | "Video" | "Notes" | "Practice_Test";
     id: number;
     title: string;
     description: string;
     createdAt: string;
-    subject: string;
     examId: number;
+    subject: string;
+    type: "PDF" | "Video" | "Notes" | "Practice_Test";
     url: string;
 }>, "many">;
 //# sourceMappingURL=api.d.ts.map

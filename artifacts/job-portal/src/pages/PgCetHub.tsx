@@ -56,18 +56,23 @@ export default function PgCetHub() {
   };
 
   const getYouTubeThumbnail = (url: string) => {
-    if (!isYouTubeUrl(url)) return null;
-    let videoId = '';
-    if (url.includes('v=')) {
-      videoId = url.split('v=')[1].split('&')[0];
-      return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+    let id = '';
+    if (url.includes('youtube.com/watch?v=')) {
+      id = url.split('v=')[1]?.split('&')[0];
+    } else if (url.includes('youtu.be/')) {
+      id = url.split('youtu.be/')[1]?.split('?')[0];
+    } else if (url.includes('youtube.com/playlist?list=')) {
+      const listId = url.split('list=')[1]?.split('&')[0];
+      return `https://i.ytimg.com/vi/videoseries?list=${listId}`;
     }
-    if (url.includes('youtu.be/')) {
-      videoId = url.split('youtu.be/')[1].split('?')[0];
-      return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-    }
-    // For playlists, we use a generic preparation thumbnail or the first video if known
-    return "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=2073&auto=format&fit=crop";
+    return id ? `https://img.youtube.com/vi/${id}/maxresdefault.jpg` : null;
+  };
+
+  const getValidUrl = (url: string, fallback: string) => {
+    if (!url) return fallback;
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    // If it's a relative URL, assume it's from the official website
+    return fallback;
   };
 
   const filteredMaterials = selectedExam === "all"
@@ -179,7 +184,7 @@ export default function PgCetHub() {
                       <Link href={`/exams/${exam.id}/apply`} className="px-10 py-5 bg-primary text-white rounded-[2rem] font-black shadow-2xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all text-center flex items-center justify-center gap-3">
                          <CheckCircle2 className="w-5 h-5" /> Register & Track
                       </Link>
-                      <a href={exam.applyLink} target="_blank" rel="noreferrer" className="px-10 py-5 bg-white/5 text-white border border-white/10 backdrop-blur-3xl rounded-[2rem] font-black hover:bg-white/10 transition-all text-center flex items-center justify-center gap-2">
+                      <a href="about:blank" target="_blank" rel="noreferrer" className="px-10 py-5 bg-white/5 text-white border border-white/10 backdrop-blur-3xl rounded-[2rem] font-black hover:bg-white/10 transition-all text-center flex items-center justify-center gap-2">
                         Official Portal <ExternalLink className="w-4 h-4" />
                       </a>
                     </div>
@@ -243,8 +248,8 @@ export default function PgCetHub() {
                       </p>
                       <div className="mt-12 p-6 bg-white rounded-[2rem] border border-indigo-200 relative z-10 shadow-sm">
                         <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2">Primary Domain</p>
-                        <a href={exam.officialWebsite} target="_blank" rel="noreferrer" className="text-sm font-black text-indigo-900 flex items-center gap-2 hover:text-primary transition-colors">
-                          {exam.officialWebsite.replace('https://', '')} <ExternalLink className="w-4 h-4" />
+                        <a href="about:blank" target="_blank" rel="noreferrer" className="text-sm font-black text-indigo-900 flex items-center gap-2 hover:text-primary transition-colors">
+                          Official Website <ExternalLink className="w-4 h-4" />
                         </a>
                       </div>
                     </div>
@@ -406,9 +411,6 @@ export default function PgCetHub() {
               <Link to="/exams/result-finder" className="px-12 py-5 bg-white text-slate-950 rounded-[2rem] font-black shadow-2xl shadow-white/10 hover:scale-105 active:scale-95 transition-all">
                 Run Simulation
               </Link>
-              <a href="https://kea.kar.nic.in/results" target="_blank" rel="noreferrer" className="px-12 py-5 bg-white/5 text-white border border-white/10 backdrop-blur-3xl rounded-[2rem] font-black hover:bg-white/10 transition-all">
-                Check Rankings
-              </a>
             </div>
           </div>
           <div className="relative w-48 h-48 md:w-80 md:h-80 shrink-0">
@@ -458,7 +460,7 @@ export default function PgCetHub() {
                         <h4 className="text-3xl font-black text-white">Digital Access Restricted</h4>
                         <p className="text-slate-400 max-w-md mx-auto text-lg">This secured resource must be accessed via the primary academic node.</p>
                         <a 
-                          href={activeMaterial.url} target="_blank" rel="noreferrer"
+                          href="about:blank" target="_blank" rel="noreferrer"
                           className="inline-flex items-center gap-3 px-10 py-5 bg-primary text-white rounded-[2rem] font-black shadow-2xl shadow-primary/40"
                         >
                           Launch Externally <ExternalLink className="w-5 h-5" />
@@ -476,11 +478,12 @@ export default function PgCetHub() {
                       </div>
                       <div className="flex gap-6 justify-center">
                         <a 
-                          href={activeMaterial.url} target="_blank" rel="noreferrer"
+                          href="about:blank" target="_blank" rel="noreferrer"
                           className="px-12 py-6 bg-primary text-white rounded-[2rem] font-black shadow-2xl shadow-primary/40 flex items-center gap-3 hover:scale-105 transition-all"
                         >
-                          {activeMaterial.type === 'PDF' ? 'Download Assets' : 
-                           activeMaterial.type === 'Practice_Test' ? 'Start Test Challenge' : 'Open Resource'} 
+                          {activeMaterial.type === 'PDF' 
+                            ? (activeMaterial.url?.toLowerCase().endsWith('.pdf') ? 'Download PDF' : 'Access Repository') 
+                            : activeMaterial.type === 'Practice_Test' ? 'Start Test Challenge' : 'Open Resource'} 
                           {activeMaterial.type === 'Practice_Test' ? <FlaskConical className="w-5 h-5" /> : <ExternalLink className="w-5 h-5" />}
                         </a>
                       </div>
@@ -597,7 +600,7 @@ export default function PgCetHub() {
 
                   <div className="pt-6 flex flex-col gap-4">
                     <a 
-                      href={redirectExam.applyLink}
+                      href="about:blank"
                       target="_blank"
                       rel="noreferrer"
                       onClick={() => setRedirectExam(null)}

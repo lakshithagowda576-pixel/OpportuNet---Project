@@ -1,9 +1,13 @@
+import { useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/context/AuthContext";
+import { trackEvent } from "@/lib/analytics";
 import {
   useListJobs,
-  useListApplications
+  useListApplications,
+  getListApplicationsQueryKey
 } from "@workspace/api-client-react";
 import {
   Briefcase,
@@ -24,8 +28,24 @@ import { cn } from "@/lib/utils";
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 export default function Dashboard() {
+  const { user } = useAuth();
   const { data: jobs, isLoading: isJobsLoading } = useListJobs();
-  const { data: applications, isLoading: isAppsLoading } = useListApplications();
+  const { data: applications, isLoading: isAppsLoading, error: appsError } = useListApplications({ 
+    query: { 
+      queryKey: getListApplicationsQueryKey(),
+      enabled: !!user 
+    } 
+  });
+
+  useEffect(() => {
+    trackEvent({
+      eventType: "page_view",
+      eventCategory: "Dashboard",
+      eventAction: "view",
+      page: "/dashboard",
+      metadata: { jobCount: jobs?.length || 0, applicationCount: applications?.length || 0 },
+    });
+  }, []);
   const { data: appSummary, isLoading: isSummaryLoading } = useQuery({
     queryKey: ["applicationSummary"],
     queryFn: async () => {
@@ -33,6 +53,7 @@ export default function Dashboard() {
       if (!res.ok) return { total: 0, byStatus: {}, byCategory: {} };
       return res.json();
     },
+    enabled: !!user // Only fetch summary if user is logged in
   });
 
   if (isJobsLoading || isAppsLoading || isSummaryLoading) {

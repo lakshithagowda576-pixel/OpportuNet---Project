@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useListJobs, ListJobsCategory } from "@workspace/api-client-react";
+import { trackEvent } from "@/lib/analytics";
 import { Search, Filter, Loader2, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
 import { JobCard } from "@/components/JobCard";
@@ -9,6 +10,46 @@ export default function JobsDirectory() {
   const [activeTab, setActiveTab] = useState<ListJobsCategory | "ALL">("ALL");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeMonth, setActiveMonth] = useState<string>("ALL");
+
+  useEffect(() => {
+    trackEvent({
+      eventType: "page_view",
+      eventCategory: "JobsDirectory",
+      eventAction: "view",
+      page: "/jobs",
+    });
+  }, []);
+
+  useEffect(() => {
+    if (searchQuery) {
+      trackEvent({
+        eventType: "job_search",
+        eventCategory: "Search",
+        eventAction: "search",
+        metadata: { query: searchQuery },
+      });
+    }
+  }, [searchQuery]);
+
+  useEffect(() => {
+    trackEvent({
+      eventType: "filter_applied",
+      eventCategory: "Filter",
+      eventAction: "filter_by_category",
+      metadata: { category: activeTab },
+    });
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (activeMonth !== "ALL") {
+      trackEvent({
+        eventType: "filter_applied",
+        eventCategory: "Filter",
+        eventAction: "filter_by_month",
+        metadata: { month: activeMonth },
+      });
+    }
+  }, [activeMonth]);
 
   const { data: jobs, isLoading } = useListJobs({
     category: activeTab === "ALL" ? undefined : activeTab,

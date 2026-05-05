@@ -1,4 +1,4 @@
-// Karnataka Colleges Data with PG-CET Cutoffs - EXPANDED FOR ALL COURSES
+﻿// Karnataka Colleges Data with PG-CET Cutoffs - EXPANDED FOR ALL COURSES
 export const karnatakaColeges = [
   {
     name: "National Institute of Technology Karnataka (NITK)",
@@ -15,14 +15,14 @@ export const karnatakaColeges = [
     facilities: ["High-speed Wi-Fi", "Research Labs", "Library", "Hostels"],
     qualification: "B.E/B.Tech with 50% marks",
     cutoffs: [
-      { courseName: "M.Tech Computer Science", category: "General", cutoffScore: 480, ugSeats: 0, pgSeats: 30, academicYear: "2024-25" },
-      { courseName: "M.Tech Electronics", category: "General", cutoffScore: 450, ugSeats: 0, pgSeats: 25, academicYear: "2024-25" },
-      { courseName: "M.Tech Civil Engineering", category: "General", cutoffScore: 420, ugSeats: 0, pgSeats: 20, academicYear: "2024-25" },
-      { courseName: "M.Tech Mechanical", category: "General", cutoffScore: 440, ugSeats: 0, pgSeats: 22, academicYear: "2024-25" },
-      { courseName: "M.Tech Electrical", category: "General", cutoffScore: 435, ugSeats: 0, pgSeats: 20, academicYear: "2024-25" },
+      { courseName: "MTech Computer Science", category: "General", cutoffScore: 480, ugSeats: 0, pgSeats: 30, academicYear: "2024-25" },
+      { courseName: "MTech Electronics", category: "General", cutoffScore: 450, ugSeats: 0, pgSeats: 25, academicYear: "2024-25" },
+      { courseName: "MTech Civil Engineering", category: "General", cutoffScore: 420, ugSeats: 0, pgSeats: 20, academicYear: "2024-25" },
+      { courseName: "MTech Mechanical", category: "General", cutoffScore: 440, ugSeats: 0, pgSeats: 22, academicYear: "2024-25" },
+      { courseName: "MTech Electrical", category: "General", cutoffScore: 435, ugSeats: 0, pgSeats: 20, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "200000", totalFees: "400000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "200000", totalFees: "400000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -40,17 +40,17 @@ export const karnatakaColeges = [
     facilities: ["Placement Hub", "Labs", "Library"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Computer Science", category: "General", cutoffScore: 495, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
+      { courseName: "MTech Computer Science", category: "General", cutoffScore: 495, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 480, ugSeats: 0, pgSeats: 120, academicYear: "2024-25" },
       { courseName: "MBA", category: "General", cutoffScore: 470, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
-      { courseName: "M.Tech Software Engineering", category: "General", cutoffScore: 460, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
+      { courseName: "MTech Software Engineering", category: "General", cutoffScore: 460, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
       { courseName: "MBA Finance", category: "General", cutoffScore: 465, ugSeats: 0, pgSeats: 30, academicYear: "2024-25" },
       { courseName: "MBA Marketing", category: "General", cutoffScore: 460, ugSeats: 0, pgSeats: 20, academicYear: "2024-25" },
       { courseName: "MCA Data Science", category: "General", cutoffScore: 475, ugSeats: 0, pgSeats: 40, academicYear: "2024-25" },
       { courseName: "MCA Cloud Computing", category: "General", cutoffScore: 470, ugSeats: 0, pgSeats: 30, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "250000", totalFees: "500000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "250000", totalFees: "500000", description: "2 year", academicYear: "2024-25" },
       { courseType: "PG", courseName: "MCA", annualFees: "200000", totalFees: "400000", description: "2 year", academicYear: "2024-25" },
       { courseType: "PG", courseName: "MBA", annualFees: "220000", totalFees: "440000", description: "2 year", academicYear: "2024-25" },
     ]
@@ -70,12 +70,12 @@ export const karnatakaColeges = [
     facilities: ["Industry Labs", "Placement Cell"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Computer Science", category: "General", cutoffScore: 450, ugSeats: 0, pgSeats: 50, academicYear: "2024-25" },
+      { courseName: "MTech Computer Science", category: "General", cutoffScore: 450, ugSeats: 0, pgSeats: 50, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 440, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
       { courseName: "MBA", category: "General", cutoffScore: 430, ugSeats: 0, pgSeats: 120, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "500000", totalFees: "1000000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "500000", totalFees: "1000000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -93,12 +93,12 @@ export const karnatakaColeges = [
     facilities: ["Library", "Labs", "Hostel"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Software Engineering", category: "General", cutoffScore: 440, ugSeats: 0, pgSeats: 25, academicYear: "2024-25" },
+      { courseName: "MTech Software Engineering", category: "General", cutoffScore: 440, ugSeats: 0, pgSeats: 25, academicYear: "2024-25" },
       { courseName: "MBA", category: "General", cutoffScore: 410, ugSeats: 0, pgSeats: 120, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 405, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "150000", totalFees: "300000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "150000", totalFees: "300000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -118,7 +118,7 @@ export const karnatakaColeges = [
     cutoffs: [
       { courseName: "MCA", category: "General", cutoffScore: 430, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
       { courseName: "MBA", category: "General", cutoffScore: 420, ugSeats: 0, pgSeats: 120, academicYear: "2024-25" },
-      { courseName: "M.Tech Data Science", category: "General", cutoffScore: 415, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
+      { courseName: "MTech Data Science", category: "General", cutoffScore: 415, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
     ],
     fees: [
       { courseType: "PG", courseName: "MCA", annualFees: "120000", totalFees: "240000", description: "2 year", academicYear: "2024-25" },
@@ -141,7 +141,7 @@ export const karnatakaColeges = [
     cutoffs: [
       { courseName: "MBA", category: "General", cutoffScore: 350, ugSeats: 0, pgSeats: 120, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 340, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
-      { courseName: "M.Tech Information Technology", category: "General", cutoffScore: 320, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
+      { courseName: "MTech Information Technology", category: "General", cutoffScore: 320, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
     ],
     fees: [
       { courseType: "PG", courseName: "MBA", annualFees: "40000", totalFees: "80000", description: "University Fees", academicYear: "2024-25" },
@@ -162,12 +162,12 @@ export const karnatakaColeges = [
     facilities: ["Library", "Labs"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Computer Science", category: "General", cutoffScore: 390, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
+      { courseName: "MTech Computer Science", category: "General", cutoffScore: 390, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 380, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
       { courseName: "MBA", category: "General", cutoffScore: 370, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "110000", totalFees: "220000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "110000", totalFees: "220000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -185,12 +185,12 @@ export const karnatakaColeges = [
     facilities: ["Campus Wi-Fi", "Labs"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Power Systems", category: "General", cutoffScore: 370, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
+      { courseName: "MTech Power Systems", category: "General", cutoffScore: 370, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 360, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
       { courseName: "MBA", category: "General", cutoffScore: 355, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "100000", totalFees: "200000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "100000", totalFees: "200000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -208,12 +208,12 @@ export const karnatakaColeges = [
     facilities: ["Large Library", "Innovation Center"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Structural Engineering", category: "General", cutoffScore: 340, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
+      { courseName: "MTech Structural Engineering", category: "General", cutoffScore: 340, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 330, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
       { courseName: "MBA", category: "General", cutoffScore: 320, ugSeats: 0, pgSeats: 120, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "90000", totalFees: "180000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "90000", totalFees: "180000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -231,12 +231,12 @@ export const karnatakaColeges = [
     facilities: ["Eco-friendly Campus", "Auditorium"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Data Science", category: "General", cutoffScore: 360, ugSeats: 0, pgSeats: 30, academicYear: "2024-25" },
+      { courseName: "MTech Data Science", category: "General", cutoffScore: 360, ugSeats: 0, pgSeats: 30, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 350, ugSeats: 0, pgSeats: 120, academicYear: "2024-25" },
       { courseName: "MBA", category: "General", cutoffScore: 340, ugSeats: 0, pgSeats: 300, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "160000", totalFees: "320000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "160000", totalFees: "320000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -256,7 +256,7 @@ export const karnatakaColeges = [
     cutoffs: [
       { courseName: "MBA", category: "General", cutoffScore: 380, ugSeats: 0, pgSeats: 120, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 370, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
-      { courseName: "M.Tech Cyber Security", category: "General", cutoffScore: 360, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
+      { courseName: "MTech Cyber Security", category: "General", cutoffScore: 360, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
     ],
     fees: [
       { courseType: "PG", courseName: "MBA", annualFees: "450000", totalFees: "900000", description: "Premium Fees", academicYear: "2024-25" },
@@ -279,7 +279,7 @@ export const karnatakaColeges = [
     cutoffs: [
       { courseName: "MCA", category: "General", cutoffScore: 360, ugSeats: 0, pgSeats: 120, academicYear: "2024-25" },
       { courseName: "MBA", category: "General", cutoffScore: 350, ugSeats: 0, pgSeats: 180, academicYear: "2024-25" },
-      { courseName: "M.Tech Machine Design", category: "General", cutoffScore: 340, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
+      { courseName: "MTech Machine Design", category: "General", cutoffScore: 340, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
     ],
     fees: [
       { courseType: "PG", courseName: "MCA", annualFees: "150000", totalFees: "300000", description: "2 year", academicYear: "2024-25" },
@@ -302,7 +302,7 @@ export const karnatakaColeges = [
     cutoffs: [
       { courseName: "MCA", category: "General", cutoffScore: 290, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
       { courseName: "MBA", category: "General", cutoffScore: 280, ugSeats: 0, pgSeats: 120, academicYear: "2024-25" },
-      { courseName: "M.Tech Computer Science", category: "General", cutoffScore: 270, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
+      { courseName: "MTech Computer Science", category: "General", cutoffScore: 270, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
     ],
     fees: [
       { courseType: "PG", courseName: "MCA", annualFees: "70000", totalFees: "140000", description: "VTU Standard", academicYear: "2024-25" },
@@ -325,7 +325,7 @@ export const karnatakaColeges = [
     cutoffs: [
       { courseName: "MBA", category: "General", cutoffScore: 300, ugSeats: 0, pgSeats: 120, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 290, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
-      { courseName: "M.Tech VLSI", category: "General", cutoffScore: 280, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
+      { courseName: "MTech VLSI", category: "General", cutoffScore: 280, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
     ],
     fees: [
       { courseType: "PG", courseName: "MBA", annualFees: "75000", totalFees: "150000", description: "VTU Standard", academicYear: "2024-25" },
@@ -346,12 +346,12 @@ export const karnatakaColeges = [
     facilities: ["Government Labs", "Hostel"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech", category: "General", cutoffScore: 250, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
+      { courseName: "MTech", category: "General", cutoffScore: 250, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
       { courseName: "MBA", category: "General", cutoffScore: 240, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 235, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "25000", totalFees: "50000", description: "Government Fees", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "25000", totalFees: "50000", description: "Government Fees", academicYear: "2024-25" },
     ]
   },
   {
@@ -369,12 +369,12 @@ export const karnatakaColeges = [
     facilities: ["Aeronautical Lab", "Incubation Center"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Computer Science", category: "General", cutoffScore: 340, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
+      { courseName: "MTech Computer Science", category: "General", cutoffScore: 340, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
       { courseName: "MBA", category: "General", cutoffScore: 330, ugSeats: 0, pgSeats: 120, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 325, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "110000", totalFees: "220000", description: "Autonomous Fees", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "110000", totalFees: "220000", description: "Autonomous Fees", academicYear: "2024-25" },
     ]
   },
   {
@@ -392,12 +392,12 @@ export const karnatakaColeges = [
     facilities: ["Innovation Hub", "Large Campus"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Machine Design", category: "General", cutoffScore: 330, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
+      { courseName: "MTech Machine Design", category: "General", cutoffScore: 330, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 320, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
       { courseName: "MBA", category: "General", cutoffScore: 315, ugSeats: 0, pgSeats: 120, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "100000", totalFees: "200000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "100000", totalFees: "200000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -417,7 +417,7 @@ export const karnatakaColeges = [
     cutoffs: [
       { courseName: "MBA", category: "General", cutoffScore: 400, ugSeats: 0, pgSeats: 300, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 350, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
-      { courseName: "M.Tech", category: "General", cutoffScore: 340, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
+      { courseName: "MTech", category: "General", cutoffScore: 340, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
     ],
     fees: [
       { courseType: "PG", courseName: "MBA", annualFees: "750000", totalFees: "1500000", description: "Premium Global Program", academicYear: "2024-25" },
@@ -462,7 +462,7 @@ export const karnatakaColeges = [
     cutoffs: [
       { courseName: "MBA", category: "General", cutoffScore: 275, ugSeats: 0, pgSeats: 120, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 265, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
-      { courseName: "M.Tech", category: "General", cutoffScore: 260, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
+      { courseName: "MTech", category: "General", cutoffScore: 260, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
     ],
     fees: [
       { courseType: "PG", courseName: "MBA", annualFees: "65000", totalFees: "130000", description: "VTU Fees", academicYear: "2024-25" },
@@ -483,12 +483,12 @@ export const karnatakaColeges = [
     facilities: ["Library", "Labs", "Gym"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Mechanical", category: "General", cutoffScore: 280, ugSeats: 0, pgSeats: 20, academicYear: "2024-25" },
-      { courseName: "M.Tech Civil Engineering", category: "General", cutoffScore: 270, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
+      { courseName: "MTech Mechanical", category: "General", cutoffScore: 280, ugSeats: 0, pgSeats: 20, academicYear: "2024-25" },
+      { courseName: "MTech Civil Engineering", category: "General", cutoffScore: 270, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
       { courseName: "MBA HR Management", category: "General", cutoffScore: 260, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "95000", totalFees: "190000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "95000", totalFees: "190000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -506,12 +506,12 @@ export const karnatakaColeges = [
     facilities: ["Modern Labs", "Library", "Cafeteria"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Electrical", category: "General", cutoffScore: 310, ugSeats: 0, pgSeats: 22, academicYear: "2024-25" },
+      { courseName: "MTech Electrical", category: "General", cutoffScore: 310, ugSeats: 0, pgSeats: 22, academicYear: "2024-25" },
       { courseName: "MBA Finance", category: "General", cutoffScore: 300, ugSeats: 0, pgSeats: 50, academicYear: "2024-25" },
       { courseName: "MCA Cloud Computing", category: "General", cutoffScore: 295, ugSeats: 0, pgSeats: 40, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "120000", totalFees: "240000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "120000", totalFees: "240000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -575,12 +575,12 @@ export const karnatakaColeges = [
     facilities: ["Research Center", "Labs"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Machine Learning", category: "General", cutoffScore: 400, ugSeats: 0, pgSeats: 25, academicYear: "2024-25" },
+      { courseName: "MTech Machine Learning", category: "General", cutoffScore: 400, ugSeats: 0, pgSeats: 25, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 390, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
       { courseName: "MBA", category: "General", cutoffScore: 380, ugSeats: 0, pgSeats: 120, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "140000", totalFees: "280000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "140000", totalFees: "280000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -603,7 +603,7 @@ export const karnatakaColeges = [
       { courseName: "MCA", category: "General", cutoffScore: 305, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "85000", totalFees: "170000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "85000", totalFees: "170000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -621,12 +621,12 @@ export const karnatakaColeges = [
     facilities: ["Labs", "Hostel"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Civil Engineering", category: "General", cutoffScore: 280, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
+      { courseName: "MTech Civil Engineering", category: "General", cutoffScore: 280, ugSeats: 0, pgSeats: 18, academicYear: "2024-25" },
       { courseName: "MBA Marketing", category: "General", cutoffScore: 270, ugSeats: 0, pgSeats: 50, academicYear: "2024-25" },
       { courseName: "MCA Data Science", category: "General", cutoffScore: 265, ugSeats: 0, pgSeats: 40, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "75000", totalFees: "150000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "75000", totalFees: "150000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -667,12 +667,12 @@ export const karnatakaColeges = [
     facilities: ["Campus", "Labs", "Library"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Mechanical", category: "General", cutoffScore: 300, ugSeats: 0, pgSeats: 22, academicYear: "2024-25" },
+      { courseName: "MTech Mechanical", category: "General", cutoffScore: 300, ugSeats: 0, pgSeats: 22, academicYear: "2024-25" },
       { courseName: "MBA Finance", category: "General", cutoffScore: 290, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 285, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "110000", totalFees: "220000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "110000", totalFees: "220000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -690,12 +690,12 @@ export const karnatakaColeges = [
     facilities: ["Headquarters", "Library"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Electrical", category: "General", cutoffScore: 290, ugSeats: 0, pgSeats: 20, academicYear: "2024-25" },
+      { courseName: "MTech Electrical", category: "General", cutoffScore: 290, ugSeats: 0, pgSeats: 20, academicYear: "2024-25" },
       { courseName: "MBA", category: "General", cutoffScore: 280, ugSeats: 0, pgSeats: 100, academicYear: "2024-25" },
       { courseName: "MCA", category: "General", cutoffScore: 275, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "30000", totalFees: "60000", description: "VTU Fees", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "30000", totalFees: "60000", description: "VTU Fees", academicYear: "2024-25" },
     ]
   },
   {
@@ -713,12 +713,12 @@ export const karnatakaColeges = [
     facilities: ["Labs", "Placement Cell"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Machine Learning", category: "General", cutoffScore: 350, ugSeats: 0, pgSeats: 25, academicYear: "2024-25" },
+      { courseName: "MTech Machine Learning", category: "General", cutoffScore: 350, ugSeats: 0, pgSeats: 25, academicYear: "2024-25" },
       { courseName: "MCA Data Science", category: "General", cutoffScore: 340, ugSeats: 0, pgSeats: 50, academicYear: "2024-25" },
       { courseName: "MBA", category: "General", cutoffScore: 330, ugSeats: 0, pgSeats: 100, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "100000", totalFees: "200000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "100000", totalFees: "200000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -736,12 +736,12 @@ export const karnatakaColeges = [
     facilities: ["Research", "Labs"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Mechanical", category: "General", cutoffScore: 310, ugSeats: 0, pgSeats: 20, academicYear: "2024-25" },
+      { courseName: "MTech Mechanical", category: "General", cutoffScore: 310, ugSeats: 0, pgSeats: 20, academicYear: "2024-25" },
       { courseName: "MBA Marketing", category: "General", cutoffScore: 300, ugSeats: 0, pgSeats: 80, academicYear: "2024-25" },
       { courseName: "MCA Cloud Computing", category: "General", cutoffScore: 295, ugSeats: 0, pgSeats: 40, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "95000", totalFees: "190000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "95000", totalFees: "190000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -759,12 +759,12 @@ export const karnatakaColeges = [
     facilities: ["Heritage", "Labs", "Library"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Civil Engineering", category: "General", cutoffScore: 300, ugSeats: 0, pgSeats: 20, academicYear: "2024-25" },
+      { courseName: "MTech Civil Engineering", category: "General", cutoffScore: 300, ugSeats: 0, pgSeats: 20, academicYear: "2024-25" },
       { courseName: "MBA HR Management", category: "General", cutoffScore: 290, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
       { courseName: "MCA Cyber Security", category: "General", cutoffScore: 285, ugSeats: 0, pgSeats: 40, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "80000", totalFees: "160000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "80000", totalFees: "160000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -782,12 +782,12 @@ export const karnatakaColeges = [
     facilities: ["Labs", "Placement Cell"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Electrical", category: "General", cutoffScore: 300, ugSeats: 0, pgSeats: 20, academicYear: "2024-25" },
+      { courseName: "MTech Electrical", category: "General", cutoffScore: 300, ugSeats: 0, pgSeats: 20, academicYear: "2024-25" },
       { courseName: "MBA Finance", category: "General", cutoffScore: 290, ugSeats: 0, pgSeats: 60, academicYear: "2024-25" },
       { courseName: "MCA Data Science", category: "General", cutoffScore: 285, ugSeats: 0, pgSeats: 40, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "90000", totalFees: "180000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "90000", totalFees: "180000", description: "2 year", academicYear: "2024-25" },
     ]
   },
   {
@@ -810,7 +810,7 @@ export const karnatakaColeges = [
       { courseName: "MCA", category: "General", cutoffScore: 245, ugSeats: 0, pgSeats: 40, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "70000", totalFees: "140000", description: "VTU Fees", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "70000", totalFees: "140000", description: "VTU Fees", academicYear: "2024-25" },
     ]
   },
   {
@@ -828,12 +828,12 @@ export const karnatakaColeges = [
     facilities: ["Modern Labs", "Library"],
     qualification: "Bachelor's with 50%",
     cutoffs: [
-      { courseName: "M.Tech Machine Learning", category: "General", cutoffScore: 380, ugSeats: 0, pgSeats: 30, academicYear: "2024-25" },
+      { courseName: "MTech Machine Learning", category: "General", cutoffScore: 380, ugSeats: 0, pgSeats: 30, academicYear: "2024-25" },
       { courseName: "MCA Cloud Computing", category: "General", cutoffScore: 370, ugSeats: 0, pgSeats: 50, academicYear: "2024-25" },
       { courseName: "MBA HR Management", category: "General", cutoffScore: 360, ugSeats: 0, pgSeats: 70, academicYear: "2024-25" },
     ],
     fees: [
-      { courseType: "PG", courseName: "M.Tech", annualFees: "180000", totalFees: "360000", description: "2 year", academicYear: "2024-25" },
+      { courseType: "PG", courseName: "MTech", annualFees: "180000", totalFees: "360000", description: "2 year", academicYear: "2024-25" },
     ]
   },
 ];

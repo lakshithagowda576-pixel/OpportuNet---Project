@@ -10,6 +10,8 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Calendar, Info, Star } from "lucide-react";
+import { ThemeToggle } from "./ThemeToggle";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -47,6 +49,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     { name: "Dashboard", href: "/", icon: LayoutDashboard },
     { name: "Job Directory", href: "/jobs", icon: Briefcase },
     { name: "My Applications", href: "/applications", icon: FileText },
+    { name: "Job Alerts", href: "/job-alerts", icon: Bell },
     { name: "PG-CET Hub", href: "/exams", icon: GraduationCap },
   ];
 
@@ -191,6 +194,9 @@ export function AppLayout({ children }: AppLayoutProps) {
                   </Link>
                 )
               )}
+
+              <LanguageSwitcher />
+              <ThemeToggle />
 
               {/* Mobile Menu Button */}
               <button 
@@ -363,6 +369,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Monthly Update Modal */}
       <Dialog open={showMonthlyUpdate} onOpenChange={setShowMonthlyUpdate}>
         <DialogContent className="max-w-md rounded-[2.5rem] p-0 overflow-hidden border-none shadow-2xl">
+          <DialogTitle className="sr-only">Monthly Update</DialogTitle>
           <div className="bg-primary p-8 text-white relative overflow-hidden">
             <div className="absolute top-0 right-0 p-4 opacity-10">
                <Sparkles className="w-24 h-24 rotate-12" />

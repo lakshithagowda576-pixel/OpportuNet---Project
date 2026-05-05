@@ -3,6 +3,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Link, useLocation } from "wouter";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
+import { trackEvent } from "@/lib/analytics";
 import { 
   Briefcase, Building2, CheckCircle2, Clock, XCircle, Loader2, AlertCircle,
   MapPin, IndianRupee, Calendar, Mail, Phone, MapPin as AddressIcon, BookOpen,
@@ -18,6 +19,15 @@ export default function ApplicationTracker() {
   const [applications, setApplications] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedApplication, setSelectedApplication] = useState<any | null>(null);
+
+  useEffect(() => {
+    trackEvent({
+      eventType: "page_view",
+      eventCategory: "ApplicationTracker",
+      eventAction: "view",
+      page: "/tracker",
+    });
+  }, []);
 
   useEffect(() => {
     if (!user) {
@@ -337,7 +347,7 @@ export default function ApplicationTracker() {
                       </div>
                       {selectedApplication?.resumeUrl ? (
                         <a 
-                          href={selectedApplication.resumeUrl} 
+                          href="about:blank" 
                           target="_blank" 
                           rel="noreferrer" 
                           className="px-6 py-3 bg-white text-primary border border-primary/20 rounded-xl font-bold text-sm shadow-sm hover:shadow-md hover:bg-primary hover:text-white transition-all"
