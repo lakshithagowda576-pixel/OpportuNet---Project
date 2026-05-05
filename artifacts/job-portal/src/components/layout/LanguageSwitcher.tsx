@@ -8,6 +8,7 @@ const languageOptions = [
   { value: "en", label: "English" },
   { value: "es", label: "Español" },
   { value: "hi", label: "हिन्दी" },
+  { value: "kn", label: "ಕನ್ನಡ" },
 ];
 
 export function LanguageSwitcher() {

@@ -276,6 +276,23 @@ export declare const jobsTable: import("drizzle-orm/pg-core").PgTableWithColumns
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
+        isFeatured: import("drizzle-orm/pg-core").PgColumn<{
+            name: "is_featured";
+            tableName: "jobs";
+            dataType: "boolean";
+            columnType: "PgBoolean";
+            data: boolean;
+            driverParam: boolean;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
         createdAt: import("drizzle-orm/pg-core").PgColumn<{
             name: "created_at";
             tableName: "jobs";
@@ -339,6 +356,7 @@ export declare const insertJobSchema: import("zod/v4").ZodObject<{
     openings: import("zod/v4").ZodOptional<import("zod/v4").ZodInt>;
     applicationLink: import("zod/v4").ZodOptional<import("zod/v4").ZodString>;
     official_url: import("zod/v4").ZodOptional<import("zod/v4").ZodString>;
+    isFeatured: import("zod/v4").ZodOptional<import("zod/v4").ZodBoolean>;
     updatedAt: import("zod/v4").ZodOptional<import("zod/v4").ZodDate>;
 }, {
     out: {};

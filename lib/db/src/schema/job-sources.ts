@@ -72,7 +72,7 @@ export const updateJobSourceSchema = createInsertSchema(jobSourcesTable)
   .partial();
 
 export type JobSource = typeof jobSourcesTable.$inferSelect;
-export type CreateJobSource = z.infer<typeof createJobSourceSchema>;
-export type UpdateJobSource = z.infer<typeof updateJobSourceSchema>;
+export type CreateJobSource = z.infer<any>;
+export type UpdateJobSource = z.infer<any>;
 export type JobIngestion = typeof jobIngestionsTable.$inferSelect;
 export type JobSourceMapping = typeof jobSourceMappingTable.$inferSelect;

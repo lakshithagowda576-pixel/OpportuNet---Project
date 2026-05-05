@@ -405,4 +405,37 @@ router.get("/applications/summary", async (req, res) => {
   });
 });
 
+import { createMeeting } from "../../../../lib/integrations/video-meet";
+
+router.post("/applications/:id/schedule-interview", async (req, res) => {
+  const id = parseInt(req.params.id);
+  const { provider, startTime, durationMinutes } = req.body;
+
+  try {
+    const [app] = await db.select().from(applicationsTable).where(eq(applicationsTable.id, id));
+    if (!app) {
+      res.status(404).json({ error: "Application not found" });
+      return;
+    }
+
+    const meeting = await createMeeting(provider || "google_meet", new Date(startTime), durationMinutes || 30);
+    
+    // Update application status to Interview
+    await db.update(applicationsTable)
+      .set({ status: "Interview" as any, updatedAt: new Date() })
+      .where(eq(applicationsTable.id, id));
+
+    // In a real app, we would save the meeting link to the database
+    // and send an email to the applicant.
+    
+    res.json({
+      success: true,
+      message: "Interview scheduled successfully",
+      meeting,
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;

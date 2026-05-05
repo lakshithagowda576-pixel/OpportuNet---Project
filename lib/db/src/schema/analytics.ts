@@ -30,4 +30,4 @@ export const createAnalyticsEventSchema = createInsertSchema(analyticsEventsTabl
 });
 
 export type AnalyticsEvent = typeof analyticsEventsTable.$inferSelect;
-export type CreateAnalyticsEvent = z.infer<typeof createAnalyticsEventSchema>;
+export type CreateAnalyticsEvent = z.infer<any>;

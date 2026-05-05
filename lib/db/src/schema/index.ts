@@ -12,3 +12,4 @@ export * from "./company-reviews";
 export * from "./resumes";
 export * from "./job-sources";
 export * from "./analytics";
+export * from "./payments";

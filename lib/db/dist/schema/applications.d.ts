@@ -399,13 +399,13 @@ export declare const applicationsTable: import("drizzle-orm/pg-core").PgTableWit
 }>;
 export declare const insertApplicationSchema: import("zod/v4").ZodObject<{
     updatedAt: import("zod/v4").ZodOptional<import("zod/v4").ZodDate>;
-    jobId: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodInt>>;
-    examId: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodInt>>;
     skills: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodString>>;
     resumeUrl: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodString>>;
     education: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodString>>;
     qualification: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodString>>;
     userId: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodInt>>;
+    jobId: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodInt>>;
+    examId: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodInt>>;
     applicantName: import("zod/v4").ZodString;
     applicantEmail: import("zod/v4").ZodString;
     applicantPhone: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodString>>;

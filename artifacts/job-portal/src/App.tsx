@@ -19,6 +19,7 @@ import PgCetApplyPage from "@/pages/PgCetApplyPage";
 import AdminPanel from "@/pages/AdminPanel";
 import Profile from "@/pages/Profile";
 import JobAlerts from "@/pages/JobAlerts";
+import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -45,6 +46,7 @@ function Router() {
             <Route path="/exams/:id/apply" component={PgCetApplyPage} />
             <Route path="/exams/result-finder" component={PgCetResultFinder} />
             <Route path="/admin" component={AdminPanel} />
+            <Route path="/admin/analytics" component={AnalyticsDashboard} />
             <Route path="/profile" component={Profile} />
             <Route component={NotFound} />
           </Switch>
