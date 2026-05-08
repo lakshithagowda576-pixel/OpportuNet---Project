@@ -1,7 +1,7 @@
 import { db } from "@workspace/db";
 import { applicationsTable, usersTable, jobsTable } from "@workspace/db/schema";
 
-const statuses = ["Pre-Registered", "Pending", "Reviewed", "Interview", "Closed", "Live", "Current"];
+const statuses = ["Pre-Registered", "Pending", "Reviewed", "Interview", "Offered", "Rejected", "Redirected"];
 
 async function seedActiveApplications() {
   console.log("🚀 Creating 200+ active job applications...");
@@ -93,17 +93,33 @@ async function seedActiveApplications() {
     for (let i = 0; i < targetApplications; i++) {
       const job = existingJobs[i % existingJobs.length];
       const user = allUsers[i % allUsers.length];
-      const status = statuses[Math.floor(Math.random() * statuses.length)];
+      const statusIndex = Math.floor(Math.random() * statuses.length);
+      const status = statuses[statusIndex] as "Pre-Registered" | "Pending" | "Reviewed" | "Interview" | "Offered" | "Rejected" | "Redirected";
 
       // Stagger applied dates
       const daysAgo = Math.floor(Math.random() * 30);
-      const appliedDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+      const appliedAt = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
 
       applicationsBatch.push({
         userId: user.id,
         jobId: job.id,
+        applicantName: user.name,
+        applicantEmail: user.email,
+        applicantPhone: user.phone,
+        applicantAddress: user.address,
+        education: user.education,
+        qualification: user.qualification,
+        currentLocation: "India",
+        yearsOfExperience: "2-5",
+        currentCompany: "Previous Employer",
+        resumeUrl: `https://example.com/resume-${i}.pdf`,
+        portfolioLink: `https://portfolio.example.com/${user.name.replace(' ', '-').toLowerCase()}`,
+        linkedinProfile: `https://linkedin.com/in/candidate${i}`,
+        skills: "JavaScript,TypeScript,React,Node.js",
+        acceptedTerms: true,
+        coverLetter: `I am interested in this position and believe I am a good fit.`,
         status,
-        appliedDate: appliedDate.toISOString().split('T')[0],
+        appliedAt,
       });
     }
 
