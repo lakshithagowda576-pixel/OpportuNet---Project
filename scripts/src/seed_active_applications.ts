@@ -1,3 +1,14 @@
+import "dotenv/config";
+import { fileURLToPath } from "url";
+import path from "path";
+import { config } from "dotenv";
+
+// Load .env from root directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, "../..");
+config({ path: path.join(rootDir, ".env") });
+
 import { db } from "@workspace/db";
 import { applicationsTable, usersTable, jobsTable } from "@workspace/db/schema";
 
@@ -27,7 +38,7 @@ async function seedActiveApplications() {
 
     // 2. Get all existing jobs
     console.log("✓ Step 2: Finding existing jobs...");
-    const existingJobs = await db.select().from(jobsTable).limit(1000);
+    const existingJobs = await db.select({ id: jobsTable.id, title: jobsTable.title, company: jobsTable.company }).from(jobsTable).limit(1000);
     
     if (existingJobs.length === 0) {
       console.log("   ⚠️  No existing jobs found. Creating sample jobs...");
