@@ -34,17 +34,17 @@ export default function JobsDirectory() {
   }, []);
 
   useEffect(() => {
-    if (searchQuery) {
-      const timer = setTimeout(() => {
-        trackEvent({
-          eventType: "job_search",
-          eventCategory: "Search",
-          eventAction: "search",
-          metadata: { query: searchQuery },
-        });
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
+    if (!searchQuery) return;
+
+    const timer = setTimeout(() => {
+      trackEvent({
+        eventType: "job_search",
+        eventCategory: "Search",
+        eventAction: "search",
+        metadata: { query: searchQuery },
+      });
+    }, 1000);
+    return () => clearTimeout(timer);
   }, [searchQuery]);
 
   const { data: jobs, isLoading: isApiLoading } = useListJobs({

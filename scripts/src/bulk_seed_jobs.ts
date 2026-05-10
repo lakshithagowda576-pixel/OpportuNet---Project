@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { db } from "@workspace/db";
 import { jobsTable, applicationsTable, usersTable } from "@workspace/db/schema";
 import { eq } from "drizzle-orm";
@@ -13,10 +14,6 @@ async function bulkSeed() {
       name: `User ${i}`,
       email: `user${i}@example.com`,
       passwordHash: "password123", // Simple password for testing
-      phone: `98765432${i.toString().padStart(2, '0')}`,
-      address: `Street ${i}, City ${i}, India`,
-      education: "Bachelor's Degree",
-      qualification: "Software Engineering",
     });
   }
   
@@ -113,7 +110,8 @@ async function bulkSeed() {
         hrEmail: `careers@${company.toLowerCase().replace(/ /g, '')}.com`,
         salary: `₹${Math.floor(Math.random() * 20) + 5}–${Math.floor(Math.random() * 30) + 15} LPA`,
         openings: Math.floor(Math.random() * 50) + 1,
-        official_url: `https://careers.${company.toLowerCase().replace(/ /g, '')}.com`,
+        applicationLink: `https://careers.${company.toLowerCase().replace(/ /g, '')}.com/apply`,
+        officialUrl: `https://careers.${company.toLowerCase().replace(/ /g, '')}.com`,
       });
     }
   }
@@ -130,12 +128,12 @@ async function bulkSeed() {
   // 3. Create 1000+ Applications
   console.log("Creating 1200+ applications (one for each job)...");
   const appsToInsert = [];
-  const statuses = ["Pre-Registered", "Pending", "Reviewed", "Interview", "Offered", "Rejected", "Redirected"];
+  const statuses = ["Pending", "Reviewed", "Interview", "Offered", "Rejected", "Redirected"];
   
   for (let i = 0; i < insertedJobs.length; i++) {
     const job = insertedJobs[i];
     const user = users[Math.floor(Math.random() * users.length)];
-    const status = statuses[Math.floor(Math.random() * statuses.length)] as "Pre-Registered" | "Pending" | "Reviewed" | "Interview" | "Offered" | "Rejected" | "Redirected";
+    const status = statuses[Math.floor(Math.random() * statuses.length)] as "Pending" | "Reviewed" | "Interview" | "Offered" | "Rejected" | "Redirected";
     
     // Spread application dates across the months
     const appliedMonth = parseInt(job.startDate.split('-')[1]);
@@ -147,7 +145,7 @@ async function bulkSeed() {
       userId: user.id,
       applicantName: user.name,
       applicantEmail: user.email,
-      applicantPhone: user.phone,
+      applicantPhone: `98765432${Math.floor(Math.random() * 90) + 10}`,
       status,
       acceptedTerms: true,
       appliedAt: appliedAt,

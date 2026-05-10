@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Calendar, Info, Star } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -24,6 +25,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const { user, logout, isLoading } = useAuth();
   const [showMonthlyUpdate, setShowMonthlyUpdate] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const currentMonth = new Date().getMonth();
@@ -46,11 +48,11 @@ export function AppLayout({ children }: AppLayoutProps) {
   }, []);
 
   const navigation = [
-    { name: "Dashboard", href: "/", icon: LayoutDashboard },
-    { name: "Job Directory", href: "/jobs", icon: Briefcase },
-    { name: "My Applications", href: "/applications", icon: FileText },
-    { name: "Job Alerts", href: "/job-alerts", icon: Bell },
-    { name: "PG-CET Hub", href: "/exams", icon: GraduationCap },
+    { name: t("nav.dashboard"), href: "/", icon: LayoutDashboard },
+    { name: t("nav.jobs"), href: "/jobs", icon: Briefcase },
+    { name: t("nav.applications"), href: "/applications", icon: FileText },
+    { name: t("nav.jobAlerts"), href: "/job-alerts", icon: Bell },
+    { name: t("nav.exams"), href: "/exams", icon: GraduationCap },
   ];
 
   if (user?.role === "admin") {
@@ -414,6 +416,4 @@ export function AppLayout({ children }: AppLayoutProps) {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
-  );
-}
+    
