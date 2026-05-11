@@ -44,7 +44,8 @@ export default function JobDetails() {
     }
   }, [job, jobId]);
 
-  const canApply = user && new Date() <= new Date(job?.endDate || new Date());
+  const isClosed = new Date() > new Date(job?.endDate || new Date());
+  const canApply = user && !isClosed;
 
   const getShiftLabel = (shift: string) => {
     switch (shift) {
@@ -183,25 +184,36 @@ export default function JobDetails() {
                </div>
             )}
             {!hasApplied && (
-               user ? (
-                    <Link 
-                      href={`/jobs/${jobId}/apply`}
-                      className={`w-full md:w-64 px-6 py-4 rounded-xl font-bold text-lg text-center transition-all duration-300 flex items-center justify-center gap-2 ${
-                        canApply
-                          ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-1'
-                          : 'bg-muted text-muted-foreground cursor-not-allowed'
-                      }`}
-                    >
-                      <Sparkles className="w-5 h-5" /> {canApply ? 'Apply Now' : 'Application Closed'}
-                    </Link>
-               ) : (
-                 <Link 
-                   href="/login"
-                   className="w-full md:w-64 px-6 py-4 rounded-xl font-bold text-lg text-center bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2"
-                 >
-                   <Send className="w-4 h-4" /> Sign In to Apply
-                 </Link>
-               )
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <Link 
+                  href={`/jobs/${jobId}/apply`}
+                  className={`w-full px-6 py-4 rounded-xl font-bold text-lg text-center transition-all duration-300 flex items-center justify-center gap-2 ${
+                    canApply
+                      ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-1'
+                      : 'bg-muted text-muted-foreground cursor-not-allowed'
+                  }`}
+                  onClick={(e) => {
+                    if (!canApply) {
+                      e.preventDefault();
+                    }
+                  }}
+                >
+                  <BookOpen className="w-5 h-5" /> Apply Here
+                </Link>
+
+                <a
+                  href={applyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`w-full px-6 py-4 rounded-xl font-bold text-lg text-center transition-all duration-300 flex items-center justify-center gap-2 ${
+                    isClosed
+                      ? 'bg-muted text-muted-foreground cursor-not-allowed'
+                      : 'bg-card text-foreground hover:bg-secondary border border-border'
+                  }`}
+                >
+                  <ExternalLink className="w-5 h-5" /> Apply Now
+                </a>
+              </div>
             )}
             
             {!hasApplied && job.official_url && (

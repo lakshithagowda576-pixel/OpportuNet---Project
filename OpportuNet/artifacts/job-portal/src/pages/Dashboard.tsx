@@ -41,9 +41,12 @@ function AnimatedNumber({ value }: { value: number }) {
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const { data: jobs, isLoading: isJobsLoading } = useListJobs();
-  const { data: applications, isLoading: isAppsLoading } = useListApplications();
-  const { data: messages, isLoading: isMessagesLoading } = useListMessages();
+  const { data: jobs = [], isLoading: isJobsLoading } = useListJobs();
+  const { data: applications = [], isLoading: isAppsLoading } = useListApplications();
+  const { data: messages = [], isLoading: isMessagesLoading } = useListMessages();
+
+  // Helper to safely filter arrays
+  const safeFilter = (arr: any, fn: (item: any) => boolean) => (Array.isArray(arr) ? arr.filter(fn) : []);
 
   const stats = [
     { 
@@ -56,15 +59,15 @@ export default function Dashboard() {
     },
     { 
       label: "My Applications", 
-      value: applications?.length || 0, 
+      value: Array.isArray(applications) ? applications.length : 0, 
       icon: FileText, 
-      trend: `${applications?.filter(a => a.status === 'Offered').length || 0} offers`,
+      trend: `${safeFilter(applications, a => a.status === 'Offered').length} offers`,
       color: "text-emerald-600",
       bg: "bg-emerald-100"
     },
     { 
       label: "Pending Reviews", 
-      value: applications?.filter(a => a.status === 'Pending' || a.status === 'Reviewed').length || 0, 
+      value: safeFilter(applications, a => a.status === 'Pending' || a.status === 'Reviewed').length, 
       icon: TrendingUp, 
       trend: "Awaiting HR",
       color: "text-amber-600",
@@ -72,7 +75,7 @@ export default function Dashboard() {
     },
     { 
       label: "Unread Messages", 
-      value: messages?.filter(m => m.isReply).length || 0, 
+      value: safeFilter(messages, m => m.isReply).length, 
       icon: MessageSquare, 
       trend: "From Recruiters",
       color: "text-purple-600",
@@ -162,7 +165,7 @@ export default function Dashboard() {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {jobs?.slice(0, 6).map((job, i) => (
+          {Array.isArray(jobs) && jobs.slice(0, 6).map((job, i) => (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}

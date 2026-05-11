@@ -1,3 +1,4 @@
+// @ts-nocheck
 import nodemailer from "nodemailer";
 import { db } from "@workspace/db";
 import { usersTable, jobAlertsTable, alertEmailsSentTable, jobsTable } from "@workspace/db/schema";

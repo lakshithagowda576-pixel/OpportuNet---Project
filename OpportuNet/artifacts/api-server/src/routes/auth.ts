@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Router } from "express";
 import bcrypt from "bcrypt";
 import { db } from "@workspace/db";

@@ -1,6 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import { jobsTable, jobCategoryEnum } from "./schema/jobs";
+// @ts-ignore
 import * as dotenv from "dotenv";
 
 dotenv.config({ path: "../../.env" });

@@ -1,19 +1,20 @@
 import { useState } from "react";
 import { useRoute } from "wouter";
-import { 
-  useGetJob, 
-  useGetJobApplicantCount, 
+import {
+  useGetJob,
+  useGetJobApplicantCount,
   useCreateApplication
 } from "@workspace/api-client-react";
-import { 
-  Building2, MapPin, Clock, IndianRupee, 
-  Calendar, CheckCircle2, Users, AlertCircle, 
+import {
+  Building2, MapPin, Clock, IndianRupee,
+  Calendar, CheckCircle2, Users, AlertCircle,
   Loader2, ArrowLeft, Mail, BookOpen, ListChecks, Briefcase, ExternalLink
 } from "lucide-react";
 import { formatDate, cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
+import ApplicationForm from "../components/apply/ApplicationForm";
 
 export default function JobDetails() {
   const [, params] = useRoute("/jobs/:id");
@@ -24,16 +25,13 @@ export default function JobDetails() {
   const { data: applicantStats } = useGetJobApplicantCount(jobId);
 
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
-  const [appName, setAppName] = useState("");
-  const [appEmail, setAppEmail] = useState("");
-  const [coverLetter, setCoverLetter] = useState("");
-  
+
   const { mutate: apply, isPending: isApplying } = useCreateApplication({
     mutation: {
       onSuccess: () => {
         setIsApplyModalOpen(false);
         setAppName(""); setAppEmail(""); setCoverLetter("");
-        
+
         toast({ title: "Application Submitted!", description: "Your application was received. Track it in My Applications." });
       },
       onError: () => {
@@ -42,9 +40,8 @@ export default function JobDetails() {
     }
   });
 
-  const handleApply = (e: React.FormEvent) => {
-    e.preventDefault();
-    apply({ data: { jobId, applicantName: appName, applicantEmail: appEmail, coverLetter } });
+  const handleApply = async (formData: FormData) => {
+    apply({ data: formData });
   };
 
   const getShiftLabel = (shift: string) => {
@@ -78,19 +75,19 @@ export default function JobDetails() {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1, 
-      transition: { staggerChildren: 0.1, delayChildren: 0.1 } 
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.1 }
     }
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as any } }
   };
 
   return (
-    <motion.div 
+    <motion.div
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -106,7 +103,7 @@ export default function JobDetails() {
       <motion.div variants={itemVariants} className="bg-card/80 backdrop-blur-sm rounded-3xl p-8 border border-border/60 shadow-xl shadow-primary/5 relative overflow-hidden group">
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary via-accent to-primary opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
         <div className="absolute -inset-2 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 blur-2xl transition-opacity duration-700 -z-10"></div>
-        
+
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
           <div className="space-y-3 flex-1">
             <div className="flex flex-wrap items-center gap-2">
@@ -130,10 +127,10 @@ export default function JobDetails() {
               </span>
             </div>
           </div>
-          
+
           <div className="flex flex-col gap-3 w-full md:w-auto shrink-0">
             {job.applicationLink && (
-              <motion.a 
+              <motion.a
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 href={job.applicationLink}
@@ -144,7 +141,7 @@ export default function JobDetails() {
                 <ExternalLink className="w-5 h-5" /> Apply Now
               </motion.a>
             )}
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setIsApplyModalOpen(true)}
@@ -153,7 +150,7 @@ export default function JobDetails() {
               <BookOpen className="w-5 h-5" /> Apply Here
             </motion.button>
             {!isGovtJob && job.hrEmail && (
-              <motion.a 
+              <motion.a
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 href={`mailto:${job.hrEmail}`}
@@ -174,9 +171,9 @@ export default function JobDetails() {
           { label: "Application Opens", value: formatDate(job.startDate), icon: <Calendar className="w-3.5 h-3.5 text-emerald-500" />, color: "text-emerald-600" },
           { label: "Last Date to Apply", value: formatDate(job.endDate), icon: <Calendar className="w-3.5 h-3.5 text-destructive" />, color: "text-destructive" },
         ].map((item, idx) => (
-          <motion.div 
+          <motion.div
             whileHover={{ y: -3, transition: { duration: 0.2 } }}
-            key={idx} 
+            key={idx}
             className="bg-card/70 backdrop-blur-sm rounded-2xl p-4 border border-border/50 shadow-sm flex flex-col gap-1 hover:shadow-md hover:border-primary/20 transition-all"
           >
             <span className="text-xs text-muted-foreground flex items-center gap-1.5">{item.icon} {item.label}</span>
@@ -240,12 +237,12 @@ export default function JobDetails() {
             </h2>
             <div className="space-y-4">
               {steps.map((step, i) => (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, x: -10 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  key={i} 
+                  key={i}
                   className="flex gap-4 items-start bg-secondary/30 p-4 rounded-xl border border-border/30 hover:bg-secondary/50 transition-colors"
                 >
                   <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold shrink-0 shadow-md">
@@ -319,10 +316,10 @@ export default function JobDetails() {
                     <div key={status} className="flex items-center justify-between text-sm p-2 rounded-lg hover:bg-secondary/50 transition-colors">
                       <span className={cn("px-2.5 py-1 rounded-full text-xs font-semibold",
                         status === "Pending" ? "bg-yellow-100/80 text-yellow-700" :
-                        status === "Reviewed" ? "bg-blue-100/80 text-blue-700" :
-                        status === "Interview" ? "bg-purple-100/80 text-purple-700" :
-                        status === "Offered" ? "bg-green-100/80 text-green-700" :
-                        "bg-red-100/80 text-red-700"
+                          status === "Reviewed" ? "bg-blue-100/80 text-blue-700" :
+                            status === "Interview" ? "bg-purple-100/80 text-purple-700" :
+                              status === "Offered" ? "bg-green-100/80 text-green-700" :
+                                "bg-red-100/80 text-red-700"
                       )}>{status}</span>
                       <span className="font-bold text-foreground">{count as number}</span>
                     </div>
@@ -335,7 +332,7 @@ export default function JobDetails() {
           {/* Apply CTA */}
           <motion.div variants={itemVariants} className="flex flex-col gap-3">
             {job.applicationLink && (
-              <motion.a 
+              <motion.a
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 href={job.applicationLink}
@@ -346,7 +343,7 @@ export default function JobDetails() {
                 <ExternalLink className="w-5 h-5" /> Apply Now
               </motion.a>
             )}
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setIsApplyModalOpen(true)}
@@ -362,15 +359,15 @@ export default function JobDetails() {
       <AnimatePresence>
         {isApplyModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="absolute inset-0 bg-background/80 backdrop-blur-sm"
               onClick={() => setIsApplyModalOpen(false)}
             />
-            
-            <motion.div 
+
+            <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -378,66 +375,32 @@ export default function JobDetails() {
               className="relative bg-card w-full max-w-lg rounded-3xl shadow-2xl border border-border/50 p-6 md:p-8 overflow-hidden"
             >
               <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary to-accent"></div>
-              
-              <h2 className="text-2xl font-display font-bold mb-1">Apply for {job.title}</h2>
-              <p className="text-sm text-muted-foreground mb-4 flex items-center gap-2">
-                <Building2 className="w-3.5 h-3.5" /> {job.company}
-              </p>
-              
 
-              
-              <form onSubmit={handleApply} className="space-y-4">
+              <div className="flex items-start justify-between gap-4 mb-4">
                 <div>
-                  <label className="block text-sm font-semibold mb-1.5 text-foreground">Full Name *</label>
-                  <input 
-                    required type="text" value={appName}
-                    onChange={e => setAppName(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-sm font-medium"
-                    placeholder="e.g. Rahul Sharma"
-                  />
+                  <h2 className="text-2xl font-display font-bold">Apply for {job.title}</h2>
+                  <p className="text-sm text-muted-foreground mt-2 flex items-center gap-2">
+                    <Building2 className="w-3.5 h-3.5" /> {job.company}
+                  </p>
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-1.5 text-foreground">Email Address *</label>
-                  <input 
-                    required type="email" value={appEmail}
-                    onChange={e => setAppEmail(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-sm font-medium"
-                    placeholder="rahul@example.com"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-1.5 text-foreground">Cover Letter (Optional)</label>
-                  <textarea 
-                    value={coverLetter} onChange={e => setCoverLetter(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none min-h-[100px] resize-none text-sm font-medium"
-                    placeholder="Tell us why you are a great fit for this role..."
-                  />
-                </div>
-                {!isGovtJob && job.hrEmail && (
-                  <div className="bg-secondary/50 rounded-xl p-3 text-xs text-muted-foreground flex items-center gap-2 border border-border/50">
-                    <Mail className="w-3.5 h-3.5" />
-                    <span><strong className="text-foreground">HR Contact:</strong> {job.hrEmail}</span>
-                  </div>
-                )}
-                <div className="flex gap-3 pt-4">
-                  <motion.button 
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="button" onClick={() => setIsApplyModalOpen(false)}
-                    className="flex-1 px-4 py-3 rounded-xl font-bold bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
-                  >
-                    Cancel
-                  </motion.button>
-                  <motion.button 
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit" disabled={isApplying}
-                    className="flex-[2] px-4 py-3 rounded-xl font-bold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
-                  >
-                    {isApplying ? <Loader2 className="w-5 h-5 animate-spin" /> : "Submit Application"}
-                  </motion.button>
-                </div>
-              </form>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="button"
+                  onClick={() => setIsApplyModalOpen(false)}
+                  className="rounded-full p-2 bg-secondary/80 hover:bg-secondary transition-colors"
+                >
+                  ✕
+                </motion.button>
+              </div>
+
+              <ApplicationForm
+                jobId={jobId}
+                companyName={job.company}
+                isGov={isGovtJob}
+                onSubmit={handleApply}
+                isLoading={isApplying}
+              />
             </motion.div>
           </div>
         )}

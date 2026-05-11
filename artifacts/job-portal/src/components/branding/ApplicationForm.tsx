@@ -175,12 +175,21 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ jobId, company
         <p className="text-gray-600 dark:text-gray-300 mb-10 max-w-md mx-auto text-lg">
           Success! Your application for the position at <span className="font-bold text-gray-900 dark:text-white">{companyName}</span> has been received. 
         </p>
-        <Button 
-          onClick={() => window.location.href = "/dashboard"}
-          className="h-14 px-10 rounded-2xl bg-green-600 hover:bg-green-700 text-lg font-bold shadow-xl shadow-green-200 dark:shadow-none"
-        >
-          Go to Dashboard
-        </Button>
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <Button 
+            onClick={() => window.location.href = "/applications"}
+            className="h-14 px-10 rounded-2xl bg-green-600 hover:bg-green-700 text-lg font-bold shadow-xl shadow-green-200 dark:shadow-none"
+          >
+            View My Applications
+          </Button>
+          <Button 
+            variant="outline"
+            onClick={() => window.location.href = "/jobs"}
+            className="h-14 px-10 rounded-2xl text-lg font-bold"
+          >
+            Browse More Jobs
+          </Button>
+        </div>
       </motion.div>
     );
   }

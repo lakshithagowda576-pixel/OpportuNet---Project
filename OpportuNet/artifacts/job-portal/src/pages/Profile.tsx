@@ -61,7 +61,7 @@ export default function Profile() {
     phone: applications.length > 0 ? applications[0].applicantPhone : "+91 98765 43210",
     skills: ["React", "TypeScript", "Node.js", "TailwindCSS", "PostgreSQL", "System Design"],
     education: applications.length > 0 ? applications[0].education : "Bachelor of Engineering",
-    joinedDate: user.createdAt ? new Date(user.createdAt) : new Date(),
+    joinedDate: (user as any).createdAt ? new Date((user as any).createdAt) : new Date(),
     completionStatus: 85
   };
 

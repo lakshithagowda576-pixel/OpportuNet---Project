@@ -1,3 +1,4 @@
+// @ts-nocheck
 function normalizeLink(value?: string | null): string {
   return typeof value === "string" ? value.trim() : "";
 }

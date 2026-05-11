@@ -7,8 +7,8 @@ import { formatDate } from "@/lib/utils";
 import { useState } from "react";
 
 export default function PgCetHub() {
-  const { data: exams, isLoading: isExamsLoading } = useListExams();
-  const { data: materials, isLoading: isMaterialsLoading } = useListStudyMaterials();
+  const { data: exams = [], isLoading: isExamsLoading } = useListExams();
+  const { data: materials = [], isLoading: isMaterialsLoading } = useListStudyMaterials();
   const [selectedExam, setSelectedExam] = useState<number | "all">("all");
 
   const getMaterialIcon = (type: string) => {

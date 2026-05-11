@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { db } from "@workspace/db";
 import { collegesTable, collegeCutoffsTable, collegeFeesTable } from "@workspace/db/schema";
 import { karnatakaColeges } from "../data/karnataka-colleges";

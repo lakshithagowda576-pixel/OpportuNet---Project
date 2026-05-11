@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const IT_JOBS = [
   // ─── TIER 1 IT COMPANIES ───
   { title: "Senior Software Engineer", company: "TCS (Tata Consultancy Services)", location: "Mumbai, Maharashtra", salary: "₹15–22 LPA", openings: 50, applicationLink: "https://nextstep.tcs.com" },

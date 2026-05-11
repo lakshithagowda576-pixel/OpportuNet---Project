@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 const STATUS_STEPS = ["Pending", "Reviewed", "Interview", "Offered"];
 
 export default function ApplicationTracker() {
-  const { data: applications, isLoading } = useListApplications();
+  const { data: applications = [], isLoading } = useListApplications();
 
   const getStatusColor = (status: string) => {
     switch (status) {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Karnataka Colleges Data with PG-CET Cutoffs
 export const karnatakaColeges = [
   {

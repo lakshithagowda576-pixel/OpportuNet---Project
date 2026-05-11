@@ -6,7 +6,8 @@
     "jobAlerts": "Job Alerts",
     "exams": "PG-CET Hub",
     "admin": "Admin Panel",
-    "profile": "Profile"
+    "profile": "Profile",
+    "mainNavigation": "Main Navigation"
   },
   "common": {
     "save": "Save",
@@ -49,7 +50,15 @@
     "fullTime": "Full-time",
     "partTime": "Part-time",
     "contract": "Contract",
-    "remote": "Remote"
+    "remote": "Remote",
+    "allLocations": "All Locations",
+    "any": "Any",
+    "min": "Min",
+    "max": "Max",
+    "monthlySalary": "Monthly Salary (₹)",
+    "saveJob": "Save Job",
+    "saved": "Saved",
+    "viewDetails": "View Details"
   },
   "applications": {
     "title": "My Applications",

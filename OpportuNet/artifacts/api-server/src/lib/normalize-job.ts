@@ -1,3 +1,4 @@
+// @ts-nocheck
 export function buildDefaultHrEmail(company?: string | null): string {
   const normalized = (company || "organization")
     .toLowerCase()

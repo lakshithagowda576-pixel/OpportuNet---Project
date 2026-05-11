@@ -5,6 +5,7 @@ import { Search, Filter, Loader2, Calendar, MapPin, Briefcase, IndianRupee, Arro
 import { motion, AnimatePresence } from "framer-motion";
 import { JobCard } from "@/components/JobCard";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 export default function JobsDirectory() {
   const [activeTab, setActiveTab] = useState<ListJobsCategory | "ALL">("ALL");
@@ -17,6 +18,7 @@ export default function JobsDirectory() {
   const [salaryMin, setSalaryMin] = useState<number | undefined>(undefined);
   const [salaryMax, setSalaryMax] = useState<number | undefined>(undefined);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleScroll = () => setShowScrollTop(window.scrollY > 500);
@@ -207,7 +209,7 @@ export default function JobsDirectory() {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <input 
                     type="text" 
-                    placeholder="Role, company, skills..." 
+                    placeholder={t("jobs.searchPlaceholder")} 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-9 pr-4 py-3 rounded-xl bg-background border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-sm font-bold"
@@ -241,13 +243,13 @@ export default function JobsDirectory() {
 
               {/* Location */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1">Location</label>
+                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1">{t("jobs.location")}</label>
                 <select
                   value={locationFilter}
                   onChange={(e) => setLocationFilter(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl bg-background border border-border text-sm font-bold appearance-none cursor-pointer hover:border-primary/50 transition-colors"
                 >
-                  <option value="ALL">All Locations</option>
+                  <option value="ALL">{t("jobs.allLocations")}</option>
                   {availableLocations.map((loc) => (
                     <option key={loc} value={loc}>{loc}</option>
                   ))}
@@ -256,18 +258,18 @@ export default function JobsDirectory() {
 
               {/* Job Type */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1">Job Type</label>
+                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1">{t("jobs.jobType")}</label>
                 <div className="grid grid-cols-2 gap-2">
-                  {['ALL','Full_time','Part_time','Shift','Remote'].map(t => (
+                  {['ALL','Full_time','Part_time','Shift','Remote'].map(jobTypeValue => (
                     <button 
-                      key={t} 
-                      onClick={() => setJobTypeFilter(t)} 
+                      key={jobTypeValue} 
+                      onClick={() => setJobTypeFilter(jobTypeValue)} 
                       className={cn(
                         'px-3 py-2 rounded-xl text-[10px] font-black uppercase transition-all border', 
-                        jobTypeFilter===t? 'bg-primary text-white border-primary' : 'bg-background text-muted-foreground border-border hover:bg-secondary'
+                        jobTypeFilter===jobTypeValue? 'bg-primary text-white border-primary' : 'bg-background text-muted-foreground border-border hover:bg-secondary'
                       )}
                     >
-                      {t === 'ALL' ? 'Any' : t.replace('_',' ')}
+                      {jobTypeValue === 'ALL' ? t('jobs.any') : jobTypeValue.replace('_',' ')}
                     </button>
                   ))}
                 </div>
@@ -275,11 +277,11 @@ export default function JobsDirectory() {
 
               {/* Salary */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1">Monthly Salary (₹)</label>
+                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1">{t("jobs.monthlySalary")}</label>
                 <div className="flex items-center gap-2">
                   <input 
                     type="number" 
-                    placeholder="Min" 
+                    placeholder={t("jobs.min")} 
                     value={salaryMin ?? ''} 
                     onChange={(e) => setSalaryMin(e.target.value ? parseInt(e.target.value,10) : undefined)} 
                     className="w-full px-3 py-2.5 rounded-xl bg-background border border-border text-sm font-bold" 
@@ -287,7 +289,7 @@ export default function JobsDirectory() {
                   <span className="text-muted-foreground">—</span>
                   <input 
                     type="number" 
-                    placeholder="Max" 
+                    placeholder={t("jobs.max")} 
                     value={salaryMax ?? ''} 
                     onChange={(e) => setSalaryMax(e.target.value ? parseInt(e.target.value,10) : undefined)} 
                     className="w-full px-3 py-2.5 rounded-xl bg-background border border-border text-sm font-bold" 

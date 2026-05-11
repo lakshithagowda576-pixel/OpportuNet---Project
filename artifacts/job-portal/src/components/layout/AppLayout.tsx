@@ -56,7 +56,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   ];
 
   if (user?.role === "admin") {
-    navigation.push({ name: "Admin Panel", href: "/admin", icon: Shield });
+    navigation.push({ name: t("nav.admin"), href: "/admin", icon: Shield });
   }
 
   const initials = user ? user.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : "?";
@@ -223,7 +223,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             className="md:hidden fixed inset-0 z-[60] bg-background pt-20 px-6 pb-10 flex flex-col"
           >
             <div className="flex-1 space-y-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground ml-2 mb-6">Main Navigation</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground ml-2 mb-6">{t("nav.mainNavigation")}</p>
               <nav className="flex flex-col gap-3">
                 {navigation.map((item) => {
                   const isActive = location === item.href || (item.href !== "/" && location.startsWith(item.href));
@@ -416,4 +416,6 @@ export function AppLayout({ children }: AppLayoutProps) {
           </div>
         </DialogContent>
       </Dialog>
-    
+    </div>
+  );
+}

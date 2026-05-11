@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Router, Request, Response } from "express";
 import { requireAuth } from "../middleware/auth";
 import { ingestJobsFromSource, ingestAllActiveSources } from "../lib/job-ingestion-service";

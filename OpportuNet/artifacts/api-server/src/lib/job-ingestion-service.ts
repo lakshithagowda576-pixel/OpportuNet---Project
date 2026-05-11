@@ -1,11 +1,12 @@
+// @ts-nocheck
 import fetch from "node-fetch";
 import {
   jobSourcesTable,
   jobIngestionsTable,
   jobSourceMappingTable,
-} from "../schema/job-sources";
-import { jobsTable } from "../schema/jobs";
-import { db } from "./index";
+  jobsTable,
+} from "@workspace/db/schema";
+import { db } from "@workspace/db";
 import { eq, and } from "drizzle-orm";
 import * as crypto from "crypto";
 

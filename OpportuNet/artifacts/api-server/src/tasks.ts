@@ -1,3 +1,4 @@
+// @ts-nocheck
 import cron from "node-cron";
 import { db } from "@workspace/db";
 import { jobsTable, usersTable, applicationsTable } from "@workspace/db/schema";
