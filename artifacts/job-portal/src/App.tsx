@@ -18,7 +18,6 @@ import ApplyPage from "@/pages/ApplyPage";
 import PgCetApplyPage from "@/pages/PgCetApplyPage";
 import AdminPanel from "@/pages/AdminPanel";
 import Profile from "@/pages/Profile";
-import JobAlerts from "@/pages/JobAlerts";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import NotFound from "@/pages/not-found";
 
@@ -41,7 +40,6 @@ function Router() {
             <Route path="/jobs/:id" component={JobDetails} />
             <Route path="/jobs/:id/apply" component={ApplyPage} />
             <Route path="/applications" component={ApplicationTracker} />
-            <Route path="/job-alerts" component={JobAlerts} />
             <Route path="/exams" component={PgCetHub} />
             <Route path="/exams/:id/apply" component={PgCetApplyPage} />
             <Route path="/exams/result-finder" component={PgCetResultFinder} />

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Briefcase, LayoutDashboard, FileText, GraduationCap, Menu, X,
   Bell, Shield, LogOut, LogIn, ChevronDown, User,
-  Github, Twitter, Mail, MapPin, Phone, ExternalLink, Sparkles, ArrowRight
+  Mail, MapPin, Phone, ExternalLink, Sparkles, ArrowRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
@@ -51,7 +51,6 @@ export function AppLayout({ children }: AppLayoutProps) {
     { name: t("nav.dashboard"), href: "/", icon: LayoutDashboard },
     { name: t("nav.jobs"), href: "/jobs", icon: Briefcase },
     { name: t("nav.applications"), href: "/applications", icon: FileText },
-    { name: t("nav.jobAlerts"), href: "/job-alerts", icon: Bell },
     { name: t("nav.exams"), href: "/exams", icon: GraduationCap },
   ];
 
@@ -311,13 +310,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
                 Empowering candidates across IT, Non-IT, and Government sectors with real-time opportunities and comprehensive exam resources.
               </p>
-              <div className="flex gap-4">
-                {[Github, Twitter].map((Icon, i) => (
-                  <a key={i} href="#" className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-white transition-all shadow-sm">
-                    <Icon className="w-5 h-5" />
-                  </a>
-                ))}
-              </div>
+              <div className="flex gap-4"></div>
             </div>
 
             {/* Quick Links */}
@@ -343,7 +336,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                   <div className="w-9 h-9 rounded-xl bg-secondary flex items-center justify-center group-hover:bg-primary/10 group-hover:text-primary transition-all">
                     <Mail className="w-4 h-4" />
                   </div>
-                  support@opportunet.com
+                  lakshithajanhavi@gmail.com
                 </li>
                 <li className="flex items-center gap-3 text-sm font-bold text-muted-foreground hover:text-foreground transition-colors group">
                   <div className="w-9 h-9 rounded-xl bg-secondary flex items-center justify-center group-hover:bg-primary/10 group-hover:text-primary transition-all">

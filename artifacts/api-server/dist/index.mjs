@@ -505,121 +505,6 @@ var require_browser = __commonJS({
   }
 });
 
-// ../../node_modules/.pnpm/has-flag@4.0.0/node_modules/has-flag/index.js
-var require_has_flag = __commonJS({
-  "../../node_modules/.pnpm/has-flag@4.0.0/node_modules/has-flag/index.js"(exports, module) {
-    "use strict";
-    module.exports = (flag, argv = process.argv) => {
-      const prefix = flag.startsWith("-") ? "" : flag.length === 1 ? "-" : "--";
-      const position = argv.indexOf(prefix + flag);
-      const terminatorPosition = argv.indexOf("--");
-      return position !== -1 && (terminatorPosition === -1 || position < terminatorPosition);
-    };
-  }
-});
-
-// ../../node_modules/.pnpm/supports-color@7.2.0/node_modules/supports-color/index.js
-var require_supports_color = __commonJS({
-  "../../node_modules/.pnpm/supports-color@7.2.0/node_modules/supports-color/index.js"(exports, module) {
-    "use strict";
-    var os = __require("os");
-    var tty = __require("tty");
-    var hasFlag = require_has_flag();
-    var { env } = process;
-    var forceColor;
-    if (hasFlag("no-color") || hasFlag("no-colors") || hasFlag("color=false") || hasFlag("color=never")) {
-      forceColor = 0;
-    } else if (hasFlag("color") || hasFlag("colors") || hasFlag("color=true") || hasFlag("color=always")) {
-      forceColor = 1;
-    }
-    if ("FORCE_COLOR" in env) {
-      if (env.FORCE_COLOR === "true") {
-        forceColor = 1;
-      } else if (env.FORCE_COLOR === "false") {
-        forceColor = 0;
-      } else {
-        forceColor = env.FORCE_COLOR.length === 0 ? 1 : Math.min(parseInt(env.FORCE_COLOR, 10), 3);
-      }
-    }
-    function translateLevel(level) {
-      if (level === 0) {
-        return false;
-      }
-      return {
-        level,
-        hasBasic: true,
-        has256: level >= 2,
-        has16m: level >= 3
-      };
-    }
-    function supportsColor(haveStream, streamIsTTY) {
-      if (forceColor === 0) {
-        return 0;
-      }
-      if (hasFlag("color=16m") || hasFlag("color=full") || hasFlag("color=truecolor")) {
-        return 3;
-      }
-      if (hasFlag("color=256")) {
-        return 2;
-      }
-      if (haveStream && !streamIsTTY && forceColor === void 0) {
-        return 0;
-      }
-      const min = forceColor || 0;
-      if (env.TERM === "dumb") {
-        return min;
-      }
-      if (process.platform === "win32") {
-        const osRelease = os.release().split(".");
-        if (Number(osRelease[0]) >= 10 && Number(osRelease[2]) >= 10586) {
-          return Number(osRelease[2]) >= 14931 ? 3 : 2;
-        }
-        return 1;
-      }
-      if ("CI" in env) {
-        if (["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI", "GITHUB_ACTIONS", "BUILDKITE"].some((sign) => sign in env) || env.CI_NAME === "codeship") {
-          return 1;
-        }
-        return min;
-      }
-      if ("TEAMCITY_VERSION" in env) {
-        return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env.TEAMCITY_VERSION) ? 1 : 0;
-      }
-      if (env.COLORTERM === "truecolor") {
-        return 3;
-      }
-      if ("TERM_PROGRAM" in env) {
-        const version3 = parseInt((env.TERM_PROGRAM_VERSION || "").split(".")[0], 10);
-        switch (env.TERM_PROGRAM) {
-          case "iTerm.app":
-            return version3 >= 3 ? 3 : 2;
-          case "Apple_Terminal":
-            return 2;
-        }
-      }
-      if (/-256(color)?$/i.test(env.TERM)) {
-        return 2;
-      }
-      if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env.TERM)) {
-        return 1;
-      }
-      if ("COLORTERM" in env) {
-        return 1;
-      }
-      return min;
-    }
-    function getSupportLevel(stream) {
-      const level = supportsColor(stream, stream && stream.isTTY);
-      return translateLevel(level);
-    }
-    module.exports = {
-      supportsColor: getSupportLevel,
-      stdout: translateLevel(supportsColor(true, tty.isatty(1))),
-      stderr: translateLevel(supportsColor(true, tty.isatty(2)))
-    };
-  }
-});
-
 // ../../node_modules/.pnpm/debug@4.4.3/node_modules/debug/src/node.js
 var require_node = __commonJS({
   "../../node_modules/.pnpm/debug@4.4.3/node_modules/debug/src/node.js"(exports, module) {
@@ -638,7 +523,7 @@ var require_node = __commonJS({
     );
     exports.colors = [6, 2, 3, 4, 5, 1];
     try {
-      const supportsColor = require_supports_color();
+      const supportsColor = __require("supports-color");
       if (supportsColor && (supportsColor.stderr || supportsColor).level >= 2) {
         exports.colors = [
           20,
@@ -20613,27 +20498,27 @@ var require_router = __commonJS({
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var methods = METHODS.map((method) => method.toLowerCase());
-    module.exports = Router12;
+    module.exports = Router13;
     module.exports.Route = Route;
-    function Router12(options) {
-      if (!(this instanceof Router12)) {
-        return new Router12(options);
+    function Router13(options) {
+      if (!(this instanceof Router13)) {
+        return new Router13(options);
       }
       const opts = options || {};
-      function router12(req, res, next) {
-        router12.handle(req, res, next);
+      function router13(req, res, next) {
+        router13.handle(req, res, next);
       }
-      Object.setPrototypeOf(router12, this);
-      router12.caseSensitive = opts.caseSensitive;
-      router12.mergeParams = opts.mergeParams;
-      router12.params = {};
-      router12.strict = opts.strict;
-      router12.stack = [];
-      return router12;
+      Object.setPrototypeOf(router13, this);
+      router13.caseSensitive = opts.caseSensitive;
+      router13.mergeParams = opts.mergeParams;
+      router13.params = {};
+      router13.strict = opts.strict;
+      router13.stack = [];
+      return router13;
     }
-    Router12.prototype = function() {
+    Router13.prototype = function() {
     };
-    Router12.prototype.param = function param(name, fn) {
+    Router13.prototype.param = function param(name, fn) {
       if (!name) {
         throw new TypeError("argument name is required");
       }
@@ -20653,7 +20538,7 @@ var require_router = __commonJS({
       params.push(fn);
       return this;
     };
-    Router12.prototype.handle = function handle(req, res, callback) {
+    Router13.prototype.handle = function handle(req, res, callback) {
       if (!callback) {
         throw new TypeError("argument callback is required");
       }
@@ -20780,7 +20665,7 @@ var require_router = __commonJS({
         }
       }
     };
-    Router12.prototype.use = function use(handler) {
+    Router13.prototype.use = function use(handler) {
       let offset = 0;
       let path2 = "/";
       if (typeof handler !== "function") {
@@ -20813,7 +20698,7 @@ var require_router = __commonJS({
       }
       return this;
     };
-    Router12.prototype.route = function route(path2) {
+    Router13.prototype.route = function route(path2) {
       const route2 = new Route(path2);
       const layer = new Layer(path2, {
         sensitive: this.caseSensitive,
@@ -20828,7 +20713,7 @@ var require_router = __commonJS({
       return route2;
     };
     methods.concat("all").forEach(function(method) {
-      Router12.prototype[method] = function(path2) {
+      Router13.prototype[method] = function(path2) {
         const route = this.route(path2);
         route[method].apply(route, slice.call(arguments, 1));
         return this;
@@ -21011,13 +20896,13 @@ var require_application = __commonJS({
     var compileTrust = require_utils3().compileTrust;
     var resolve = __require("node:path").resolve;
     var once = require_once();
-    var Router12 = require_router();
+    var Router13 = require_router();
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var app2 = exports = module.exports = {};
     var trustProxyDefaultSymbol = "@@symbol:trust_proxy_default";
     app2.init = function init() {
-      var router12 = null;
+      var router13 = null;
       this.cache = /* @__PURE__ */ Object.create(null);
       this.engines = /* @__PURE__ */ Object.create(null);
       this.settings = /* @__PURE__ */ Object.create(null);
@@ -21026,13 +20911,13 @@ var require_application = __commonJS({
         configurable: true,
         enumerable: true,
         get: function getrouter() {
-          if (router12 === null) {
-            router12 = new Router12({
+          if (router13 === null) {
+            router13 = new Router13({
               caseSensitive: this.enabled("case sensitive routing"),
               strict: this.enabled("strict routing")
             });
           }
-          return router12;
+          return router13;
         }
       });
     };
@@ -21103,15 +20988,15 @@ var require_application = __commonJS({
       if (fns.length === 0) {
         throw new TypeError("app.use() requires a middleware function");
       }
-      var router12 = this.router;
+      var router13 = this.router;
       fns.forEach(function(fn2) {
         if (!fn2 || !fn2.handle || !fn2.set) {
-          return router12.use(path2, fn2);
+          return router13.use(path2, fn2);
         }
         debug(".use app under %s", path2);
         fn2.mountpath = path2;
         fn2.parent = this;
-        router12.use(path2, function mounted_app(req, res, next) {
+        router13.use(path2, function mounted_app(req, res, next) {
           var orig = req.app;
           fn2.handle(req, res, function(err) {
             Object.setPrototypeOf(req, orig.request);
@@ -23684,7 +23569,7 @@ var require_express = __commonJS({
     var EventEmitter2 = __require("node:events").EventEmitter;
     var mixin = require_merge_descriptors();
     var proto = require_application();
-    var Router12 = require_router();
+    var Router13 = require_router();
     var req = require_request();
     var res = require_response();
     exports = module.exports = createApplication;
@@ -23706,8 +23591,8 @@ var require_express = __commonJS({
     exports.application = proto;
     exports.request = req;
     exports.response = res;
-    exports.Route = Router12.Route;
-    exports.Router = Router12;
+    exports.Route = Router13.Route;
+    exports.Router = Router13;
     exports.json = bodyParser.json;
     exports.raw = bodyParser.raw;
     exports.static = require_serve_static();
@@ -28103,7 +27988,7 @@ var require_pino = __commonJS({
     function pinoBundlerAbsolutePath(p) {
       try {
         const path2 = __require("path");
-        const outputDir = "C:\\Users\\LENOVO\\Downloads\\Build-Project\\artifacts\\api-server\\dist";
+        const outputDir = "C:\\Users\\LENOVO\\Downloads\\OpportuNet\\artifacts\\api-server\\dist";
         return path2.resolve(outputDir, p.replace(/^\.\//, ""));
       } catch (e) {
         const f = new Function("p", "return new URL(p, import.meta.url).pathname");
@@ -53734,14 +53619,14 @@ var require_node_cron = __commonJS({
 });
 
 // src/app.ts
-var import_express12 = __toESM(require_express2(), 1);
+var import_express13 = __toESM(require_express2(), 1);
 var import_cors = __toESM(require_lib3(), 1);
 var import_pino_http = __toESM(require_logger(), 1);
 var import_express_session = __toESM(require_express_session(), 1);
 var import_connect_pg_simple = __toESM(require_connect_pg_simple(), 1);
 
 // src/routes/index.ts
-var import_express11 = __toESM(require_express2(), 1);
+var import_express12 = __toESM(require_express2(), 1);
 
 // src/routes/health.ts
 var import_express = __toESM(require_express2(), 1);
@@ -79155,8 +79040,187 @@ router8.get("/:name", async (req, res) => {
 });
 var companies_default = router8;
 
-// src/routes/payments.ts
+// src/routes/jobAlerts.ts
 var import_express9 = __toESM(require_express2(), 1);
+var router9 = (0, import_express9.Router)();
+async function getSessionUser2(req) {
+  if (!req.session?.userId) return null;
+  const [user] = await db.select().from(usersTable).where(eq(usersTable.id, req.session.userId));
+  return user;
+}
+router9.use("/job-alerts", requireAuth);
+router9.get("/job-alerts", async (req, res) => {
+  try {
+    const user = await getSessionUser2(req);
+    if (!user) {
+      res.status(401).json({ error: "Unauthorized. Please log in." });
+      return;
+    }
+    const alerts = await db.select().from(jobAlertsTable).where(eq(jobAlertsTable.userId, user.id)).orderBy(desc(jobAlertsTable.createdAt));
+    res.json(alerts);
+  } catch (error40) {
+    console.error("Failed to fetch job alerts:", error40);
+    res.status(500).json({ error: error40.message || "Failed to fetch job alerts" });
+  }
+});
+router9.post("/job-alerts", async (req, res) => {
+  try {
+    const user = await getSessionUser2(req);
+    if (!user) {
+      res.status(401).json({ error: "Unauthorized. Please log in." });
+      return;
+    }
+    const { name, filters, frequency } = req.body;
+    if (!name || typeof name !== "string") {
+      res.status(400).json({ error: "Alert name is required." });
+      return;
+    }
+    const cleanedFilters = {
+      categories: Array.isArray(filters?.categories) ? filters.categories.filter((item) => typeof item === "string") : void 0,
+      locations: Array.isArray(filters?.locations) ? filters.locations.filter((item) => typeof item === "string") : void 0,
+      keywords: Array.isArray(filters?.keywords) ? filters.keywords.filter((item) => typeof item === "string") : void 0,
+      minSalary: typeof filters?.minSalary === "number" ? filters.minSalary : void 0,
+      maxSalary: typeof filters?.maxSalary === "number" ? filters.maxSalary : void 0,
+      shifts: Array.isArray(filters?.shifts) ? filters.shifts.filter((item) => typeof item === "string") : void 0
+    };
+    const [alert] = await db.insert(jobAlertsTable).values({
+      userId: user.id,
+      name,
+      filters: cleanedFilters,
+      frequency: frequency === "weekly" ? "weekly" : "daily",
+      isActive: true
+    }).returning();
+    let emailStatus = "sent";
+    let emailError = void 0;
+    try {
+      const filterSummary = [];
+      if (cleanedFilters.categories?.length) {
+        filterSummary.push(`Categories: ${cleanedFilters.categories.join(", ")}`);
+      }
+      if (cleanedFilters.locations?.length) {
+        filterSummary.push(`Locations: ${cleanedFilters.locations.join(", ")}`);
+      }
+      if (cleanedFilters.keywords?.length) {
+        filterSummary.push(`Keywords: ${cleanedFilters.keywords.join(", ")}`);
+      }
+      if (typeof cleanedFilters.minSalary === "number") {
+        filterSummary.push(`Min Salary: \u20B9${cleanedFilters.minSalary}`);
+      }
+      if (typeof cleanedFilters.maxSalary === "number") {
+        filterSummary.push(`Max Salary: \u20B9${cleanedFilters.maxSalary}`);
+      }
+      if (cleanedFilters.shifts?.length) {
+        filterSummary.push(`Shifts: ${cleanedFilters.shifts.join(", ")}`);
+      }
+      const emailBody = `Your job alert "${alert.name}" has been created successfully.
+
+Frequency: ${alert.frequency}
+${filterSummary.length ? `Filters:
+- ${filterSummary.join("\n- ")}
+` : "No filters specified. You will receive broad job alerts."}
+You will receive matching job notifications at this email address.`;
+      await sendEmail({
+        to: user.email,
+        subject: `Your OpportuNet job alert "${alert.name}" is active`,
+        body: emailBody,
+        applicantName: user.name
+      });
+    } catch (emailErrorObj) {
+      emailStatus = "failed";
+      emailError = emailErrorObj.message || String(emailErrorObj);
+      console.error(`Failed to send creation email for alert ${alert.id}:`, emailErrorObj);
+    }
+    try {
+      await db.insert(alertEmailsSentTable).values({
+        alertId: alert.id,
+        userId: user.id,
+        recipientEmail: user.email,
+        jobCount: 0,
+        status: emailStatus,
+        errorMessage: emailError
+      });
+    } catch (emailLogError) {
+      console.error("Failed to log alert email status:", emailLogError);
+    }
+    res.status(201).json(alert);
+  } catch (error40) {
+    console.error("Failed to create job alert:", error40);
+    res.status(500).json({ error: error40.message || "Failed to create job alert" });
+  }
+});
+router9.put("/job-alerts/:id", async (req, res) => {
+  try {
+    const user = await getSessionUser2(req);
+    if (!user) {
+      res.status(401).json({ error: "Unauthorized. Please log in." });
+      return;
+    }
+    const alertId = parseInt(req.params.id, 10);
+    if (isNaN(alertId)) {
+      res.status(400).json({ error: "Invalid alert ID" });
+      return;
+    }
+    const [existingAlert] = await db.select().from(jobAlertsTable).where(and(eq(jobAlertsTable.id, alertId), eq(jobAlertsTable.userId, user.id)));
+    if (!existingAlert) {
+      res.status(404).json({ error: "Alert not found" });
+      return;
+    }
+    const { name, filters, frequency, isActive } = req.body;
+    const updateData = {};
+    if (typeof name === "string" && name.trim().length > 0) {
+      updateData.name = name.trim();
+    }
+    if (filters !== void 0) {
+      updateData.filters = {
+        categories: Array.isArray(filters?.categories) ? filters.categories.filter((item) => typeof item === "string") : existingAlert.filters?.categories,
+        locations: Array.isArray(filters?.locations) ? filters.locations.filter((item) => typeof item === "string") : existingAlert.filters?.locations,
+        keywords: Array.isArray(filters?.keywords) ? filters.keywords.filter((item) => typeof item === "string") : existingAlert.filters?.keywords,
+        minSalary: typeof filters?.minSalary === "number" ? filters.minSalary : existingAlert.filters?.minSalary,
+        maxSalary: typeof filters?.maxSalary === "number" ? filters.maxSalary : existingAlert.filters?.maxSalary,
+        shifts: Array.isArray(filters?.shifts) ? filters.shifts.filter((item) => typeof item === "string") : existingAlert.filters?.shifts
+      };
+    }
+    if (frequency === "daily" || frequency === "weekly") {
+      updateData.frequency = frequency;
+    }
+    if (typeof isActive === "boolean") {
+      updateData.isActive = isActive;
+    }
+    const [updatedAlert] = await db.update(jobAlertsTable).set(updateData).where(eq(jobAlertsTable.id, alertId)).returning();
+    res.json(updatedAlert);
+  } catch (error40) {
+    console.error("Failed to update job alert:", error40);
+    res.status(500).json({ error: error40.message || "Failed to update job alert" });
+  }
+});
+router9.delete("/job-alerts/:id", async (req, res) => {
+  try {
+    const user = await getSessionUser2(req);
+    if (!user) {
+      res.status(401).json({ error: "Unauthorized. Please log in." });
+      return;
+    }
+    const alertId = parseInt(req.params.id, 10);
+    if (isNaN(alertId)) {
+      res.status(400).json({ error: "Invalid alert ID" });
+      return;
+    }
+    const [existingAlert] = await db.select().from(jobAlertsTable).where(and(eq(jobAlertsTable.id, alertId), eq(jobAlertsTable.userId, user.id)));
+    if (!existingAlert) {
+      res.status(404).json({ error: "Alert not found" });
+      return;
+    }
+    await db.delete(jobAlertsTable).where(eq(jobAlertsTable.id, alertId));
+    res.json({ success: true });
+  } catch (error40) {
+    console.error("Failed to delete job alert:", error40);
+    res.status(500).json({ error: error40.message || "Failed to delete job alert" });
+  }
+});
+var jobAlerts_default = router9;
+
+// src/routes/payments.ts
+var import_express10 = __toESM(require_express2(), 1);
 
 // ../../node_modules/.pnpm/stripe@22.1.0_@types+node@25.6.0/node_modules/stripe/esm/Error.js
 var Error_exports = {};
@@ -96256,8 +96320,8 @@ var stripe_esm_node_default = Stripe;
 
 // src/routes/payments.ts
 var stripe = new stripe_esm_node_default(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder");
-var router9 = (0, import_express9.Router)();
-router9.post("/create-checkout-session", requireAuth, async (req, res) => {
+var router10 = (0, import_express10.Router)();
+router10.post("/create-checkout-session", requireAuth, async (req, res) => {
   const { jobId } = req.body;
   const userId = req.session?.userId;
   if (!userId) {
@@ -96307,7 +96371,7 @@ router9.post("/create-checkout-session", requireAuth, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-router9.post("/webhook", async (req, res) => {
+router10.post("/webhook", async (req, res) => {
   const sig = req.headers["stripe-signature"];
   let event;
   try {
@@ -96330,12 +96394,12 @@ router9.post("/webhook", async (req, res) => {
   }
   res.json({ received: true });
 });
-var payments_default = router9;
+var payments_default = router10;
 
 // src/routes/ai.ts
-var import_express10 = __toESM(require_express2(), 1);
-var router10 = (0, import_express10.Router)();
-router10.get("/recommendations", requireAuth, async (req, res) => {
+var import_express11 = __toESM(require_express2(), 1);
+var router11 = (0, import_express11.Router)();
+router11.get("/recommendations", requireAuth, async (req, res) => {
   const userId = req.session?.userId;
   if (!userId) {
     res.status(401).json({ error: "Unauthorized" });
@@ -96377,21 +96441,23 @@ router10.get("/recommendations", requireAuth, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-var ai_default = router10;
+var ai_default = router11;
 
 // src/routes/index.ts
-var router11 = (0, import_express11.Router)();
-router11.use(health_default);
-router11.use("/auth", auth_default);
-router11.use("/admin", admin_default);
-router11.use(jobs_default);
-router11.use(applications_default);
-router11.use(exams_default);
-router11.use("/colleges", colleges_default);
-router11.use("/companies", companies_default);
-router11.use("/payments", payments_default);
-router11.use("/ai", ai_default);
-var routes_default = router11;
+var router12 = (0, import_express12.Router)();
+router12.use(health_default);
+router12.use("/auth", auth_default);
+router12.use("/admin", admin_default);
+router12.use(jobs_default);
+router12.use(applications_default);
+router12.use(exams_default);
+router12.use("/colleges", colleges_default);
+router12.use("/companies", companies_default);
+router12.use(jobAlerts_default);
+router12.use(jobAlerts_default);
+router12.use("/payments", payments_default);
+router12.use("/ai", ai_default);
+var routes_default = router12;
 
 // src/lib/logger.ts
 var import_pino = __toESM(require_pino(), 1);
@@ -96412,7 +96478,7 @@ var logger = (0, import_pino.default)({
 });
 
 // src/app.ts
-var app = (0, import_express12.default)();
+var app = (0, import_express13.default)();
 var PgSession2 = (0, import_connect_pg_simple.default)(import_express_session.default);
 app.use(
   (0, import_pino_http.default)({
@@ -96431,8 +96497,8 @@ app.use((0, import_cors.default)({
   origin: true,
   credentials: true
 }));
-app.use(import_express12.default.json());
-app.use(import_express12.default.urlencoded({ extended: true }));
+app.use(import_express13.default.json());
+app.use(import_express13.default.urlencoded({ extended: true }));
 var sessionSecret = process.env.SESSION_SECRET || "govportal-secret-key-change-in-production";
 var databaseUrl = process.env.DATABASE_URL;
 app.use((0, import_express_session.default)({
@@ -96453,7 +96519,7 @@ app.use((0, import_express_session.default)({
   }
 }));
 app.get("/", (req, res) => res.redirect("/api/health"));
-app.use("/uploads", import_express12.default.static("uploads"));
+app.use("/uploads", import_express13.default.static("uploads"));
 app.use("/api", routes_default);
 var app_default = app;
 

@@ -1,8 +1,13 @@
 packages:
-  - artifacts/*
+  - artifacts/api-server
+  - artifacts/job-portal
   - lib/*
   - lib/integrations/*
   - scripts
+
+allowBuilds:
+  bcrypt: set this to true or false
+  esbuild: set this to true or false
 
 autoInstallPeers: false
 

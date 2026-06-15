@@ -1,5 +1,6 @@
 export async function apiFetch(input: RequestInfo, init?: RequestInit) {
-  const res = await fetch(input, init);
+  const url = typeof input === "string" && !input.startsWith("/api") ? `/api${input}` : input;
+  const res = await fetch(url, init);
   return res;
 }
 
