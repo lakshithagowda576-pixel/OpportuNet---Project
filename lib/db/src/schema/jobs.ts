@@ -23,6 +23,7 @@ export const jobsTable = pgTable("jobs", {
   applicationLink: text("application_link").notNull().default(""),
   official_url: text("official_url").notNull().default(""),
   isFeatured: boolean("is_featured").default(false).notNull(),
+  active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

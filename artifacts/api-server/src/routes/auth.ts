@@ -53,6 +53,9 @@ router.post("/register", async (req, res) => {
     }).returning();
     req.session!.userId = user.id;
     req.session!.userRole = user.role;
+    req.session!.save((err) => {
+      if (err) console.error("Session save error:", err);
+    });
     res.status(201).json({ 
       id: user.id, 
       name: user.name, 
@@ -98,6 +101,9 @@ router.post("/login", async (req, res) => {
     
     req.session!.userId = user.id;
     req.session!.userRole = user.role;
+    req.session!.save((err) => {
+      if (err) console.error("Session save error:", err);
+    });
     res.json({ 
       id: user.id, 
       name: user.name, 

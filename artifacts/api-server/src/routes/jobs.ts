@@ -10,7 +10,7 @@ const router: IRouter = Router();
 router.get("/jobs", async (req, res) => {
   const query = ListJobsQueryParams.parse(req.query);
 
-  const conditions = [];
+  const conditions = [eq(jobsTable.active, true)];
 
   if (query.category) {
     conditions.push(eq(jobsTable.category, query.category as any));
@@ -30,12 +30,7 @@ router.get("/jobs", async (req, res) => {
     );
   }
 
-  const jobs =
-    conditions.length === 0
-      ? await db.select().from(jobsTable)
-      : conditions.length === 1
-      ? await db.select().from(jobsTable).where(conditions[0])
-      : await db.select().from(jobsTable).where(and(...conditions));
+  const jobs = await db.select().from(jobsTable).where(and(...conditions));
 
   const formatted = jobs.map((j: any) => normalizeJobRecord(j));
   res.json(formatted);
@@ -43,7 +38,7 @@ router.get("/jobs", async (req, res) => {
 
 router.get("/jobs/:id", async (req, res) => {
   const params = GetJobParams.parse({ id: parseInt(req.params.id) });
-  const [job] = await db.select().from(jobsTable).where(eq(jobsTable.id, params.id));
+  const [job] = await db.select().from(jobsTable).where(and(eq(jobsTable.id, params.id), eq(jobsTable.active, true)));
   if (!job) {
     res.status(404).json({ error: "Job not found" });
     return;
