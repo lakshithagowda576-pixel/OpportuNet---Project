@@ -29,7 +29,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchMe = async () => {
     console.log("fetchMe started");
     try {
-      const url = `${BASE}/api/auth/me`;
+      const url = `${API_BASE}/api/auth/me`;
       console.log("fetching:", url);
       const res = await fetch(url, { credentials: "include" });
       console.log("fetchMe response status:", res.status);
@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => { fetchMe(); }, []);
 
   const login = async (email: string, password: string) => {
-    const res = await fetch(`${BASE}/api/auth/login`, {
+    const res = await fetch(`${API_BASE}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const register = async (name: string, email: string, password: string) => {
-    const res = await fetch(`${BASE}/api/auth/register`, {
+    const res = await fetch(`${API_BASE}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -82,16 +82,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    await fetch(`${BASE}/api/auth/logout`, { method: "POST", credentials: "include" });
+    await fetch(`${API_BASE}/api/auth/logout`, { method: "POST", credentials: "include" });
     setUser(null);
   };
 
   const loginWithGoogle = () => {
-    window.location.href = `${BASE}/api/auth/google`;
+    window.location.href = `${API_BASE}/api/auth/google`;
   };
 
   const loginWithGitHub = () => {
-    window.location.href = `${BASE}/api/auth/github`;
+    window.location.href = `${API_BASE}/api/auth/github`;
   };
 
   return (
