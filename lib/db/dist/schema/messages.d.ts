@@ -161,9 +161,9 @@ export declare const messagesTable: import("drizzle-orm/pg-core").PgTableWithCol
 export declare const insertMessageSchema: import("zod/v4").ZodObject<{
     hrEmail: import("zod/v4").ZodString;
     jobId: import("zod/v4").ZodInt;
+    subject: import("zod/v4").ZodString;
     senderName: import("zod/v4").ZodString;
     senderEmail: import("zod/v4").ZodString;
-    subject: import("zod/v4").ZodString;
     body: import("zod/v4").ZodString;
 }, {
     out: {};

@@ -75,6 +75,10 @@ export default function PgCetHub() {
     return fallback;
   };
 
+  const scrollToMaterials = () => {
+    document.getElementById("materials")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const filteredMaterials = selectedExam === "all"
     ? materials
     : materials?.filter(m => m.examId === selectedExam);
@@ -136,9 +140,9 @@ export default function PgCetHub() {
             The ultimate academic command center for Karnataka's post-graduate aspirants. Integrated materials, official trackers, and expert guides.
           </p>
           <div className="flex flex-wrap justify-center gap-6 pt-6">
-            <a href="#materials" className="px-10 py-5 rounded-[2rem] bg-primary text-white font-black shadow-2xl shadow-primary/40 hover:scale-105 active:scale-95 transition-all">
+            <button type="button" onClick={scrollToMaterials} className="px-10 py-5 rounded-[2rem] bg-primary text-white font-black shadow-2xl shadow-primary/40 hover:scale-105 active:scale-95 transition-all">
               Launch Library
-            </a>
+            </button>
             <Link href="/exams/result-finder" className="px-10 py-5 rounded-[2rem] bg-white/5 text-white font-black backdrop-blur-3xl border border-white/10 hover:bg-white/10 transition-all">
               Result Finder
             </Link>
@@ -184,7 +188,7 @@ export default function PgCetHub() {
                       <Link href={`/exams/${exam.id}/apply`} className="px-10 py-5 bg-primary text-white rounded-[2rem] font-black shadow-2xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all text-center flex items-center justify-center gap-3">
                          <CheckCircle2 className="w-5 h-5" /> Register & Track
                       </Link>
-                      <a href="about:blank" target="_blank" rel="noreferrer" className="px-10 py-5 bg-white/5 text-white border border-white/10 backdrop-blur-3xl rounded-[2rem] font-black hover:bg-white/10 transition-all text-center flex items-center justify-center gap-2">
+                      <a href={getValidUrl(exam.applyLink, exam.officialWebsite)} target="_blank" rel="noreferrer" className="px-10 py-5 bg-white/5 text-white border border-white/10 backdrop-blur-3xl rounded-[2rem] font-black hover:bg-white/10 transition-all text-center flex items-center justify-center gap-2">
                         Official Portal <ExternalLink className="w-4 h-4" />
                       </a>
                     </div>
@@ -248,7 +252,7 @@ export default function PgCetHub() {
                       </p>
                       <div className="mt-12 p-6 bg-white rounded-[2rem] border border-indigo-200 relative z-10 shadow-sm">
                         <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2">Primary Domain</p>
-                        <a href="about:blank" target="_blank" rel="noreferrer" className="text-sm font-black text-indigo-900 flex items-center gap-2 hover:text-primary transition-colors">
+                        <a href={getValidUrl(exam.officialWebsite, exam.applyLink)} target="_blank" rel="noreferrer" className="text-sm font-black text-indigo-900 flex items-center gap-2 hover:text-primary transition-colors">
                           Official Website <ExternalLink className="w-4 h-4" />
                         </a>
                       </div>
@@ -408,7 +412,7 @@ export default function PgCetHub() {
               Plug in your PG-CET ranking and let our intelligence engine map you to the best-fit institutions in Karnataka. Instant cutoffs, verified fee data.
             </p>
             <div className="flex flex-wrap gap-6">
-              <Link to="/exams/result-finder" className="px-12 py-5 bg-white text-slate-950 rounded-[2rem] font-black shadow-2xl shadow-white/10 hover:scale-105 active:scale-95 transition-all">
+              <Link href="/exams/result-finder" className="px-12 py-5 bg-white text-slate-950 rounded-[2rem] font-black shadow-2xl shadow-white/10 hover:scale-105 active:scale-95 transition-all">
                 Run Simulation
               </Link>
             </div>
@@ -460,7 +464,7 @@ export default function PgCetHub() {
                         <h4 className="text-3xl font-black text-white">Digital Access Restricted</h4>
                         <p className="text-slate-400 max-w-md mx-auto text-lg">This secured resource must be accessed via the primary academic node.</p>
                         <a 
-                          href="about:blank" target="_blank" rel="noreferrer"
+                          href={activeMaterial.url} target="_blank" rel="noreferrer"
                           className="inline-flex items-center gap-3 px-10 py-5 bg-primary text-white rounded-[2rem] font-black shadow-2xl shadow-primary/40"
                         >
                           Launch Externally <ExternalLink className="w-5 h-5" />
@@ -478,7 +482,7 @@ export default function PgCetHub() {
                       </div>
                       <div className="flex gap-6 justify-center">
                         <a 
-                          href="about:blank" target="_blank" rel="noreferrer"
+                          href={activeMaterial.url} target="_blank" rel="noreferrer"
                           className="px-12 py-6 bg-primary text-white rounded-[2rem] font-black shadow-2xl shadow-primary/40 flex items-center gap-3 hover:scale-105 transition-all"
                         >
                           {activeMaterial.type === 'PDF' 
@@ -600,7 +604,7 @@ export default function PgCetHub() {
 
                   <div className="pt-6 flex flex-col gap-4">
                     <a 
-                      href="about:blank"
+                      href={getValidUrl(redirectExam.applyLink, redirectExam.officialWebsite)}
                       target="_blank"
                       rel="noreferrer"
                       onClick={() => setRedirectExam(null)}

@@ -12,6 +12,8 @@ import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
+
 const applicationSchema = z.object({
   applicantName: z.string().min(2, "Name is too short"),
   applicantEmail: z.string().email("Invalid email address"),

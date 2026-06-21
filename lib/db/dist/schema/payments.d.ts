@@ -110,7 +110,7 @@ export declare const paymentsTable: import("drizzle-orm/pg-core").PgTableWithCol
             tableName: "payments";
             dataType: "string";
             columnType: "PgEnumColumn";
-            data: "pending" | "failed" | "completed" | "refunded";
+            data: "failed" | "pending" | "completed" | "refunded";
             driverParam: string;
             notNull: true;
             hasDefault: true;

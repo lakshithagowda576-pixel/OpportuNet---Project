@@ -295,10 +295,10 @@ export default function PgCetResultFinder() {
                   </div>
                 )}
 
-                {/* Contact Info */}
+                 {/* Contact Info */}
                 <div className="space-y-2 text-sm">
                   {collegeDetails.websiteUrl && (
-                    <a href="about:blank" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline">
+                    <a href={collegeDetails.websiteUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline">
                       <Globe className="w-4 h-4" /> Visit Website
                     </a>
                   )}

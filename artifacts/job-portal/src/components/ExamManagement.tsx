@@ -190,7 +190,7 @@ export function ExamManagement() {
                           <p className="font-medium">{material.title}</p>
                           <p className="text-gray-600 text-xs">{material.subject} • {material.type}</p>
                           <p className="text-gray-500 text-xs mt-1">{material.description}</p>
-                          <p className="text-blue-600 text-xs mt-1 truncate"><a href="about:blank" target="_blank" rel="noopener noreferrer">Material Link</a></p>
+                          <p className="text-blue-600 text-xs mt-1 truncate"><a href={material.url} target="_blank" rel="noopener noreferrer">Material Link</a></p>
                         </div>
                         <div className="flex gap-1 ml-2">
                           <button onClick={() => { setEditingMaterialId(material.id); setMaterialData(material); setShowMaterialForm(exam.id); }} className="p-1 text-blue-600 hover:bg-blue-100 rounded">

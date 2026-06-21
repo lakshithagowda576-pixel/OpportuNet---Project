@@ -1,7 +1,7 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
 import { jobsTable } from "@workspace/db/schema";
-import { eq, like, or, and } from "drizzle-orm";
+import { eq, like, or, and, type SQL } from "drizzle-orm";
 import { ListJobsQueryParams, GetJobParams } from "@workspace/api-zod";
 import { normalizeJobRecord } from "../lib/normalize-job";
 
@@ -10,7 +10,7 @@ const router: IRouter = Router();
 router.get("/jobs", async (req, res) => {
   const query = ListJobsQueryParams.parse(req.query);
 
-  const conditions = [eq(jobsTable.active, true)];
+  const conditions: SQL[] = [eq(jobsTable.active, true)];
 
   if (query.category) {
     conditions.push(eq(jobsTable.category, query.category as any));
@@ -18,16 +18,17 @@ router.get("/jobs", async (req, res) => {
 
   if (query.search) {
     const term = `%${query.search}%`;
-    conditions.push(
-      or(
-        like(jobsTable.title, term),
-        like(jobsTable.company, term),
-        like(jobsTable.location, term),
-        like(jobsTable.description, term),
-        like(jobsTable.eligibility, term),
-        like(jobsTable.salary, term)
-      )
+    const searchCondition = or(
+      like(jobsTable.title, term),
+      like(jobsTable.company, term),
+      like(jobsTable.location, term),
+      like(jobsTable.description, term),
+      like(jobsTable.eligibility, term),
+      like(jobsTable.salary, term)
     );
+    if (searchCondition) {
+      conditions.push(searchCondition);
+    }
   }
 
   const jobs = await db.select().from(jobsTable).where(and(...conditions));

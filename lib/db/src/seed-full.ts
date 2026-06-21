@@ -5,7 +5,7 @@ import {
   applicationsTable, 
   usersTable, 
   companiesTable,
-  examTable,
+  examsTable,
   collegesTable,
   studyMaterialsTable
 } from "./schema/index";
@@ -54,7 +54,7 @@ function generateRandomEmail(): string {
   return `user${num}@example.com`;
 }
 
-function getRandomItem<T>(arr: T[]): T {
+function getRandomItem<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
@@ -73,7 +73,7 @@ async function seed() {
     console.log("\n📋 Clearing existing data...");
     await db.delete(applicationsTable).catch(() => {});
     await db.delete(studyMaterialsTable).catch(() => {});
-    await db.delete(examTable).catch(() => {});
+    await db.delete(examsTable).catch(() => {});
     await db.delete(jobsTable).catch(() => {});
     await db.delete(usersTable).catch(() => {});
     await db.delete(companiesTable).catch(() => {});
@@ -220,15 +220,20 @@ async function seed() {
       for (let i = 0; i < 5; i++) {
         jobs.push({
           title: getRandomItem(jobTitles),
-          company_id: company.id,
-          category: getRandomItem(["IT"]),
+          company: company.name,
+          category: "IT" as const,
           location: getRandomItem(["Bangalore", "Hyderabad", "Pune", "Mumbai", "Chennai"]),
           description: `Exciting opportunity to join ${company.name} as a ${getRandomItem(jobTitles)}. Work on cutting-edge technologies.`,
-          requirements: `Strong fundamentals in Computer Science, proficiency in programming languages.`,
-          salary_min: Math.floor(Math.random() * 10 + 4) * 100000,
-          salary_max: Math.floor(Math.random() * 20 + 10) * 100000,
-          shift_type: "Full_time",
-          posted_at: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString(),
+          shift: "Full_time" as const,
+          eligibility: `Strong fundamentals in Computer Science, proficiency in programming languages.`,
+          applicationGuide: "Apply through the company career portal with your latest resume.",
+          startDate: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+          endDate: new Date(Date.now() + Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+          hrEmail: `hr@${company.name.toLowerCase().replace(/\s+/g, "")}.com`,
+          salary: `${Math.floor(Math.random() * 10 + 4)} - ${Math.floor(Math.random() * 20 + 10)} LPA`,
+          openings: Math.floor(Math.random() * 10) + 1,
+          applicationLink: `${company.website ?? "https://example.com"}/careers`,
+          official_url: company.website ?? "https://example.com",
           active: true
         });
       }
@@ -244,10 +249,10 @@ async function seed() {
       users.push({
         name: `${getRandomItem(FIRST_NAMES)} ${getRandomItem(LAST_NAMES)}`,
         email: generateRandomEmail(),
-        password_hash: "hashed_password_sample",
-        role: getRandomItem(["user", "user", "user", "admin"]),
-        provider: "email",
-        created_at: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString()
+        passwordHash: "hashed_password_sample",
+        role: getRandomItem(["user", "user", "user", "admin"] as const),
+        provider: "email" as const,
+        createdAt: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000)
       });
     }
 
@@ -257,19 +262,19 @@ async function seed() {
     // ===== SEED 1000+ APPLICATIONS =====
     console.log("\n📝 Seeding 1000+ job applications...");
     const applications = [];
-    const statuses = ["Pending", "Reviewed", "Interview", "Offered", "Rejected"];
+    const statuses = ["Pending", "Reviewed", "Interview", "Offered", "Rejected"] as const;
 
     for (let i = 0; i < 1200; i++) {
       const randomUser = getRandomItem(insertedUsers);
       const randomJob = getRandomItem(insertedJobs);
       
       applications.push({
-        job_id: randomJob.id,
-        user_id: randomUser.id,
-        applicant_name: randomUser.name,
-        applicant_email: randomUser.email,
-        applicant_phone: `+91-${Math.floor(Math.random() * 9000000000 + 1000000000)}`,
-        applicant_address: getRandomItem([
+        jobId: randomJob.id,
+        userId: randomUser.id,
+        applicantName: randomUser.name,
+        applicantEmail: randomUser.email,
+        applicantPhone: `+91-${Math.floor(Math.random() * 9000000000 + 1000000000)}`,
+        applicantAddress: getRandomItem([
           "Bangalore, Karnataka",
           "Hyderabad, Telangana",
           "Pune, Maharashtra",
@@ -281,11 +286,11 @@ async function seed() {
         ]),
         education: `${getRandomItem(SUBJECTS)} from ${getRandomItem(COLLEGES)}`,
         qualification: getRandomItem(DOMAINS),
-        resume_url: `https://example.com/resume${i}.pdf`,
-        accepted_terms: true,
-        cover_letter: `I am interested in the ${randomJob.title} position at your company.`,
+        resumeUrl: `https://example.com/resume${i}.pdf`,
+        acceptedTerms: true,
+        coverLetter: `I am interested in the ${randomJob.title} position at your company.`,
         status: getRandomItem(statuses),
-        applied_at: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString()
+        appliedAt: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000)
       });
 
       if ((i + 1) % 200 === 0) {
@@ -318,8 +323,6 @@ async function seed() {
       {
         name: "JEE Main",
         fullName: "Joint Entrance Examination Main",
-        code: "JEE_MAIN",
-        category: "IT",
         description: "National level engineering entrance exam",
         examDate: "2026-01-25",
         applicationStartDate: "2025-11-01",
@@ -332,8 +335,6 @@ async function seed() {
       {
         name: "JEE Advanced",
         fullName: "Joint Entrance Examination Advanced",
-        code: "JEE_ADV",
-        category: "IT",
         description: "Advanced engineering entrance exam",
         examDate: "2026-06-02",
         applicationStartDate: "2026-05-01",
@@ -346,8 +347,6 @@ async function seed() {
       {
         name: "Karnataka CET",
         fullName: "Karnataka Common Entrance Test",
-        code: "KCET",
-        category: "IT",
         description: "State level engineering entrance exam",
         examDate: "2026-06-20",
         applicationStartDate: "2026-04-01",
@@ -360,8 +359,6 @@ async function seed() {
       {
         name: "GATE",
         fullName: "Graduate Aptitude Test in Engineering",
-        code: "GATE",
-        category: "IT",
         description: "Graduate engineering entrance exam",
         examDate: "2026-02-03",
         applicationStartDate: "2025-09-01",
@@ -374,8 +371,6 @@ async function seed() {
       {
         name: "NEET",
         fullName: "National Eligibility cum Entrance Test",
-        code: "NEET",
-        category: "NON_IT",
         description: "Medical entrance exam",
         examDate: "2026-05-17",
         applicationStartDate: "2026-02-01",
@@ -387,7 +382,7 @@ async function seed() {
       }
     ];
 
-    const insertedExams = await db.insert(examTable).values(exams).returning();
+    const insertedExams = await db.insert(examsTable).values(exams).returning();
     console.log(`✅ Seeded ${insertedExams.length} exams`);
 
     // ===== SEED STUDY MATERIALS =====
@@ -397,13 +392,14 @@ async function seed() {
 
     for (const exam of insertedExams) {
       for (const subject of subjects) {
+        const examSlug = exam.name.toLowerCase().replace(/\s+/g, "_");
         studyMaterials.push({
-          exam_id: exam.id,
+          examId: exam.id,
           title: `${exam.name} ${subject} Complete Notes`,
           subject: subject,
-          type: getRandomItem(["PDF", "Video", "Notes", "Practice_Test"]),
+          type: getRandomItem(["PDF", "Video", "Notes", "Practice_Test"] as const),
           description: `Comprehensive ${subject} study material for ${exam.name} with solved examples`,
-          url: `https://example.com/materials/${exam.code}_${subject.toLowerCase()}.pdf`
+          url: `https://example.com/materials/${examSlug}_${subject.toLowerCase()}.pdf`
         });
       }
     }

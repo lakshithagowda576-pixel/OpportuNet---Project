@@ -8,6 +8,8 @@ interface CompanyDetailsProps {
 }
 
 export const CompanyDetails: React.FC<CompanyDetailsProps> = ({ company }) => {
+  const websiteUrl = company.website || `https://www.google.com/search?q=${encodeURIComponent(`${company.name} official website`)}`;
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-700">
       <div className="flex items-center space-x-4 mb-6">
@@ -44,7 +46,7 @@ export const CompanyDetails: React.FC<CompanyDetailsProps> = ({ company }) => {
         <div className="flex items-center space-x-3 text-gray-600 dark:text-gray-300">
           <Globe className="w-5 h-5 text-[var(--brand-primary)]" />
           <a
-            href={company.website || "#"}
+            href={websiteUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="hover:underline"
@@ -53,7 +55,7 @@ export const CompanyDetails: React.FC<CompanyDetailsProps> = ({ company }) => {
                 eventType: "company_site_clicked",
                 eventCategory: "CompanyDetails",
                 eventAction: "click_website",
-                metadata: { companyId: company.id, website: company.website },
+                metadata: { companyId: company.id, website: websiteUrl },
               });
             }}
           >

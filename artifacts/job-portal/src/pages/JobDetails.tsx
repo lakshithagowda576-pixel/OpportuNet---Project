@@ -18,6 +18,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { useAuth } from "@/context/AuthContext";
 
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
+
 export default function JobDetails() {
   const [, params] = useRoute("/jobs/:id");
   const jobId = Number(params?.id);
@@ -80,9 +82,10 @@ export default function JobDetails() {
     if (!user || !user.resumeUrl) return;
     setIsRedirecting(true);
     try {
-      const response = await fetch("/api/applications", {
+      const response = await fetch(`${API_BASE}/api/applications`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           jobId,
           applicantName: user.name,

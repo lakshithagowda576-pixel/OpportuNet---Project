@@ -4,14 +4,17 @@ import { useAuth } from "@/context/AuthContext";
 import { trackEvent } from "@/lib/analytics";
 import { Loader2, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { GoogleAccountSelector } from "@/components/GoogleAccountSelector";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showGoogleSelector, setShowGoogleSelector] = useState(false);
   const { login, loginWithGoogle, loginWithGitHub } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
@@ -23,6 +26,42 @@ export default function LoginPage() {
       eventAction: "view",
       page: "/login",
     });
+
+    // Check if returning from OAuth - if so, store the account info
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("oauth_complete")) {
+      const storedUser = localStorage.getItem("last_oauth_user");
+      if (storedUser) {
+        try {
+          const user = JSON.parse(storedUser);
+          const saved = localStorage.getItem("google_accounts");
+          let accounts = saved ? JSON.parse(saved) : [];
+          
+          // Add or update this account
+          const existingIndex = accounts.findIndex((a: any) => a.email === user.email);
+          if (existingIndex >= 0) {
+            accounts[existingIndex].lastUsed = new Date().toISOString();
+            accounts = [accounts[existingIndex], ...accounts.slice(0, existingIndex), ...accounts.slice(existingIndex + 1)];
+          } else {
+            accounts.unshift({
+              email: user.email,
+              name: user.name,
+              lastUsed: new Date().toISOString(),
+            });
+          }
+          
+          // Keep only last 5 accounts
+          accounts = accounts.slice(0, 5);
+          localStorage.setItem("google_accounts", JSON.stringify(accounts));
+          localStorage.removeItem("last_oauth_user");
+          
+          // Clean up URL
+          window.history.replaceState({}, "", "/login");
+        } catch {
+          // Ignore errors
+        }
+      }
+    }
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,6 +81,15 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleAccountSelect = (selectedEmail?: string) => {
+    if (selectedEmail) {
+      // Pass selected email as parameter (for future use if needed)
+      console.log("Selected account:", selectedEmail);
+    }
+    // Always redirect to OAuth flow, which will show the account selector
+    loginWithGoogle();
   };
 
   return (
@@ -68,8 +116,9 @@ export default function LoginPage() {
 
             {/* OAuth Buttons */}
             <div className="space-y-3 mb-6">
+              <GoogleAccountSelector onSelectAccount={handleGoogleAccountSelect} isLoading={loading} />
               <button
-                onClick={loginWithGoogle}
+                onClick={handleGoogleAccountSelect}
                 className="w-full py-3 rounded-xl font-medium bg-white border-2 border-gray-200 text-gray-700 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-3"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">

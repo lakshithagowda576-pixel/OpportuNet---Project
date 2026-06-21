@@ -45,6 +45,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (res.ok) {
         const data = await res.json();
         setUser(data);
+
+        // Store Google/OAuth account info for quick selection next time
+        if (data.email && data.name) {
+          try {
+            const saved = localStorage.getItem("google_accounts");
+            let accounts = saved ? JSON.parse(saved) : [];
+            
+            // Add or update this account
+            const existingIndex = accounts.findIndex((a: any) => a.email === data.email);
+            if (existingIndex >= 0) {
+              accounts[existingIndex].lastUsed = new Date().toISOString();
+              accounts = [accounts[existingIndex], ...accounts.slice(0, existingIndex), ...accounts.slice(existingIndex + 1)];
+            } else {
+              accounts.unshift({
+                email: data.email,
+                name: data.name,
+                lastUsed: new Date().toISOString(),
+              });
+            }
+            
+            // Keep only last 5 accounts
+            accounts = accounts.slice(0, 5);
+            localStorage.setItem("google_accounts", JSON.stringify(accounts));
+          } catch {
+            // Ignore storage errors
+          }
+        }
       } else {
         setUser(null);
       }

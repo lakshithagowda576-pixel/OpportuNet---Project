@@ -11,6 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
+
 export default function PgCetApplyPage() {
   const [, params] = useRoute("/exams/:id/apply");
   const examId = Number(params?.id);
@@ -94,9 +96,10 @@ export default function PgCetApplyPage() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/applications", {
+      const response = await fetch(`${API_BASE}/api/applications`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           examId,
           userId: user?.id,

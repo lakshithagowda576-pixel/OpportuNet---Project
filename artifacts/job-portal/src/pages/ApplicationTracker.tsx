@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 const STATUS_STEPS = ["Pending", "Reviewed", "Interview", "Offered"];
 
 export default function ApplicationTracker() {
@@ -37,7 +38,9 @@ export default function ApplicationTracker() {
 
     const fetchApplications = async () => {
       try {
-        const response = await fetch("/api/applications");
+        const response = await fetch(`${API_BASE}/api/applications`, {
+          credentials: "include",
+        });
         const data = await response.json();
         setApplications(data || []);
         
@@ -347,7 +350,7 @@ export default function ApplicationTracker() {
                       </div>
                       {selectedApplication?.resumeUrl ? (
                         <a 
-                          href="about:blank" 
+                          href={selectedApplication.resumeUrl} 
                           target="_blank" 
                           rel="noreferrer" 
                           className="px-6 py-3 bg-white text-primary border border-primary/20 rounded-xl font-bold text-sm shadow-sm hover:shadow-md hover:bg-primary hover:text-white transition-all"

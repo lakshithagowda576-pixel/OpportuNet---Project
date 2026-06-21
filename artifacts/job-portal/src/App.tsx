@@ -19,6 +19,7 @@ import PgCetApplyPage from "@/pages/PgCetApplyPage";
 import AdminPanel from "@/pages/AdminPanel";
 import Profile from "@/pages/Profile";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
+import LegalPage from "@/pages/LegalPage";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -46,6 +47,9 @@ function Router() {
             <Route path="/admin" component={AdminPanel} />
             <Route path="/admin/analytics" component={AnalyticsDashboard} />
             <Route path="/profile" component={Profile} />
+            <Route path="/privacy">{() => <LegalPage type="privacy" />}</Route>
+            <Route path="/terms">{() => <LegalPage type="terms" />}</Route>
+            <Route path="/cookies">{() => <LegalPage type="cookies" />}</Route>
             <Route component={NotFound} />
           </Switch>
         </AppLayout>

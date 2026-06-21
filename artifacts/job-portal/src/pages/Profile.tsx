@@ -12,6 +12,8 @@ import { Link } from "wouter";
 import { format } from "date-fns";
 import { trackEvent } from "@/lib/analytics";
 
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
+
 export default function Profile() {
   const { user, logout } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
@@ -47,7 +49,9 @@ export default function Profile() {
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        const response = await fetch("/api/applications");
+        const response = await fetch(`${API_BASE}/api/applications`, {
+          credentials: "include",
+        });
         if (response.ok) {
           const data = await response.json();
           setApplications(data || []);
@@ -94,9 +98,10 @@ export default function Profile() {
     e.preventDefault();
     setIsUpdating(true);
     try {
-      const res = await fetch("/api/auth/profile", {
+      const res = await fetch(`${API_BASE}/api/auth/profile`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(editForm),
       });
       if (res.ok) {

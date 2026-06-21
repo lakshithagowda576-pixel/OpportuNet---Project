@@ -37,6 +37,32 @@ async function determineUserRole(email: string) {
   return "user";
 }
 
+function toAuthUser(user: typeof usersTable.$inferSelect) {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    avatar: user.avatar,
+    phone: user.phone,
+    address: user.address,
+    resumeUrl: user.resumeUrl,
+    education: user.education,
+    qualification: user.qualification,
+  };
+}
+
+function saveSession(req: any, res: any, onSaved: () => void) {
+  req.session!.save((err: unknown) => {
+    if (err) {
+      console.error("Session save error:", err);
+      res.status(500).json({ error: "Could not save login session." });
+      return;
+    }
+    onSaved();
+  });
+}
+
 // Register
 router.post("/register", async (req, res) => {
   try {
@@ -53,21 +79,7 @@ router.post("/register", async (req, res) => {
     }).returning();
     req.session!.userId = user.id;
     req.session!.userRole = user.role;
-    req.session!.save((err) => {
-      if (err) console.error("Session save error:", err);
-    });
-    res.status(201).json({ 
-      id: user.id, 
-      name: user.name, 
-      email: user.email, 
-      role: user.role, 
-      avatar: user.avatar,
-      phone: user.phone,
-      address: user.address,
-      resumeUrl: user.resumeUrl,
-      education: user.education,
-      qualification: user.qualification
-    });
+    saveSession(req, res, () => res.status(201).json(toAuthUser(user)));
   } catch (err: any) {
     res.status(400).json({ error: err.message || "Registration failed." });
   }
@@ -101,21 +113,7 @@ router.post("/login", async (req, res) => {
     
     req.session!.userId = user.id;
     req.session!.userRole = user.role;
-    req.session!.save((err) => {
-      if (err) console.error("Session save error:", err);
-    });
-    res.json({ 
-      id: user.id, 
-      name: user.name, 
-      email: user.email, 
-      role: user.role, 
-      avatar: user.avatar,
-      phone: user.phone,
-      address: user.address,
-      resumeUrl: user.resumeUrl,
-      education: user.education,
-      qualification: user.qualification
-    });
+    saveSession(req, res, () => res.json(toAuthUser(user)));
   } catch (err: any) {
     res.status(400).json({ error: err.message || "Login failed." });
   }
@@ -149,18 +147,7 @@ router.get("/me", async (req, res) => {
      }
   }
 
-  res.json({ 
-    id: user.id, 
-    name: user.name, 
-    email: user.email, 
-    role: user.role, 
-    avatar: user.avatar,
-    phone: user.phone,
-    address: user.address,
-    resumeUrl: user.resumeUrl,
-    education: user.education,
-    qualification: user.qualification
-  });
+  res.json(toAuthUser(user));
 });
 
 // Update Profile
@@ -220,13 +207,15 @@ async function handleSocialLogin(req: any, res: any, ghUser: any, primaryEmail: 
   
   // Use FRONTEND_URL if configured, otherwise try to stay on the same host
   const frontendUrl = process.env.FRONTEND_URL;
-  if (frontendUrl) {
-    res.redirect(frontendUrl);
-  } else {
-    // If not configured, we try to go to the root of the current host
-    // which should be the user-facing host (likely the frontend during dev)
-    res.redirect("/");
-  }
+  saveSession(req, res, () => {
+    if (frontendUrl) {
+      res.redirect(frontendUrl);
+    } else {
+      // If not configured, we try to go to the root of the current host
+      // which should be the user-facing host (likely the frontend during dev)
+      res.redirect("/");
+    }
+  });
 }
 
 router.get("/github", (req, res) => {
@@ -268,7 +257,7 @@ router.get("/google", (req, res) => {
   const clientId = process.env.GOOGLE_CLIENT_ID;
   if (!clientId) return res.redirect(getFrontendLoginErrorUrl("Google OAuth not configured"));
   const redirectUri = getOAuthRedirectUri(req, "google");
-  res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=email profile`);
+  res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=email profile&prompt=select_account`);
 });
 
 router.get("/google/callback", async (req, res) => {

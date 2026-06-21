@@ -354,9 +354,9 @@ export function AppLayout({ children }: AppLayoutProps) {
               © {new Date().getFullYear()} OpportuNet Portal. All rights reserved.
             </p>
             <div className="flex gap-8">
-              <a href="#" className="text-xs font-bold text-muted-foreground hover:text-primary transition-colors">Privacy Policy</a>
-              <a href="#" className="text-xs font-bold text-muted-foreground hover:text-primary transition-colors">Terms of Service</a>
-              <a href="#" className="text-xs font-bold text-muted-foreground hover:text-primary transition-colors">Cookie Settings</a>
+              <Link href="/privacy" className="text-xs font-bold text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link>
+              <Link href="/terms" className="text-xs font-bold text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link>
+              <Link href="/cookies" className="text-xs font-bold text-muted-foreground hover:text-primary transition-colors">Cookie Settings</Link>
             </div>
           </div>
         </div>

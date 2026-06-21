@@ -43,9 +43,14 @@ function validateIntegrationConfig() {
 
 async function ensureAdminUser() {
   const adminEmail = "admin@govportal.com";
+  const adminPassword = "Admin@123";
   const [existing] = await db.select().from(usersTable).where(eq(usersTable.email, adminEmail));
+  const passwordIsValid = existing?.passwordHash
+    ? await bcrypt.compare(adminPassword, existing.passwordHash).catch(() => false)
+    : false;
+
   if (!existing) {
-    const passwordHash = await bcrypt.hash("Admin@123", 10);
+    const passwordHash = await bcrypt.hash(adminPassword, 10);
     await db.insert(usersTable).values({
       name: "GovPortal Admin",
       email: adminEmail,
@@ -54,6 +59,15 @@ async function ensureAdminUser() {
       provider: "email",
     });
     logger.info("Default admin user created: admin@govportal.com / Admin@123");
+    return;
+  }
+
+  if (!passwordIsValid || existing.role !== "admin" || existing.provider !== "email") {
+    const passwordHash = await bcrypt.hash(adminPassword, 10);
+    await db.update(usersTable)
+      .set({ passwordHash, role: "admin", provider: "email" })
+      .where(eq(usersTable.id, existing.id));
+    logger.info("Default admin login repaired: admin@govportal.com / Admin@123");
   }
 }
 
