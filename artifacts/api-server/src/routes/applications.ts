@@ -241,8 +241,9 @@ router.post(
     try {
       const user = await getSessionUser(req);
       const body = req.body;
-      const resumeFile = Array.isArray(req.files?.resume) ? req.files.resume[0] : undefined;
-      const photoFile = Array.isArray(req.files?.photo) ? req.files.photo[0] : undefined;
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
+      const resumeFile = files?.resume?.[0];
+      const photoFile = files?.photo?.[0];
 
       // Check if already applied
       if (user || body.applicantEmail) {

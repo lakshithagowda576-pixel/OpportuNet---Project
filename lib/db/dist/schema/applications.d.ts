@@ -122,6 +122,23 @@ export declare const applicationsTable: import("drizzle-orm/pg-core").PgTableWit
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
+        applicantAge: import("drizzle-orm/pg-core").PgColumn<{
+            name: "applicant_age";
+            tableName: "applications";
+            dataType: "number";
+            columnType: "PgInteger";
+            data: number;
+            driverParam: string | number;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
         applicantAddress: import("drizzle-orm/pg-core").PgColumn<{
             name: "applicant_address";
             tableName: "applications";
@@ -226,6 +243,23 @@ export declare const applicationsTable: import("drizzle-orm/pg-core").PgTableWit
         }, {}, {}>;
         resumeUrl: import("drizzle-orm/pg-core").PgColumn<{
             name: "resume_url";
+            tableName: "applications";
+            dataType: "string";
+            columnType: "PgText";
+            data: string;
+            driverParam: string;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: [string, ...string[]];
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        photoUrl: import("drizzle-orm/pg-core").PgColumn<{
+            name: "photo_url";
             tableName: "applications";
             dataType: "string";
             columnType: "PgText";
@@ -409,10 +443,12 @@ export declare const insertApplicationSchema: import("zod/v4").ZodObject<{
     applicantName: import("zod/v4").ZodString;
     applicantEmail: import("zod/v4").ZodString;
     applicantPhone: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodString>>;
+    applicantAge: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodInt>>;
     applicantAddress: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodString>>;
     currentLocation: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodString>>;
     yearsOfExperience: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodString>>;
     currentCompany: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodString>>;
+    photoUrl: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodString>>;
     portfolioLink: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodString>>;
     linkedinProfile: import("zod/v4").ZodOptional<import("zod/v4").ZodNullable<import("zod/v4").ZodString>>;
     acceptedTerms: import("zod/v4").ZodOptional<import("zod/v4").ZodBoolean>;

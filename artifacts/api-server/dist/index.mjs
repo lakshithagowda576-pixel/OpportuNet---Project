@@ -73397,8 +73397,9 @@ router3.post(
     try {
       const user = await getSessionUser(req);
       const body = req.body;
-      const resumeFile = Array.isArray(req.files?.resume) ? req.files.resume[0] : void 0;
-      const photoFile = Array.isArray(req.files?.photo) ? req.files.photo[0] : void 0;
+      const files = req.files;
+      const resumeFile = files?.resume?.[0];
+      const photoFile = files?.photo?.[0];
       if (user || body.applicantEmail) {
         const [existing] = await db.select().from(applicationsTable).where(
           and(

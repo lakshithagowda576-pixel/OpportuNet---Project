@@ -45,6 +45,9 @@ pids
 *.seed
 *.pid.lock
 
+# Uploads
+/artifacts/api-server/uploads/
+
 # Yarn
 .yarn/cache
 .yarn/unplugged
