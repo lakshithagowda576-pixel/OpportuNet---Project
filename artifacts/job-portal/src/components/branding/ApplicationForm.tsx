@@ -275,7 +275,10 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ jobId, company
         ))}
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="relative min-h-[400px]">
+      <form onSubmit={handleSubmit(onSubmit, (errs) => {
+        console.error("Form validation errors:", errs);
+        toast.error("Please ensure all fields in previous steps are filled correctly.");
+      })} className="relative min-h-[400px]">
         <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div 
@@ -445,7 +448,9 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ jobId, company
                       I hereby declare that all information is true. Any false info may lead to disqualification.
                     </Label>
                   </div>
+                  {errors.declaration && <p className="text-xs text-red-500 font-medium">{errors.declaration.message}</p>}
                   <Input {...register("digitalSignature")} placeholder="Type full name to sign" className="bg-white/50 border-amber-200" />
+                  {errors.digitalSignature && <p className="text-xs text-red-500 font-medium">{errors.digitalSignature.message}</p>}
                 </div>
               )}
             </motion.div>
@@ -474,8 +479,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ jobId, company
             </Button>
           ) : (
             <Button 
-              type="button"
-              onClick={handleSubmit(onSubmit)}
+              type="submit"
               disabled={isSubmitting}
               className="flex-[2] h-14 rounded-2xl bg-slate-900 hover:bg-black text-white font-black text-lg shadow-2xl"
             >

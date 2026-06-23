@@ -3,6 +3,7 @@ import "./lib/i18n";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
+import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { AuthProvider } from "@/context/AuthContext";
@@ -73,6 +74,7 @@ function App() {
               <Router />
             </WouterRouter>
             <Toaster />
+            <SonnerToaster />
           </AuthProvider>
         </TooltipProvider>
       </QueryClientProvider>
