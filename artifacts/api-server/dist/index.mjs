@@ -72096,6 +72096,7 @@ var applicationsTable = pgTable("applications", {
   applicantName: text("applicant_name").notNull(),
   applicantEmail: text("applicant_email").notNull(),
   applicantPhone: text("applicant_phone"),
+  applicantAge: integer("applicant_age"),
   applicantAddress: text("applicant_address"),
   education: text("education"),
   qualification: text("qualification"),
@@ -72103,6 +72104,7 @@ var applicationsTable = pgTable("applications", {
   yearsOfExperience: text("years_of_experience"),
   currentCompany: text("current_company"),
   resumeUrl: text("resume_url"),
+  photoUrl: text("photo_url"),
   portfolioLink: text("portfolio_link"),
   linkedinProfile: text("linkedin_profile"),
   skills: text("skills"),
@@ -73245,13 +73247,18 @@ var upload = (0, import_multer.default)({
   limits: { fileSize: 5 * 1024 * 1024 },
   // 5MB limit
   fileFilter: (req, file2, cb) => {
-    const allowedTypes = [".pdf", ".doc", ".docx"];
+    const resumeTypes = [".pdf", ".doc", ".docx"];
+    const photoTypes = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
     const ext = path.extname(file2.originalname).toLowerCase();
-    if (allowedTypes.includes(ext)) {
-      cb(null, true);
-    } else {
-      cb(new Error("Only .pdf, .doc and .docx files are allowed"));
+    if (file2.fieldname === "resume") {
+      if (resumeTypes.includes(ext)) return cb(null, true);
+      return cb(new Error("Resume must be a .pdf, .doc, or .docx file"));
     }
+    if (file2.fieldname === "photo") {
+      if (photoTypes.includes(ext)) return cb(null, true);
+      return cb(new Error("Photo must be a .png, .jpg, .jpeg, .gif, or .webp file"));
+    }
+    cb(new Error("Unsupported file upload field"));
   }
 });
 var router3 = (0, import_express3.Router)();
@@ -73380,51 +73387,61 @@ router3.post("/applications", async (req, res) => {
   res.status(201).json(formattedApp);
   sendApplicationConfirmationEmail(app2.id);
 });
-router3.post("/applications/direct", upload.single("resume"), async (req, res) => {
-  try {
-    const user = await getSessionUser(req);
-    const body = req.body;
-    const file2 = req.file;
-    if (user || body.applicantEmail) {
-      const [existing] = await db.select().from(applicationsTable).where(
-        and(
-          eq(applicationsTable.jobId, parseInt(body.jobId)),
-          eq(applicationsTable.applicantEmail, user?.email || body.applicantEmail)
-        )
-      );
-      if (existing) {
-        return res.status(400).json({ error: "You have already applied for this job." });
+router3.post(
+  "/applications/direct",
+  upload.fields([
+    { name: "resume", maxCount: 1 },
+    { name: "photo", maxCount: 1 }
+  ]),
+  async (req, res) => {
+    try {
+      const user = await getSessionUser(req);
+      const body = req.body;
+      const resumeFile = Array.isArray(req.files?.resume) ? req.files.resume[0] : void 0;
+      const photoFile = Array.isArray(req.files?.photo) ? req.files.photo[0] : void 0;
+      if (user || body.applicantEmail) {
+        const [existing] = await db.select().from(applicationsTable).where(
+          and(
+            eq(applicationsTable.jobId, parseInt(body.jobId)),
+            eq(applicationsTable.applicantEmail, user?.email || body.applicantEmail)
+          )
+        );
+        if (existing) {
+          return res.status(400).json({ error: "You have already applied for this job." });
+        }
       }
+      const [app2] = await db.insert(applicationsTable).values({
+        jobId: parseInt(body.jobId),
+        userId: user?.id || null,
+        applicantName: body.applicantName,
+        applicantEmail: body.applicantEmail,
+        applicantPhone: body.applicantPhone,
+        applicantAge: body.applicantAge ? parseInt(body.applicantAge, 10) : null,
+        currentLocation: body.currentLocation,
+        yearsOfExperience: body.yearsOfExperience,
+        currentCompany: body.currentCompany,
+        resumeUrl: resumeFile ? `/uploads/${resumeFile.filename}` : body.resumeUrl || null,
+        photoUrl: photoFile ? `/uploads/${photoFile.filename}` : null,
+        portfolioLink: body.portfolioLink,
+        linkedinProfile: body.linkedinProfile,
+        education: body.education,
+        skills: body.skills,
+        coverLetter: body.coverLetter,
+        status: "Pending",
+        acceptedTerms: true
+      }).returning();
+      sendApplicationConfirmationEmail(app2.id);
+      return res.status(201).json({
+        success: true,
+        applicationId: app2.id,
+        message: "Application submitted successfully"
+      });
+    } catch (error40) {
+      console.error("Direct application error:", error40);
+      return res.status(500).json({ error: error40.message || "Failed to submit application" });
     }
-    const [app2] = await db.insert(applicationsTable).values({
-      jobId: parseInt(body.jobId),
-      userId: user?.id || null,
-      applicantName: body.applicantName,
-      applicantEmail: body.applicantEmail,
-      applicantPhone: body.applicantPhone,
-      currentLocation: body.currentLocation,
-      yearsOfExperience: body.yearsOfExperience,
-      currentCompany: body.currentCompany,
-      resumeUrl: file2 ? `/uploads/${file2.filename}` : body.resumeUrl || null,
-      portfolioLink: body.portfolioLink,
-      linkedinProfile: body.linkedinProfile,
-      education: body.education,
-      skills: body.skills,
-      coverLetter: body.coverLetter,
-      status: "Pending",
-      acceptedTerms: true
-    }).returning();
-    sendApplicationConfirmationEmail(app2.id);
-    return res.status(201).json({
-      success: true,
-      applicationId: app2.id,
-      message: "Application submitted successfully"
-    });
-  } catch (error40) {
-    console.error("Direct application error:", error40);
-    return res.status(500).json({ error: error40.message || "Failed to submit application" });
   }
-});
+);
 router3.patch("/applications/:id/status", async (req, res) => {
   const params = UpdateApplicationStatusParams.parse({ id: parseInt(req.params.id) });
   const body = UpdateApplicationStatusBody.parse(req.body);

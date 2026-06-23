@@ -35,13 +35,21 @@ const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
   fileFilter: (req, file, cb) => {
-    const allowedTypes = [".pdf", ".doc", ".docx"];
+    const resumeTypes = [".pdf", ".doc", ".docx"];
+    const photoTypes = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
     const ext = path.extname(file.originalname).toLowerCase();
-    if (allowedTypes.includes(ext)) {
-      cb(null, true);
-    } else {
-      cb(new Error("Only .pdf, .doc and .docx files are allowed"));
+
+    if (file.fieldname === "resume") {
+      if (resumeTypes.includes(ext)) return cb(null, true);
+      return cb(new Error("Resume must be a .pdf, .doc, or .docx file"));
     }
+
+    if (file.fieldname === "photo") {
+      if (photoTypes.includes(ext)) return cb(null, true);
+      return cb(new Error("Photo must be a .png, .jpg, .jpeg, .gif, or .webp file"));
+    }
+
+    cb(new Error("Unsupported file upload field"));
   },
 });
 
@@ -223,50 +231,59 @@ router.post("/applications", async (req, res) => {
   sendApplicationConfirmationEmail(app.id);
 });
 
-router.post("/applications/direct", upload.single("resume"), async (req, res) => {
-  try {
-    const user = await getSessionUser(req);
-    const body = req.body;
-    const file = req.file;
+router.post(
+  "/applications/direct",
+  upload.fields([
+    { name: "resume", maxCount: 1 },
+    { name: "photo", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    try {
+      const user = await getSessionUser(req);
+      const body = req.body;
+      const resumeFile = Array.isArray(req.files?.resume) ? req.files.resume[0] : undefined;
+      const photoFile = Array.isArray(req.files?.photo) ? req.files.photo[0] : undefined;
 
-    // Check if already applied
-    if (user || body.applicantEmail) {
-      const [existing] = await db
-        .select()
-        .from(applicationsTable)
-        .where(
-          and(
-            eq(applicationsTable.jobId, parseInt(body.jobId)),
-            eq(applicationsTable.applicantEmail, user?.email || body.applicantEmail)
-          )
-        );
+      // Check if already applied
+      if (user || body.applicantEmail) {
+        const [existing] = await db
+          .select()
+          .from(applicationsTable)
+          .where(
+            and(
+              eq(applicationsTable.jobId, parseInt(body.jobId)),
+              eq(applicationsTable.applicantEmail, user?.email || body.applicantEmail)
+            )
+          );
 
-      if (existing) {
-        return res.status(400).json({ error: "You have already applied for this job." });
+        if (existing) {
+          return res.status(400).json({ error: "You have already applied for this job." });
+        }
       }
-    }
 
-    const [app] = await db
-      .insert(applicationsTable)
-      .values({
-        jobId: parseInt(body.jobId),
-        userId: user?.id || null,
-        applicantName: body.applicantName,
-        applicantEmail: body.applicantEmail,
-        applicantPhone: body.applicantPhone,
-        currentLocation: body.currentLocation,
-        yearsOfExperience: body.yearsOfExperience,
-        currentCompany: body.currentCompany,
-        resumeUrl: file ? `/uploads/${file.filename}` : (body.resumeUrl || null),
-        portfolioLink: body.portfolioLink,
-        linkedinProfile: body.linkedinProfile,
-        education: body.education,
-        skills: body.skills,
-        coverLetter: body.coverLetter,
-        status: "Pending" as any,
-        acceptedTerms: true,
-      })
-      .returning();
+      const [app] = await db
+        .insert(applicationsTable)
+        .values({
+          jobId: parseInt(body.jobId),
+          userId: user?.id || null,
+          applicantName: body.applicantName,
+          applicantEmail: body.applicantEmail,
+          applicantPhone: body.applicantPhone,
+          applicantAge: body.applicantAge ? parseInt(body.applicantAge, 10) : null,
+          currentLocation: body.currentLocation,
+          yearsOfExperience: body.yearsOfExperience,
+          currentCompany: body.currentCompany,
+          resumeUrl: resumeFile ? `/uploads/${resumeFile.filename}` : (body.resumeUrl || null),
+          photoUrl: photoFile ? `/uploads/${photoFile.filename}` : null,
+          portfolioLink: body.portfolioLink,
+          linkedinProfile: body.linkedinProfile,
+          education: body.education,
+          skills: body.skills,
+          coverLetter: body.coverLetter,
+          status: "Pending" as any,
+          acceptedTerms: true,
+        })
+        .returning();
 
     // Send confirmation email
     sendApplicationConfirmationEmail(app.id);

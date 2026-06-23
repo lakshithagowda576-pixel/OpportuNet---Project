@@ -26,6 +26,7 @@ export default defineConfig({
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
     sourcemap: false,
+    chunkSizeWarningLimit: 1500,
   },
   server: {
     port,

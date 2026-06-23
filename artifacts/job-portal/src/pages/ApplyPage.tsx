@@ -11,18 +11,32 @@ import { Loader2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const ApplyPage: React.FC = () => {
-  const [, params] = useRoute("/apply/:jobId");
-  const jobId = params?.jobId;
+  const [, params] = useRoute("/jobs/:id/apply");
+  const jobId = params?.id;
 
   // Fetch job details
   const { data: job, isLoading: isLoadingJob } = useQuery<Job>({
-    queryKey: [`/api/jobs/${jobId}`],
+    queryKey: ["job", jobId],
+    queryFn: async () => {
+      const response = await fetch(`/api/jobs/${jobId}`);
+      if (!response.ok) {
+        throw new Error("Job not found");
+      }
+      return response.json();
+    },
     enabled: !!jobId,
   });
 
   // Fetch company branding details
   const { data: company, isLoading: isLoadingCompany } = useQuery<Company>({
-    queryKey: [`/api/companies/${job?.company}`],
+    queryKey: ["company", job?.company],
+    queryFn: async () => {
+      const response = await fetch(`/api/companies/${job?.company}`);
+      if (!response.ok) {
+        throw new Error("Company not found");
+      }
+      return response.json();
+    },
     enabled: !!job?.company,
   });
 

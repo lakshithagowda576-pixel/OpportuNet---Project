@@ -14,8 +14,14 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 
-const applicationSchema = z.object({
+const applicationSchema = (isGovernment: boolean) => z.object({
   applicantName: z.string().min(2, "Name is too short"),
+  applicantAge: z.string()
+    .min(1, "Age is required")
+    .refine((value) => {
+      const age = Number(value);
+      return Number.isInteger(age) && age > 0 && age < 120;
+    }, "Enter a valid age"),
   applicantEmail: z.string().email("Invalid email address"),
   applicantPhone: z.string().min(10, "Invalid phone number"),
   currentLocation: z.string().min(2, "Location is required"),
@@ -26,11 +32,29 @@ const applicationSchema = z.object({
   skills: z.string().min(5, "Please list some skills"),
   education: z.string().min(5, "Education details are required"),
   coverLetter: z.string().optional(),
-  declaration: z.boolean().refine(v => v === true, "You must accept the declaration"),
+  declaration: z.boolean().optional(),
   digitalSignature: z.string().optional(),
+}).superRefine((data, ctx) => {
+  if (isGovernment) {
+    if (data.declaration !== true) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["declaration"],
+        message: "You must accept the declaration",
+      });
+    }
+
+    if (!data.digitalSignature || data.digitalSignature.trim().length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["digitalSignature"],
+        message: "Digital signature is required for government applications",
+      });
+    }
+  }
 });
 
-type ApplicationFormData = z.infer<typeof applicationSchema>;
+type ApplicationFormData = z.infer<ReturnType<typeof applicationSchema>>;
 
 interface ApplicationFormProps {
   jobId: number;
@@ -44,6 +68,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ jobId, company
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
 
   const {
     register,
@@ -52,7 +77,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ jobId, company
     trigger,
     formState: { errors },
   } = useForm<ApplicationFormData>({
-    resolver: zodResolver(applicationSchema),
+    resolver: zodResolver(applicationSchema(isGovernment ?? false)),
     defaultValues: {
       declaration: false,
     }
@@ -83,7 +108,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ jobId, company
   const nextStep = async () => {
     let fieldsToValidate: (keyof ApplicationFormData)[] = [];
     if (step === 1) {
-      fieldsToValidate = ["applicantName", "applicantEmail", "applicantPhone", "currentLocation"];
+      fieldsToValidate = ["applicantName", "applicantAge", "applicantEmail", "applicantPhone", "currentLocation"];
     } else if (step === 2) {
       fieldsToValidate = ["yearsOfExperience", "education", "skills"];
     }
@@ -116,24 +141,44 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ jobId, company
       return;
     }
 
+    if (!photoFile) {
+      toast.error("Please upload your photo");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const formData = new FormData();
       formData.append("jobId", jobId.toString());
+      formData.append("applicantName", data.applicantName);
+      formData.append("applicantAge", data.applicantAge);
+      formData.append("applicantEmail", data.applicantEmail);
+      formData.append("applicantPhone", data.applicantPhone);
+      formData.append("currentLocation", data.currentLocation);
+      formData.append("yearsOfExperience", data.yearsOfExperience);
+      formData.append("currentCompany", data.currentCompany || "");
+      formData.append("portfolioLink", data.portfolioLink || "");
+      formData.append("linkedinProfile", data.linkedinProfile || "");
+      formData.append("education", data.education);
+      formData.append("skills", data.skills);
+      formData.append("coverLetter", data.coverLetter || "");
+      if (data.declaration !== undefined) {
+        formData.append("declaration", String(data.declaration));
+      }
+      if (data.digitalSignature) {
+        formData.append("digitalSignature", data.digitalSignature);
+      }
+
       if (resumeFile) {
         formData.append("resume", resumeFile);
       } else if (user?.resumeUrl) {
         formData.append("resumeUrl", user.resumeUrl);
       }
-      
-      Object.entries(data).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          formData.append(key, value.toString());
-        }
-      });
+      formData.append("photo", photoFile);
 
       const response = await fetch("/api/applications/direct", {
         method: "POST",
+        credentials: "include",
         body: formData,
       });
 
@@ -253,6 +298,11 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ jobId, company
                   {errors.applicantEmail && <p className="text-xs text-red-500 font-medium">{errors.applicantEmail.message}</p>}
                 </div>
                 <div className="space-y-2">
+                  <Label className="text-sm font-bold uppercase tracking-tight">Age</Label>
+                  <Input {...register("applicantAge")} placeholder="e.g. 28" className="h-12 rounded-xl border-gray-200" />
+                  {errors.applicantAge && <p className="text-xs text-red-500 font-medium">{errors.applicantAge.message}</p>}
+                </div>
+                <div className="space-y-2">
                   <Label className="text-sm font-bold uppercase tracking-tight">Phone Number</Label>
                   <Input {...register("applicantPhone")} placeholder="+91 98765 43210" className="h-12 rounded-xl border-gray-200" />
                   {errors.applicantPhone && <p className="text-xs text-red-500 font-medium">{errors.applicantPhone.message}</p>}
@@ -341,6 +391,34 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ jobId, company
                 </div>
               </div>
 
+              <div className="space-y-4">
+                <Label className="text-sm font-bold uppercase tracking-tight">Applicant Photo</Label>
+                <div 
+                  className={`border-2 border-dashed rounded-2xl p-10 text-center cursor-pointer transition-all hover:bg-gray-50 dark:hover:bg-gray-700/30 ${
+                    photoFile ? 'border-blue-500 bg-blue-50/50' : 'border-gray-200'
+                  }`}
+                  onClick={() => document.getElementById('photo-upload')?.click()}
+                >
+                  <input id="photo-upload" type="file" className="hidden" accept="image/*" onChange={(e) => setPhotoFile(e.target.files?.[0] || null)} />
+                  {photoFile ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <img
+                        src={URL.createObjectURL(photoFile)}
+                        alt="Applicant photo"
+                        className="mx-auto h-24 w-24 rounded-3xl object-cover border border-blue-200 shadow-sm"
+                      />
+                      <p className="font-bold text-blue-700">{photoFile.name}</p>
+                      <p className="text-xs text-blue-600">Click to replace</p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-2">
+                      <Upload className="w-10 h-10 text-gray-400" />
+                      <p className="text-gray-600 font-medium">Click to upload your photo</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label className="text-sm font-bold uppercase tracking-tight">LinkedIn Profile</Label>
@@ -396,7 +474,8 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ jobId, company
             </Button>
           ) : (
             <Button 
-              type="submit" 
+              type="button"
+              onClick={handleSubmit(onSubmit)}
               disabled={isSubmitting}
               className="flex-[2] h-14 rounded-2xl bg-slate-900 hover:bg-black text-white font-black text-lg shadow-2xl"
             >
@@ -406,7 +485,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ jobId, company
                   Finalizing...
                 </>
               ) : (
-                "Submit Application Now"
+                "Submit the application"
               )}
             </Button>
           )}
