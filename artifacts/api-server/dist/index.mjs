@@ -73310,12 +73310,99 @@ router3.post("/applications/pre-register", async (req, res) => {
     res.status(500).json({ error: err.message || "Pre-registration failed" });
   }
 });
-router3.use("/applications", requireAuth);
 async function getSessionUser(req) {
   if (!req.session?.userId) return null;
   const [user] = await db.select().from(usersTable).where(eq(usersTable.id, req.session.userId));
   return user;
 }
+router3.post(
+  "/applications/direct",
+  upload.fields([
+    { name: "resume", maxCount: 1 },
+    { name: "photo", maxCount: 1 }
+  ]),
+  async (req, res) => {
+    try {
+      const user = await getSessionUser(req);
+      const body = req.body;
+      const files = req.files;
+      const resumeFile = files?.resume?.[0];
+      const photoFile = files?.photo?.[0];
+      if (user || body.applicantEmail) {
+        const [existing] = await db.select().from(applicationsTable).where(
+          and(
+            eq(applicationsTable.jobId, parseInt(body.jobId)),
+            eq(applicationsTable.applicantEmail, user?.email || body.applicantEmail)
+          )
+        );
+        if (existing) {
+          return res.status(400).json({ error: "You have already applied for this job." });
+        }
+      }
+      const [app2] = await db.insert(applicationsTable).values({
+        jobId: parseInt(body.jobId),
+        userId: user?.id || null,
+        applicantName: body.applicantName,
+        applicantEmail: body.applicantEmail,
+        applicantPhone: body.applicantPhone,
+        applicantAge: body.applicantAge ? parseInt(body.applicantAge, 10) : null,
+        currentLocation: body.currentLocation,
+        yearsOfExperience: body.yearsOfExperience,
+        currentCompany: body.currentCompany,
+        resumeUrl: resumeFile ? `/uploads/${resumeFile.filename}` : body.resumeUrl || null,
+        photoUrl: photoFile ? `/uploads/${photoFile.filename}` : null,
+        portfolioLink: body.portfolioLink,
+        linkedinProfile: body.linkedinProfile,
+        education: body.education,
+        skills: body.skills,
+        coverLetter: body.coverLetter,
+        status: "Pending",
+        acceptedTerms: true
+      }).returning();
+      sendApplicationConfirmationEmail(app2.id);
+      return res.status(201).json({
+        success: true,
+        applicationId: app2.id,
+        message: "Application submitted successfully"
+      });
+    } catch (error40) {
+      console.error("Direct application error:", error40);
+      return res.status(500).json({ error: error40.message || "Failed to submit application" });
+    }
+  }
+);
+router3.post("/applications/track", async (req, res) => {
+  const { jobId, applicantName, applicantEmail } = req.body;
+  if (!jobId || !applicantName || !applicantEmail) {
+    res.status(400).json({ error: "Missing required fields" });
+    return;
+  }
+  const [job] = await db.select().from(jobsTable).where(eq(jobsTable.id, jobId));
+  if (!job) {
+    res.status(404).json({ error: "Job not found" });
+    return;
+  }
+  const user = await getSessionUser(req);
+  const [app2] = await db.insert(applicationsTable).values({
+    jobId,
+    userId: user?.id,
+    applicantName: user?.name || applicantName,
+    applicantEmail: user?.email || applicantEmail,
+    status: "Redirected",
+    acceptedTerms: true
+  }).returning();
+  const normalizedJob = normalizeJobRecord(job);
+  sendApplicationConfirmationEmail(app2.id);
+  res.json({
+    trackingId: app2.id,
+    officialUrl: normalizedJob.official_url,
+    official_url: normalizedJob.official_url,
+    applicationLink: normalizedJob.applicationLink,
+    hrEmail: normalizedJob.hrEmail || buildDefaultHrEmail(job.company),
+    success: true
+  });
+});
+router3.use("/applications", requireAuth);
 router3.get("/applications", async (req, res) => {
   const user = await getSessionUser(req);
   if (!user) {
@@ -73387,62 +73474,6 @@ router3.post("/applications", async (req, res) => {
   res.status(201).json(formattedApp);
   sendApplicationConfirmationEmail(app2.id);
 });
-router3.post(
-  "/applications/direct",
-  upload.fields([
-    { name: "resume", maxCount: 1 },
-    { name: "photo", maxCount: 1 }
-  ]),
-  async (req, res) => {
-    try {
-      const user = await getSessionUser(req);
-      const body = req.body;
-      const files = req.files;
-      const resumeFile = files?.resume?.[0];
-      const photoFile = files?.photo?.[0];
-      if (user || body.applicantEmail) {
-        const [existing] = await db.select().from(applicationsTable).where(
-          and(
-            eq(applicationsTable.jobId, parseInt(body.jobId)),
-            eq(applicationsTable.applicantEmail, user?.email || body.applicantEmail)
-          )
-        );
-        if (existing) {
-          return res.status(400).json({ error: "You have already applied for this job." });
-        }
-      }
-      const [app2] = await db.insert(applicationsTable).values({
-        jobId: parseInt(body.jobId),
-        userId: user?.id || null,
-        applicantName: body.applicantName,
-        applicantEmail: body.applicantEmail,
-        applicantPhone: body.applicantPhone,
-        applicantAge: body.applicantAge ? parseInt(body.applicantAge, 10) : null,
-        currentLocation: body.currentLocation,
-        yearsOfExperience: body.yearsOfExperience,
-        currentCompany: body.currentCompany,
-        resumeUrl: resumeFile ? `/uploads/${resumeFile.filename}` : body.resumeUrl || null,
-        photoUrl: photoFile ? `/uploads/${photoFile.filename}` : null,
-        portfolioLink: body.portfolioLink,
-        linkedinProfile: body.linkedinProfile,
-        education: body.education,
-        skills: body.skills,
-        coverLetter: body.coverLetter,
-        status: "Pending",
-        acceptedTerms: true
-      }).returning();
-      sendApplicationConfirmationEmail(app2.id);
-      return res.status(201).json({
-        success: true,
-        applicationId: app2.id,
-        message: "Application submitted successfully"
-      });
-    } catch (error40) {
-      console.error("Direct application error:", error40);
-      return res.status(500).json({ error: error40.message || "Failed to submit application" });
-    }
-  }
-);
 router3.patch("/applications/:id/status", async (req, res) => {
   const params = UpdateApplicationStatusParams.parse({ id: parseInt(req.params.id) });
   const body = UpdateApplicationStatusBody.parse(req.body);
@@ -73470,37 +73501,6 @@ router3.get("/jobs/:id/applicant-count", async (req, res) => {
     jobId: params.id,
     total: apps.length,
     byStatus
-  });
-});
-router3.post("/applications/track", async (req, res) => {
-  const { jobId, applicantName, applicantEmail } = req.body;
-  if (!jobId || !applicantName || !applicantEmail) {
-    res.status(400).json({ error: "Missing required fields" });
-    return;
-  }
-  const [job] = await db.select().from(jobsTable).where(eq(jobsTable.id, jobId));
-  if (!job) {
-    res.status(404).json({ error: "Job not found" });
-    return;
-  }
-  const user = await getSessionUser(req);
-  const [app2] = await db.insert(applicationsTable).values({
-    jobId,
-    userId: user?.id,
-    applicantName: user?.name || applicantName,
-    applicantEmail: user?.email || applicantEmail,
-    status: "Redirected",
-    acceptedTerms: true
-  }).returning();
-  const normalizedJob = normalizeJobRecord(job);
-  sendApplicationConfirmationEmail(app2.id);
-  res.json({
-    trackingId: app2.id,
-    officialUrl: normalizedJob.official_url,
-    official_url: normalizedJob.official_url,
-    applicationLink: normalizedJob.applicationLink,
-    hrEmail: normalizedJob.hrEmail || buildDefaultHrEmail(job.company),
-    success: true
   });
 });
 router3.get("/applications/summary", async (req, res) => {
@@ -91947,7 +91947,18 @@ app.use((0, import_cors.default)({
   origin: true,
   credentials: true
 }));
-app.use(import_express13.default.json());
+app.use(import_express13.default.json({
+  verify: (req, res, buf) => {
+    req.rawBody = buf.toString();
+  }
+}));
+app.use((err, req, res, next) => {
+  if (err && "status" in err && err.status === 400 && "body" in err) {
+    logger.error({ err, rawBody: req.rawBody }, "JSON parsing error on request");
+    return res.status(400).json({ error: "Invalid JSON payload", details: err.message });
+  }
+  next();
+});
 app.use(import_express13.default.urlencoded({ extended: true }));
 var sessionSecret = process.env.SESSION_SECRET || "govportal-secret-key-change-in-production";
 var databaseUrl = process.env.DATABASE_URL;

@@ -28,7 +28,18 @@ app.use(cors({
   origin: true,
   credentials: true,
 }));
-app.use(express.json());
+app.use(express.json({
+  verify: (req: any, res, buf) => {
+    req.rawBody = buf.toString();
+  }
+}));
+app.use((err: any, req: any, res: any, next: any) => {
+  if (err && 'status' in err && err.status === 400 && 'body' in err) {
+    logger.error({ err, rawBody: req.rawBody }, "JSON parsing error on request");
+    return res.status(400).json({ error: "Invalid JSON payload", details: err.message });
+  }
+  next();
+});
 app.use(express.urlencoded({ extended: true }));
 
 const sessionSecret = process.env.SESSION_SECRET || "govportal-secret-key-change-in-production";

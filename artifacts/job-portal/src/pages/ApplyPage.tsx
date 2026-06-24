@@ -10,6 +10,8 @@ import { ApplicationForm } from "@/components/branding/ApplicationForm";
 import { Loader2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+import apiFetch from "@/lib/api-client";
+
 const ApplyPage: React.FC = () => {
   const [, params] = useRoute("/jobs/:id/apply");
   const jobId = params?.id;
@@ -18,7 +20,7 @@ const ApplyPage: React.FC = () => {
   const { data: job, isLoading: isLoadingJob } = useQuery<Job>({
     queryKey: ["job", jobId],
     queryFn: async () => {
-      const response = await fetch(`/api/jobs/${jobId}`);
+      const response = await apiFetch(`/jobs/${jobId}`);
       if (!response.ok) {
         throw new Error("Job not found");
       }
@@ -31,7 +33,7 @@ const ApplyPage: React.FC = () => {
   const { data: company, isLoading: isLoadingCompany } = useQuery<Company>({
     queryKey: ["company", job?.company],
     queryFn: async () => {
-      const response = await fetch(`/api/companies/${job?.company}`);
+      const response = await apiFetch(`/companies/${job?.company}`);
       if (!response.ok) {
         throw new Error("Company not found");
       }
@@ -52,6 +54,8 @@ const ApplyPage: React.FC = () => {
     }
   }, [job, jobId]);
 
+  const isFuture = job ? new Date() < new Date(job.startDate) : false;
+
   if (isLoadingJob || isLoadingCompany) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -64,6 +68,16 @@ const ApplyPage: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen text-center px-4">
         <h2 className="text-2xl font-bold mb-4">Job Not Found</h2>
+        <Button onClick={() => window.history.back()}>Go Back</Button>
+      </div>
+    );
+  }
+
+  if (isFuture) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen text-center px-4 max-w-md mx-auto space-y-4">
+        <h2 className="text-2xl font-bold">Applications Not Open</h2>
+        <p className="text-gray-500">Applications for this position will open on {new Date(job.startDate).toLocaleDateString()}. Please pre-register on the job page to get notified.</p>
         <Button onClick={() => window.history.back()}>Go Back</Button>
       </div>
     );

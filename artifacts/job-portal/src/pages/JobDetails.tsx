@@ -17,6 +17,8 @@ import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { useAuth } from "@/context/AuthContext";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { PreRegisterForm } from "@/components/PreRegisterForm";
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 
@@ -33,6 +35,7 @@ export default function JobDetails() {
   const [hasApplied, setHasApplied] = useState(false);
   const [showRedirectModal, setShowRedirectModal] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [showPreRegister, setShowPreRegister] = useState(false);
 
   useEffect(() => {
     if (job) {
@@ -47,7 +50,8 @@ export default function JobDetails() {
   }, [job, jobId]);
 
   const isClosed = new Date() > new Date(job?.endDate || new Date());
-  const canApply = user && !isClosed;
+  const isFuture = job ? new Date() < new Date(job.startDate) : false;
+  const canApply = user && !isClosed && !isFuture;
 
   const getShiftLabel = (shift: string) => {
     switch (shift) {
@@ -187,36 +191,45 @@ export default function JobDetails() {
                </div>
             )}
             {!hasApplied && (
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <Link 
-                  href={`/jobs/${jobId}/apply`}
-                  className={`w-full px-6 py-4 rounded-xl font-bold text-lg text-center transition-all duration-300 flex items-center justify-center gap-2 ${
-                    canApply
-                      ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-1'
-                      : 'bg-muted text-muted-foreground cursor-not-allowed'
-                  }`}
-                  onClick={(e) => {
-                    if (!canApply) {
-                      e.preventDefault();
-                    }
-                  }}
+              isFuture ? (
+                <button
+                  onClick={() => setShowPreRegister(true)}
+                  className="w-full px-6 py-4 rounded-xl font-bold text-lg text-center transition-all duration-300 flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
                 >
-                  <BookOpen className="w-5 h-5" /> Apply Here
-                </Link>
+                  <Sparkles className="w-5 h-5" /> Pre-Register
+                </button>
+              ) : (
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Link 
+                    href={`/jobs/${jobId}/apply`}
+                    className={`w-full px-6 py-4 rounded-xl font-bold text-lg text-center transition-all duration-300 flex items-center justify-center gap-2 ${
+                      canApply
+                        ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-1'
+                        : 'bg-muted text-muted-foreground cursor-not-allowed'
+                    }`}
+                    onClick={(e) => {
+                      if (!canApply) {
+                        e.preventDefault();
+                      }
+                    }}
+                  >
+                    <BookOpen className="w-5 h-5" /> Apply Here
+                  </Link>
 
-                <a
-                  href={applyUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`w-full px-6 py-4 rounded-xl font-bold text-lg text-center transition-all duration-300 flex items-center justify-center gap-2 ${
-                    isClosed
-                      ? 'bg-muted text-muted-foreground cursor-not-allowed'
-                      : 'bg-card text-foreground hover:bg-secondary border border-border'
-                  }`}
-                >
-                  <ExternalLink className="w-5 h-5" /> Apply Now
-                </a>
-              </div>
+                  <a
+                    href={applyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`w-full px-6 py-4 rounded-xl font-bold text-lg text-center transition-all duration-300 flex items-center justify-center gap-2 ${
+                      isClosed
+                        ? 'bg-muted text-muted-foreground cursor-not-allowed'
+                        : 'bg-card text-foreground hover:bg-secondary border border-border'
+                    }`}
+                  >
+                    <ExternalLink className="w-5 h-5" /> Apply Now
+                  </a>
+                </div>
+              )
             )}
             
             {!hasApplied && job.official_url && (
@@ -548,6 +561,19 @@ export default function JobDetails() {
       </div>
 
     </motion.div>
+    
+    {/* Pre-Register Dialog */}
+    <Dialog open={showPreRegister} onOpenChange={setShowPreRegister}>
+      <DialogContent className="max-w-md rounded-[2.5rem] p-8">
+        <PreRegisterForm 
+          jobId={job.id}
+          jobTitle={job.title}
+          company={job.company}
+          onClose={() => setShowPreRegister(false)}
+          onSuccess={() => setShowPreRegister(false)}
+        />
+      </DialogContent>
+    </Dialog>
     </>
   );
 }

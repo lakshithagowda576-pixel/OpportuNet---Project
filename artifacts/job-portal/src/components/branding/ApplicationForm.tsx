@@ -141,7 +141,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ jobId, company
       return;
     }
 
-    if (!photoFile) {
+    if (isGovernment && !photoFile) {
       toast.error("Please upload your photo");
       return;
     }
@@ -174,9 +174,11 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ jobId, company
       } else if (user?.resumeUrl) {
         formData.append("resumeUrl", user.resumeUrl);
       }
-      formData.append("photo", photoFile);
+      if (photoFile) {
+        formData.append("photo", photoFile);
+      }
 
-      const response = await fetch("/api/applications/direct", {
+      const response = await fetch(`${API_BASE}/api/applications/direct`, {
         method: "POST",
         credentials: "include",
         body: formData,
@@ -395,7 +397,9 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ jobId, company
               </div>
 
               <div className="space-y-4">
-                <Label className="text-sm font-bold uppercase tracking-tight">Applicant Photo</Label>
+                <Label className="text-sm font-bold uppercase tracking-tight">
+                  Applicant Photo {isGovernment && <span className="text-red-500">*</span>}
+                </Label>
                 <div 
                   className={`border-2 border-dashed rounded-2xl p-10 text-center cursor-pointer transition-all hover:bg-gray-50 dark:hover:bg-gray-700/30 ${
                     photoFile ? 'border-blue-500 bg-blue-50/50' : 'border-gray-200'
@@ -416,7 +420,9 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ jobId, company
                   ) : (
                     <div className="flex flex-col items-center gap-2">
                       <Upload className="w-10 h-10 text-gray-400" />
-                      <p className="text-gray-600 font-medium">Click to upload your photo</p>
+                      <p className="text-gray-600 font-medium">
+                        Click to upload your photo {isGovernment ? "(Required)" : "(Optional)"}
+                      </p>
                     </div>
                   )}
                 </div>

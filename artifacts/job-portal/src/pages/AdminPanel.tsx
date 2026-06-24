@@ -96,7 +96,7 @@ export default function AdminPanel() {
   // Update application status
   const statusMutation = useMutation({
     mutationFn: ({ id, status }: { id: number; status: string }) =>
-      apiFetch(`/applications/${id}/status`, {
+      apiFetch(`/admin/applications/${id}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),

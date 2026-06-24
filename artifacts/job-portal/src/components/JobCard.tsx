@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { PreRegisterForm } from "./PreRegisterForm";
 import { trackEvent } from "@/lib/analytics";
 import { useTranslation } from "react-i18next";
+import apiFetch from "@/lib/api-client";
 
 interface JobCardProps {
   job: Job;
@@ -162,7 +163,7 @@ export function JobCard({ job, applicantCount }: JobCardProps) {
 
             <button 
               onClick={() => {
-                fetch('/api/favorites', { method: 'POST', body: JSON.stringify({ jobId: job.id }) });
+                apiFetch('/favorites', { method: 'POST', body: JSON.stringify({ jobId: job.id }) });
                 setSaved(true);
                 trackEvent({
                   eventType: "job_saved",
@@ -181,54 +182,73 @@ export function JobCard({ job, applicantCount }: JobCardProps) {
             </button>
           </div>
 
-          <div className="flex-1 grid grid-cols-2 gap-2">
-            <Link
-              href={`/jobs/${job.id}/apply`}
-              className={cn(
-                "inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all text-center",
-                isClosed
-                  ? "bg-muted text-muted-foreground cursor-not-allowed"
-                  : "bg-primary text-white hover:bg-primary/90"
-              )}
-              onClick={(e) => {
-                if (isClosed) {
-                  e.preventDefault();
-                  return;
-                }
-                trackEvent({
-                  eventType: "job_apply_here_clicked",
-                  eventCategory: "Application",
-                  eventAction: "apply_here",
-                  metadata: { jobId: job.id, company: job.company, category: job.category, status: isFuture ? "future" : "open" },
-                });
-              }}
-            >
-              Apply Here
-            </Link>
-
-            <a
-              href={applyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(
-                "inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all text-center",
-                isClosed
-                  ? "bg-muted text-muted-foreground cursor-not-allowed"
-                  : "bg-secondary text-foreground hover:bg-secondary/90"
-              )}
-              onClick={() => {
-                if (!isClosed) {
+          <div className="flex-1">
+            {isFuture ? (
+              <button
+                onClick={() => {
+                  setShowPreRegister(true);
                   trackEvent({
-                    eventType: "job_apply_now_clicked",
+                    eventType: "job_pre_register_clicked",
                     eventCategory: "Application",
-                    eventAction: "apply_now",
-                    metadata: { jobId: job.id, company: job.company, category: job.category, url: applyUrl },
+                    eventAction: "pre_register",
+                    metadata: { jobId: job.id, company: job.company, category: job.category },
                   });
-                }
-              }}
-            >
-              {isClosed ? "Closed" : "Apply Now"}
-            </a>
+                }}
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all text-center bg-primary text-white hover:bg-primary/90 cursor-pointer"
+              >
+                Pre-Register
+              </button>
+            ) : (
+              <div className="grid grid-cols-2 gap-2">
+                <Link
+                  href={`/jobs/${job.id}/apply`}
+                  className={cn(
+                    "inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all text-center",
+                    isClosed
+                      ? "bg-muted text-muted-foreground cursor-not-allowed"
+                      : "bg-primary text-white hover:bg-primary/90"
+                  )}
+                  onClick={(e) => {
+                    if (isClosed) {
+                      e.preventDefault();
+                      return;
+                    }
+                    trackEvent({
+                      eventType: "job_apply_here_clicked",
+                      eventCategory: "Application",
+                      eventAction: "apply_here",
+                      metadata: { jobId: job.id, company: job.company, category: job.category, status: isFuture ? "future" : "open" },
+                    });
+                  }}
+                >
+                  Apply Here
+                </Link>
+
+                <a
+                  href={applyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(
+                    "inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all text-center",
+                    isClosed
+                      ? "bg-muted text-muted-foreground cursor-not-allowed"
+                      : "bg-secondary text-foreground hover:bg-secondary/90"
+                  )}
+                  onClick={() => {
+                    if (!isClosed) {
+                      trackEvent({
+                        eventType: "job_apply_now_clicked",
+                        eventCategory: "Application",
+                        eventAction: "apply_now",
+                        metadata: { jobId: job.id, company: job.company, category: job.category, url: applyUrl },
+                      });
+                    }
+                  }}
+                >
+                  {isClosed ? "Closed" : "Apply Now"}
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>
