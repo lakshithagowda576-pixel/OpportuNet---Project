@@ -19,7 +19,7 @@ import { Link } from "wouter";
 import { useAuth } from "@/context/AuthContext";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { PreRegisterForm } from "@/components/PreRegisterForm";
-import { buildJobApplyRoute, buildJobApplicationsRoute } from "@/lib/routes";
+import { buildJobApplyRoute, buildJobApplicationsRoute, buildExternalLink } from "@/lib/routes";
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 
@@ -73,15 +73,7 @@ export default function JobDetails() {
   };
 
   const steps = job?.applicationGuide?.split("\n").filter(s => s.trim()) ?? [];
-  const externalApplyUrl = job?.official_url || job?.applicationLink || "";
-  
-  // Generate fallback URL if no official URL exists
-  const getFallbackUrl = (company: string) => {
-    const cleanCompany = company.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
-    return `https://www.google.com/search?q=${encodeURIComponent(cleanCompany + ' careers jobs official website')}`;
-  };
-  
-  const applyUrl = externalApplyUrl && externalApplyUrl.startsWith("http") ? externalApplyUrl : getFallbackUrl(job?.company || "");
+  const applyUrl = buildExternalLink(job?.official_url || job?.applicationLink || "", job?.company || "") ?? undefined;
 
   const handleOneClickApply = async () => {
     if (!user || !user.resumeUrl) return;
@@ -246,9 +238,9 @@ export default function JobDetails() {
               )
             )}
             
-            {!hasApplied && job.official_url && (
+            {!hasApplied && (job.official_url || job.applicationLink) && (
               <p className="text-xs text-center text-muted-foreground italic">
-                Official website: {job.official_url}
+                Official website: {job.official_url || job.applicationLink}
               </p>
             )}
             {!hasApplied && (

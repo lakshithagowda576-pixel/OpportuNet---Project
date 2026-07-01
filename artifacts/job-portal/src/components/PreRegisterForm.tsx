@@ -31,6 +31,10 @@ export function PreRegisterForm({ jobId, jobTitle, company, onClose, onSuccess }
     setError(null);
     
     try {
+      if (!jobId || Number.isNaN(Number(jobId)) || Number(jobId) <= 0) {
+        throw new Error("This job is currently unavailable. Please try another opening.");
+      }
+
       const response = await fetch(`${API_BASE}/api/applications/pre-register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

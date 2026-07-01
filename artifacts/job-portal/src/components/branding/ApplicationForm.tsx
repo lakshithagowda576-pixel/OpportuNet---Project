@@ -148,6 +148,10 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({ jobId, company
 
     setIsSubmitting(true);
     try {
+      if (!jobId || Number.isNaN(Number(jobId)) || Number(jobId) <= 0) {
+        throw new Error("This job is currently unavailable. Please refresh and try again.");
+      }
+
       const formData = new FormData();
       formData.append("jobId", jobId.toString());
       formData.append("applicantName", data.applicantName);

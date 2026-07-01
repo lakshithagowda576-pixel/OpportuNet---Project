@@ -35,3 +35,38 @@ export function buildExamApplyRoute(examId: number | string | null | undefined) 
 
   return `/exams/${id}/apply`;
 }
+
+export function normalizeExternalLink(raw: string | null | undefined) {
+  const value = typeof raw === 'string' ? raw.trim() : '';
+  if (!value) {
+    return null;
+  }
+
+  if (/^(https?:)?\/\//i.test(value)) {
+    return value.startsWith('//') ? `https:${value}` : value;
+  }
+
+  if (/^[a-zA-Z][a-zA-Z\d+.-]*:/i.test(value)) {
+    return value;
+  }
+
+  if (value.startsWith('/')) {
+    return null;
+  }
+
+  return `https://${value}`;
+}
+
+export function buildSearchFallbackUrl(companyName: string | null | undefined) {
+  const company = typeof companyName === 'string' ? companyName.trim() : '';
+  if (!company) {
+    return null;
+  }
+
+  const cleanCompany = company.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
+  return `https://www.google.com/search?q=${encodeURIComponent(`${cleanCompany} careers jobs official website`)}`;
+}
+
+export function buildExternalLink(raw: string | null | undefined, fallbackCompany?: string | null) {
+  return normalizeExternalLink(raw) ?? buildSearchFallbackUrl(fallbackCompany);
+}

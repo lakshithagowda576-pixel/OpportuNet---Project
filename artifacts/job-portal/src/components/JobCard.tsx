@@ -9,7 +9,7 @@ import { PreRegisterForm } from "./PreRegisterForm";
 import { trackEvent } from "@/lib/analytics";
 import { useTranslation } from "react-i18next";
 import apiFetch from "@/lib/api-client";
-import { buildJobApplyRoute } from "@/lib/routes";
+import { buildJobApplyRoute, buildExternalLink } from "@/lib/routes";
 
 interface JobCardProps {
   job: Job;
@@ -23,16 +23,9 @@ export function JobCard({ job, applicantCount }: JobCardProps) {
   const [showPreRegister, setShowPreRegister] = useState(false);
   const [saved, setSaved] = useState(false);
   const externalApplyUrl = job.official_url || job.applicationLink;
-  const hasExternalApply = !!externalApplyUrl && externalApplyUrl.startsWith("http");
   const { t } = useTranslation();
-  
-  // Generate fallback URL if no official URL exists
-  const getFallbackUrl = (company: string) => {
-    const cleanCompany = company.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
-    return `https://www.google.com/search?q=${encodeURIComponent(cleanCompany + ' careers jobs official website')}`;
-  };
-  
-  const applyUrl = hasExternalApply ? externalApplyUrl : getFallbackUrl(job.company);
+  const hasExternalApply = Boolean(externalApplyUrl);
+  const applyUrl = buildExternalLink(externalApplyUrl, job.company) ?? undefined;
   
   const getCategoryColor = (category: string) => {
     switch (category) {

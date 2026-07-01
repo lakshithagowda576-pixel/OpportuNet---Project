@@ -15,6 +15,7 @@ import bcrypt from "bcrypt";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { validateApplicationTarget } from "../lib/application-validation";
 
 // Multer storage configuration
 const storage = multer.diskStorage({
@@ -60,6 +61,12 @@ router.post("/applications/pre-register", async (req, res) => {
 
   if (!email || !jobId) {
     res.status(400).json({ error: "Email and Job ID are required" });
+    return;
+  }
+
+  const targetValidation = await validateApplicationTarget(jobId);
+  if (!targetValidation.ok) {
+    res.status(400).json({ error: targetValidation.error });
     return;
   }
 
@@ -144,6 +151,12 @@ router.post(
       const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
       const resumeFile = files?.resume?.[0];
       const photoFile = files?.photo?.[0];
+      const jobId = body.jobId;
+
+      const targetValidation = await validateApplicationTarget(jobId);
+      if (!targetValidation.ok) {
+        return res.status(400).json({ error: targetValidation.error });
+      }
 
       // Check if already applied
       if (user || body.applicantEmail) {
@@ -302,6 +315,12 @@ router.post("/applications", async (req, res) => {
   }
 
   const { jobId, examId, course, applicantName, applicantEmail, applicantPhone, applicantAddress, education, qualification, resumeUrl, acceptedTerms, coverLetter } = req.body;
+
+  const targetValidation = await validateApplicationTarget(jobId, examId);
+  if (!targetValidation.ok) {
+    res.status(400).json({ error: targetValidation.error });
+    return;
+  }
 
   // Check if already applied
   const [existing] = await db

@@ -4,6 +4,8 @@ import { insertJobSchema, insertCollegeSchema, insertCollegeCutoffSchema, insert
 // ============================================================================
 // JOB SCHEMAS
 // ============================================================================
+const optionalEmptyUrl = z.union([z.literal(""), z.string().trim().url()]).optional().default("");
+
 export const createJobSchema = z.object({
   title: z.string().min(2, "Job title required").max(255),
   company: z.string().min(2, "Company name required").max(255),
@@ -18,8 +20,8 @@ export const createJobSchema = z.object({
   hrEmail: z.string().email("Valid HR email required"),
   salary: z.string().min(1, "Salary information required"),
   openings: z.coerce.number().int().positive("Openings must be positive"),
-  applicationLink: z.string().url().optional().default(""),
-  official_url: z.string().url().optional().default(""),
+  applicationLink: optionalEmptyUrl,
+  official_url: optionalEmptyUrl,
 });
 
 export const updateJobSchema = createJobSchema.partial();

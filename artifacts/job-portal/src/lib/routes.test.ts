@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildJobApplyRoute, buildJobApplicationsRoute, buildJobRoute, buildExamApplyRoute } from './routes';
+import { buildJobApplyRoute, buildJobApplicationsRoute, buildJobRoute, buildExamApplyRoute, normalizeExternalLink, buildExternalLink } from './routes';
 
 describe('route helpers', () => {
   it('builds a valid job detail route for positive ids', () => {
@@ -24,5 +24,16 @@ describe('route helpers', () => {
     expect(buildExamApplyRoute(11)).toBe('/exams/11/apply');
     expect(buildExamApplyRoute('11')).toBe('/exams/11/apply');
     expect(buildExamApplyRoute('invalid')).toBeNull();
+  });
+
+  it('normalizes bare government portal domains into valid external links', () => {
+    expect(normalizeExternalLink('www.isro.gov.in/careers')).toBe('https://www.isro.gov.in/careers');
+    expect(normalizeExternalLink('cetonline.karnataka.gov.in/kea/')).toBe('https://cetonline.karnataka.gov.in/kea/');
+    expect(normalizeExternalLink('https://kea.kar.nic.in')).toBe('https://kea.kar.nic.in');
+  });
+
+  it('builds a fallback search link when no external link is provided', () => {
+    const result = buildExternalLink('', 'ISRO');
+    expect(result).toBe('https://www.google.com/search?q=isro%20careers%20jobs%20official%20website');
   });
 });

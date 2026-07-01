@@ -53335,6 +53335,7 @@ var ListStudyMaterialsResponse = arrayType(
 );
 
 // ../../lib/api-zod/src/crud-schemas.ts
+var optionalEmptyUrl = external_exports.union([external_exports.literal(""), external_exports.string().trim().url()]).optional().default("");
 var createJobSchema = external_exports.object({
   title: external_exports.string().min(2, "Job title required").max(255),
   company: external_exports.string().min(2, "Company name required").max(255),
@@ -53349,8 +53350,8 @@ var createJobSchema = external_exports.object({
   hrEmail: external_exports.string().email("Valid HR email required"),
   salary: external_exports.string().min(1, "Salary information required"),
   openings: external_exports.coerce.number().int().positive("Openings must be positive"),
-  applicationLink: external_exports.string().url().optional().default(""),
-  official_url: external_exports.string().url().optional().default("")
+  applicationLink: optionalEmptyUrl,
+  official_url: optionalEmptyUrl
 });
 var updateJobSchema = createJobSchema.partial();
 var createCollegeSchema = external_exports.object({
@@ -73209,6 +73210,31 @@ import bcrypt from "bcrypt";
 import path from "path";
 import fs from "fs";
 
+// src/lib/application-validation.ts
+async function validateApplicationTarget(jobId, examId) {
+  if (jobId != null && jobId !== "") {
+    const parsedJobId = typeof jobId === "number" ? jobId : Number(jobId);
+    if (!Number.isInteger(parsedJobId) || parsedJobId <= 0) {
+      return { ok: false, error: "Please select a valid job." };
+    }
+    const [job] = await db.select({ id: jobsTable.id }).from(jobsTable).where(eq(jobsTable.id, parsedJobId));
+    if (!job) {
+      return { ok: false, error: "The selected job is no longer available. Please choose a valid opening." };
+    }
+  }
+  if (examId != null && examId !== "") {
+    const parsedExamId = typeof examId === "number" ? examId : Number(examId);
+    if (!Number.isInteger(parsedExamId) || parsedExamId <= 0) {
+      return { ok: false, error: "Please select a valid exam." };
+    }
+    const [exam] = await db.select({ id: examsTable.id }).from(examsTable).where(eq(examsTable.id, parsedExamId));
+    if (!exam) {
+      return { ok: false, error: "The selected exam is no longer available." };
+    }
+  }
+  return { ok: true };
+}
+
 // ../../lib/integrations/video-meet/index.ts
 async function createMeeting(provider, startTime, durationMinutes = 30) {
   const meetingId = Math.random().toString(36).substring(7);
@@ -73266,6 +73292,11 @@ router3.post("/applications/pre-register", async (req, res) => {
   const { name, email: email3, password, jobId } = req.body;
   if (!email3 || !jobId) {
     res.status(400).json({ error: "Email and Job ID are required" });
+    return;
+  }
+  const targetValidation = await validateApplicationTarget(jobId);
+  if (!targetValidation.ok) {
+    res.status(400).json({ error: targetValidation.error });
     return;
   }
   try {
@@ -73328,6 +73359,11 @@ router3.post(
       const files = req.files;
       const resumeFile = files?.resume?.[0];
       const photoFile = files?.photo?.[0];
+      const jobId = body.jobId;
+      const targetValidation = await validateApplicationTarget(jobId);
+      if (!targetValidation.ok) {
+        return res.status(400).json({ error: targetValidation.error });
+      }
       if (user || body.applicantEmail) {
         const [existing] = await db.select().from(applicationsTable).where(
           and(
@@ -73445,6 +73481,11 @@ router3.post("/applications", async (req, res) => {
     return;
   }
   const { jobId, examId, course, applicantName, applicantEmail, applicantPhone, applicantAddress, education, qualification, resumeUrl, acceptedTerms, coverLetter } = req.body;
+  const targetValidation = await validateApplicationTarget(jobId, examId);
+  if (!targetValidation.ok) {
+    res.status(400).json({ error: targetValidation.error });
+    return;
+  }
   const [existing] = await db.select().from(applicationsTable).where(
     and(
       jobId ? eq(applicationsTable.jobId, jobId) : eq(applicationsTable.examId, examId),
