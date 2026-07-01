@@ -14,17 +14,17 @@ import { normalizeExternalLink } from "@/lib/routes";
 const featuredResourceLibrary = [
   {
     id: "pgcet-video-1",
-    title: "PG-CET 2026 Exam Pattern Explained",
-    description: "A concise walkthrough of the sections, marking scheme, and best preparation strategy.",
+    title: "PG-CET 2026 Preparation Videos",
+    description: "Curated YouTube search results for Karnataka PG-CET aptitude and reasoning prep.",
     type: "Video",
     subject: "General Aptitude",
-    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    url: "https://www.youtube.com/results?search_query=Karnataka+PG-CET+aptitude+preparation",
     examId: null,
   },
   {
     id: "pgcet-notes-1",
     title: "Karnataka PG-CET Short Notes: Logical Reasoning",
-    description: "Quick revision notes covering syllogisms, patterns, and analytical reasoning.",
+    description: "Focused revision notes covering syllogisms, patterns, and analytical reasoning.",
     type: "Notes",
     subject: "Reasoning",
     url: "https://www.geeksforgeeks.org/logical-reasoning/",
@@ -33,7 +33,7 @@ const featuredResourceLibrary = [
   {
     id: "pgcet-quiz-1",
     title: "Mini Mock Quiz: Quantitative Aptitude",
-    description: "Practice a speedy quiz to sharpen calculation accuracy before the real exam.",
+    description: "Quick practice questions to sharpen calculation accuracy before the exam.",
     type: "Practice_Test",
     subject: "Quantitative Aptitude",
     url: "https://www.indiabix.com/aptitude/",
@@ -70,6 +70,10 @@ export default function PgCetHub() {
 
   const isYouTubeUrl = (url: string) => {
     return url.includes('youtube.com') || url.includes('youtu.be');
+  };
+
+  const canEmbedYouTubeVideo = (url: string) => {
+    return /youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/playlist\?list=/.test(url);
   };
 
   const getYouTubeEmbedUrl = (url: string) => {
@@ -341,7 +345,8 @@ export default function PgCetHub() {
             {filteredMaterials?.map((mat) => {
               const isVideo = mat.type === 'Video';
               const isYT = isVideo && isYouTubeUrl(mat.url);
-              const thumb = isYT ? getYouTubeThumbnail(mat.url) : null;
+              const isEmbeddableYT = isYT && canEmbedYouTubeVideo(mat.url);
+              const thumb = isEmbeddableYT ? getYouTubeThumbnail(mat.url) : null;
 
               return (
                 <motion.div 
@@ -353,7 +358,7 @@ export default function PgCetHub() {
                   className="group flex flex-col bg-card rounded-[3rem] border border-border/50 hover:border-primary/30 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)] transition-all duration-500 overflow-hidden"
                 >
                   {/* Media Section */}
-                  {isVideo && isYT ? (
+                  {isVideo && isEmbeddableYT ? (
                     <div className="relative aspect-video overflow-hidden">
                       <img src={thumb!} alt={mat.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                       <div className="absolute inset-0 bg-slate-950/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -480,7 +485,7 @@ export default function PgCetHub() {
               <div className="grid grid-cols-1 lg:grid-cols-12 h-full min-h-[600px]">
                 <div className="lg:col-span-8 bg-black flex items-center justify-center overflow-hidden">
                   {activeMaterial.type === 'Video' ? (
-                    isYouTubeUrl(activeMaterial.url) ? (
+                    canEmbedYouTubeVideo(activeMaterial.url) ? (
                       <iframe 
                         src={getYouTubeEmbedUrl(activeMaterial.url)}
                         className="w-full aspect-video"
