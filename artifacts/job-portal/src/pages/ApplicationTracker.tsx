@@ -10,6 +10,7 @@ import {
   Award, FileText, CheckSquare, ChevronRight, GraduationCap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { buildJobRoute } from "@/lib/routes";
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 const STATUS_STEPS = ["Pending", "Reviewed", "Interview", "Offered"];
@@ -244,11 +245,14 @@ export default function ApplicationTracker() {
                     </p>
                   </div>
                   
-                  {selectedApplication?.jobId && (
-                    <Link href={`/jobs/${selectedApplication?.jobId}`} className="px-8 py-4 bg-primary text-white rounded-2xl font-black shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all text-center">
-                      View Job Details
-                    </Link>
-                  )}
+                  {(() => {
+                    const jobRoute = buildJobRoute(selectedApplication?.jobId);
+                    return jobRoute ? (
+                      <Link href={jobRoute} className="px-8 py-4 bg-primary text-white rounded-2xl font-black shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all text-center">
+                        View Job Details
+                      </Link>
+                    ) : null;
+                  })()}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">

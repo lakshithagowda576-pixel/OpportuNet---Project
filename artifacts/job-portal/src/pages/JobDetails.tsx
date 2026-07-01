@@ -19,6 +19,7 @@ import { Link } from "wouter";
 import { useAuth } from "@/context/AuthContext";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { PreRegisterForm } from "@/components/PreRegisterForm";
+import { buildJobApplyRoute, buildJobApplicationsRoute } from "@/lib/routes";
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 
@@ -84,6 +85,10 @@ export default function JobDetails() {
 
   const handleOneClickApply = async () => {
     if (!user || !user.resumeUrl) return;
+    if (!jobId || Number.isNaN(Number(jobId)) || Number(jobId) <= 0) {
+      toast({ title: "Apply Failed", description: "This job is currently unavailable. Please try another opening.", variant: "destructive" });
+      return;
+    }
     setIsRedirecting(true);
     try {
       const response = await fetch(`${API_BASE}/api/applications`, {
@@ -200,21 +205,30 @@ export default function JobDetails() {
                 </button>
               ) : (
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <Link 
-                    href={`/jobs/${jobId}/apply`}
-                    className={`w-full px-6 py-4 rounded-xl font-bold text-lg text-center transition-all duration-300 flex items-center justify-center gap-2 ${
-                      canApply
-                        ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-1'
-                        : 'bg-muted text-muted-foreground cursor-not-allowed'
-                    }`}
-                    onClick={(e) => {
-                      if (!canApply) {
-                        e.preventDefault();
-                      }
-                    }}
-                  >
-                    <BookOpen className="w-5 h-5" /> Apply Here
-                  </Link>
+                  {(() => {
+                    const applyRoute = buildJobApplyRoute(jobId);
+                    return applyRoute ? (
+                      <Link 
+                        href={applyRoute}
+                        className={`w-full px-6 py-4 rounded-xl font-bold text-lg text-center transition-all duration-300 flex items-center justify-center gap-2 ${
+                          canApply
+                            ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-1'
+                            : 'bg-muted text-muted-foreground cursor-not-allowed'
+                        }`}
+                        onClick={(e) => {
+                          if (!canApply) {
+                            e.preventDefault();
+                          }
+                        }}
+                      >
+                        <BookOpen className="w-5 h-5" /> Apply Here
+                      </Link>
+                    ) : (
+                      <span className="w-full px-6 py-4 rounded-xl font-bold text-lg text-center transition-all duration-300 flex items-center justify-center gap-2 bg-muted text-muted-foreground cursor-not-allowed">
+                        <BookOpen className="w-5 h-5" /> Apply Here
+                      </span>
+                    );
+                  })()}
 
                   <a
                     href={applyUrl}
@@ -245,21 +259,39 @@ export default function JobDetails() {
                  >
                    Track Applications
                  </Link>
-                 <Link 
-                   href={`/jobs/${jobId}/applications`}
-                   className="w-full md:w-60 px-6 py-3 rounded-xl font-semibold bg-card text-muted-foreground hover:bg-secondary flex items-center justify-center gap-2 transition-colors text-sm border border-border"
-                 >
-                   <Users className="w-4 h-4" /> View Applicants
-                 </Link>
+                 {(() => {
+                   const applicationsRoute = buildJobApplicationsRoute(jobId);
+                   return applicationsRoute ? (
+                     <Link 
+                       href={applicationsRoute}
+                       className="w-full md:w-60 px-6 py-3 rounded-xl font-semibold bg-card text-muted-foreground hover:bg-secondary flex items-center justify-center gap-2 transition-colors text-sm border border-border"
+                     >
+                       <Users className="w-4 h-4" /> View Applicants
+                     </Link>
+                   ) : (
+                     <span className="w-full md:w-60 px-6 py-3 rounded-xl font-semibold bg-card text-muted-foreground cursor-not-allowed flex items-center justify-center gap-2 transition-colors text-sm border border-border">
+                       <Users className="w-4 h-4" /> View Applicants
+                     </span>
+                   );
+                 })()}
                </>
             )}
             {hasApplied && (
-               <Link 
-                 href={`/jobs/${jobId}/applications`}
-                 className="w-full md:w-60 px-6 py-3 rounded-xl font-semibold bg-card text-muted-foreground hover:bg-secondary flex items-center justify-center gap-2 transition-colors text-sm border border-border"
-               >
-                 <Users className="w-4 h-4" /> View More Applicants
-               </Link>
+               (() => {
+                 const applicationsRoute = buildJobApplicationsRoute(jobId);
+                 return applicationsRoute ? (
+                   <Link 
+                     href={applicationsRoute}
+                     className="w-full md:w-60 px-6 py-3 rounded-xl font-semibold bg-card text-muted-foreground hover:bg-secondary flex items-center justify-center gap-2 transition-colors text-sm border border-border"
+                   >
+                     <Users className="w-4 h-4" /> View More Applicants
+                   </Link>
+                 ) : (
+                   <span className="w-full md:w-60 px-6 py-3 rounded-xl font-semibold bg-card text-muted-foreground cursor-not-allowed flex items-center justify-center gap-2 transition-colors text-sm border border-border">
+                     <Users className="w-4 h-4" /> View More Applicants
+                   </span>
+                 );
+               })()
             )}
             <div className="flex flex-col md:flex-row items-center gap-2 w-full md:w-60">
               <a 

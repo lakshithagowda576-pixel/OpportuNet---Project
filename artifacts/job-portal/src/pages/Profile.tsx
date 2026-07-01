@@ -8,6 +8,7 @@ import {
   CheckCircle2, Clock, FileText, Star, Loader2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { buildJobRoute } from "@/lib/routes";
 import { Link } from "wouter";
 import { format } from "date-fns";
 import { trackEvent } from "@/lib/analytics";
@@ -331,9 +332,14 @@ export default function Profile() {
                       )}>
                         {app.status}
                       </span>
-                      <Link href={`/jobs/${app.jobId}`} className="p-2 hover:bg-primary/10 rounded-lg text-primary transition-colors">
-                        <ExternalLink className="w-4 h-4" />
-                      </Link>
+                      {(() => {
+                        const jobRoute = buildJobRoute(app.jobId);
+                        return jobRoute ? (
+                          <Link href={jobRoute} className="p-2 hover:bg-primary/10 rounded-lg text-primary transition-colors">
+                            <ExternalLink className="w-4 h-4" />
+                          </Link>
+                        ) : null;
+                      })()}
                     </div>
                   </div>
                 ))}

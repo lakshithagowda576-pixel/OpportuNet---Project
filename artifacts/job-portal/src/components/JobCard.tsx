@@ -9,6 +9,7 @@ import { PreRegisterForm } from "./PreRegisterForm";
 import { trackEvent } from "@/lib/analytics";
 import { useTranslation } from "react-i18next";
 import apiFetch from "@/lib/api-client";
+import { buildJobApplyRoute } from "@/lib/routes";
 
 interface JobCardProps {
   job: Job;
@@ -200,29 +201,38 @@ export function JobCard({ job, applicantCount }: JobCardProps) {
               </button>
             ) : (
               <div className="grid grid-cols-2 gap-2">
-                <Link
-                  href={`/jobs/${job.id}/apply`}
-                  className={cn(
-                    "inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all text-center",
-                    isClosed
-                      ? "bg-muted text-muted-foreground cursor-not-allowed"
-                      : "bg-primary text-white hover:bg-primary/90"
-                  )}
-                  onClick={(e) => {
-                    if (isClosed) {
-                      e.preventDefault();
-                      return;
-                    }
-                    trackEvent({
-                      eventType: "job_apply_here_clicked",
-                      eventCategory: "Application",
-                      eventAction: "apply_here",
-                      metadata: { jobId: job.id, company: job.company, category: job.category, status: isFuture ? "future" : "open" },
-                    });
-                  }}
-                >
-                  Apply Here
-                </Link>
+                {(() => {
+                  const applyRoute = buildJobApplyRoute(job.id);
+                  return applyRoute ? (
+                    <Link
+                      href={applyRoute}
+                      className={cn(
+                        "inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all text-center",
+                        isClosed
+                          ? "bg-muted text-muted-foreground cursor-not-allowed"
+                          : "bg-primary text-white hover:bg-primary/90"
+                      )}
+                      onClick={(e) => {
+                        if (isClosed) {
+                          e.preventDefault();
+                          return;
+                        }
+                        trackEvent({
+                          eventType: "job_apply_here_clicked",
+                          eventCategory: "Application",
+                          eventAction: "apply_here",
+                          metadata: { jobId: job.id, company: job.company, category: job.category, status: isFuture ? "future" : "open" },
+                        });
+                      }}
+                    >
+                      Apply Here
+                    </Link>
+                  ) : (
+                    <span className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all text-center bg-muted text-muted-foreground cursor-not-allowed">
+                      Apply Here
+                    </span>
+                  );
+                })()}
 
                 <a
                   href={applyUrl}

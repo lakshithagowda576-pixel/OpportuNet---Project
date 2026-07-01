@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Link } from "wouter";
 import { cn } from "@/lib/utils";
+import { buildJobRoute } from "@/lib/routes";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const apiFetch = (path: string) =>
@@ -63,9 +64,14 @@ export default function JobApplications() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      <Link href={`/jobs/${jobId}`} className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors gap-1">
-        <ArrowLeft className="w-4 h-4" /> Back to Job Details
-      </Link>
+      {(() => {
+        const jobRoute = buildJobRoute(jobId);
+        return jobRoute ? (
+          <Link href={jobRoute} className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors gap-1">
+            <ArrowLeft className="w-4 h-4" /> Back to Job Details
+          </Link>
+        ) : null;
+      })()}
 
       {/* Header */}
       <div className="bg-card rounded-3xl p-8 border border-border shadow-xl">
