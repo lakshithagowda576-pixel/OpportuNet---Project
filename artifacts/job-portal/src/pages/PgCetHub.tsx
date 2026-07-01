@@ -9,6 +9,37 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { normalizeExternalLink } from "@/lib/routes";
+
+const featuredResourceLibrary = [
+  {
+    id: "pgcet-video-1",
+    title: "PG-CET 2026 Exam Pattern Explained",
+    description: "A concise walkthrough of the sections, marking scheme, and best preparation strategy.",
+    type: "Video",
+    subject: "General Aptitude",
+    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    examId: null,
+  },
+  {
+    id: "pgcet-notes-1",
+    title: "Karnataka PG-CET Short Notes: Logical Reasoning",
+    description: "Quick revision notes covering syllogisms, patterns, and analytical reasoning.",
+    type: "Notes",
+    subject: "Reasoning",
+    url: "https://www.geeksforgeeks.org/logical-reasoning/",
+    examId: null,
+  },
+  {
+    id: "pgcet-quiz-1",
+    title: "Mini Mock Quiz: Quantitative Aptitude",
+    description: "Practice a speedy quiz to sharpen calculation accuracy before the real exam.",
+    type: "Practice_Test",
+    subject: "Quantitative Aptitude",
+    url: "https://www.indiabix.com/aptitude/",
+    examId: null,
+  },
+];
 
 export default function PgCetHub() {
   const { data: exams, isLoading: isExamsLoading } = useListExams();
@@ -69,19 +100,17 @@ export default function PgCetHub() {
   };
 
   const getValidUrl = (url: string, fallback: string) => {
-    if (!url) return fallback;
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
-    // If it's a relative URL, assume it's from the official website
-    return fallback;
+    return normalizeExternalLink(url) || normalizeExternalLink(fallback) || fallback;
   };
 
   const scrollToMaterials = () => {
     document.getElementById("materials")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  const allMaterials = [...(materials ?? []), ...featuredResourceLibrary];
   const filteredMaterials = selectedExam === "all"
-    ? materials
-    : materials?.filter(m => m.examId === selectedExam);
+    ? allMaterials
+    : allMaterials.filter(m => m.examId === selectedExam || m.examId == null);
 
 
   if (isExamsLoading || isMaterialsLoading) {
